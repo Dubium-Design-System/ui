@@ -19,46 +19,38 @@ jobs:
       pages: write # Право на запись GitHub Pages
       id-token: write # Право на создание токена аутентификации
 
-    # Принудительное использование Node.js 24 для всех JavaScript actions
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
     steps:
       # Шаг 1: Клонирование репозитория
-      - name: Checkout repo
+      - name: Клонирование репозитория
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       # Шаг 2: Установка Node.js
-      - name: Setup Node.js
+      - name: Установка Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "24.x"
-          # Убираем cache, так как нет lock-файла в корне
+          cache: "npm"
 
       # Шаг 3: Установка зависимостей для Storybook (в папке docs)
-      - name: Install dependencies
+      - name: Установка зависимостей для Storybook
         working-directory: docs
-        run: npm i --legacy-peer-deps --timeout=30000
-        # npm ci использует package-lock.json, если его нет - падает на npm install
+        run: npm i --legacy-peer-deps
 
-      # Шаг 4: Сборка Storybook
-      - name: Build Storybook
+      - name: Сборка Storybook
         working-directory: docs
         run: npm run build
         env:
           NODE_OPTIONS: "--max_old_space_size=4096"
 
-      # Шаг 5: Проверка результата сборки
-      - name: Verify build output
+      - name: Проверка результата сборки
         working-directory: docs
         run: |
           ls -la storybook-static
           [ -f storybook-static/index.html ] || exit 1
 
-      # Шаг 6: Деплой на GitHub Pages
-      - name: Deploy to GitHub Pages
+      - name: Деплой на GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
