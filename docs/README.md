@@ -1,3 +1,3 @@
 # Документация Design System
 
-URL: <https://dubiumekb.github.io/dubium-design/>
+URL: <https://github.com/Dubium-Design-System/ui/>
