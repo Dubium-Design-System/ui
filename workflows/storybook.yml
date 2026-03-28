@@ -39,7 +39,7 @@ jobs:
 
       # Шаг 3: Установка зависимостей проекта
       - name: Install dependencies
-        run: npm ci --timeout=300000 # Установка зависимостей с таймаутом 300 секунд
+        run: npm ci --timeout=30000 # Установка зависимостей с таймаутом 30 секунд
         # npm ci - более быстрая и надежная установка, использует package-lock.json
 
       # Шаг 4: Сборка Storybook
@@ -65,5 +65,3 @@ jobs:
           destination_dir: ./ # Публикуем в корень ветки gh-pages
           keep_files: false # Удаляем старые файлы перед публикацией
           force_orphan: true # Создаем ветку gh-pages как orphan (без истории)
-
-#
