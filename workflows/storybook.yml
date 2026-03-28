@@ -1,0 +1,54 @@
+name: Deploy Storybook
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Add these permissions
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24.x"
+          cache: "yarn"
+
+      - name: Install dependencies
+        working-directory: apps/docs
+        run: yarn install --network-timeout 300000
+
+      - name: Build Storybook
+        working-directory: apps/docs
+        run: yarn build
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
+
+      - name: Verify build output
+        working-directory: apps/docs
+        run: |
+          ls -la storybook-static
+          [ -f storybook-static/index.html ] || exit 1
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: apps/docs/storybook-static
+          destination_dir: ./
+          keep_files: false
+          force_orphan: true
