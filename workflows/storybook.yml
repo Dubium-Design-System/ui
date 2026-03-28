@@ -65,3 +65,5 @@ jobs:
           destination_dir: ./ # Публикуем в корень ветки gh-pages
           keep_files: false # Удаляем старые файлы перед публикацией
           force_orphan: true # Создаем ветку gh-pages как orphan (без истории)
+
+#
