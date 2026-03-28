@@ -30,7 +30,7 @@ jobs:
       - name: Установка Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "24.x"
+          node-version: "25.x"
           cache: "npm"
 
       # Шаг 3: Установка зависимостей для Storybook (в папке docs)
@@ -41,8 +41,6 @@ jobs:
       - name: Сборка Storybook
         working-directory: docs
         run: npm run build
-        env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
 
       - name: Проверка результата сборки
         working-directory: docs
