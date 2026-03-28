@@ -5,3 +5,4 @@ export { Image, type ImageProps } from "./components/Image/Image";
 export { Tabs, type TabsProps } from "./components/Tabs/Tabs";
 export { Input, type InputProps } from "./components/Input/Input";
 export { TextArea, type TextAreaProps } from "./components/TextArea/TextArea";
+export { Switch, type SwitchProps } from "./components/Switch/Switch";

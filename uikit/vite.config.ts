@@ -8,9 +8,6 @@ import { resolve } from "node:path";
 
 import { visualizer } from "rollup-plugin-visualizer";
 
-// Плагин для инжекта CSS в сборку библиотеки
-// import { libInjectCss } from "vite-plugin-lib-inject-css";
-
 import dts from "vite-plugin-dts";
 
 import fs from "node:fs";
@@ -49,9 +46,6 @@ export default defineConfig({
 		}),
 
 		visualizer(),
-
-		// Инжектит CSS прямо в JS-бандлы (важно для библиотек)
-		// libInjectCss(),
 
 		dts({
 			exclude: ["src/main.tsx", "src/dev"],

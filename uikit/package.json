@@ -1,13 +1,13 @@
 {
 	"name": "@dubium/ui",
 	"private": false,
-	"version": "0.0.24",
+	"version": "0.0.25",
 	"type": "module",
 	"homepage": "https://dubiumekb.github.io/dubium-design/",
 	"bugs": {
 		"url": "https://github.com/DubiumEkb/dubium-design/issues"
 	},
-	"repository": "https://github.com/DubiumEkb/dubium-design",
+	"repository": "https://github.com/Dubium-Design-System/ui",
 	"files": [
 		"dist",
 		"README.md",
