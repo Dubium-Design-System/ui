@@ -1,37 +1,27 @@
 import { defineConfig } from "vite";
-
-// Используем SWC-компилятор для React (быстрее Babel)
 import react from "@vitejs/plugin-react-swc";
-
-// Для работы с путями
 import { resolve } from "node:path";
-
 import { visualizer } from "rollup-plugin-visualizer";
-
+import fs from "node:fs";
 import dts from "vite-plugin-dts";
 
-import fs from "node:fs";
-
-// Функция для автоматического сбора entry points
 function getComponentEntries() {
 	const componentsDir = resolve(__dirname, "src/components");
 	const entries: Record<string, string> = {};
 
-	// Читаем директорию компонентов
+	if (!fs.existsSync(componentsDir)) {
+		return entries;
+	}
+
 	const componentDirs = fs
 		.readdirSync(componentsDir, { withFileTypes: true })
 		.filter((dirent) => dirent.isDirectory())
 		.map((dirent) => dirent.name);
 
-	// Для каждого компонента создаем entry point
 	componentDirs.forEach((componentName) => {
 		const componentPath = `src/components/${componentName}/${componentName}.tsx`;
-		// Проверяем существование файла компонента
 		if (fs.existsSync(resolve(__dirname, componentPath))) {
-			entries[`components/${componentName}/${componentName}`] = resolve(
-				__dirname,
-				componentPath,
-			);
+			entries[componentName] = resolve(__dirname, componentPath);
 		}
 	});
 
@@ -41,10 +31,8 @@ function getComponentEntries() {
 export default defineConfig({
 	plugins: [
 		react({
-			// Указываем, что используем стандартный React JSX
 			jsxImportSource: "react",
 		}),
-
 		visualizer(),
 
 		dts({
@@ -53,38 +41,47 @@ export default defineConfig({
 	],
 	build: {
 		lib: {
-			// Настройки сборки библиотеки
 			entry: {
-				// Главный входной файл
 				index: resolve(__dirname, "src/index.ts"),
-				// Автоматически добавляем entry points для всех компонентов
 				...getComponentEntries(),
 			},
-
-			// Собираем только в ES-формате
 			formats: ["es"],
-			fileName: (_, name) => `${name}.js`,
-		},
-		rollupOptions: {
-			// Внешние зависимости
-			external: ["react", "react-dom", "react/jsx-runtime"],
-			output: {
-				assetFileNames: () => {
-					return "components/[name]/[name][extname]";
-				},
-				// Именование чанков
-				chunkFileNames: (chunkInfo) => {
-					// Проверяем, является ли чанк иконкой
-					if (chunkInfo.name.match(/.*Icon$/)) {
-						// Сохраняем иконки в подкаталог icons
-						return "icons/[name].js";
-					}
-					// Для остальных чанков используем стандартное именование
-					return "[name].js";
-				},
+			fileName: (_, entryName) => {
+				if (entryName === "index") return "index.js";
+				return `components/${entryName}/${entryName}.js`;
 			},
 		},
-		// чтобы обычные (не-модульные) стили выносились отдельно
+		rollupOptions: {
+			external: ["react", "react-dom", "react/jsx-runtime"],
+			output: {
+				assetFileNames: (assetInfo) => {
+					if (assetInfo.name && assetInfo.name.endsWith(".css")) {
+						const baseName = assetInfo.name.replace(/\.css$/, "");
+						return `components/${baseName}/[name][extname]`;
+					}
+					return `assets/[name][extname]`;
+				},
+				chunkFileNames: (chunkInfo) => {
+					if (chunkInfo.name && chunkInfo.name.match(/.*Icon$/)) {
+						return "icons/[name].js";
+					}
+					return "[name].js";
+				},
+				preserveModules: false,
+				sourcemap: true,
+			},
+		},
 		cssCodeSplit: true,
+		emptyOutDir: true,
+		chunkSizeWarningLimit: 1000,
+		target: "es2020",
+		minify: true,
+	},
+	publicDir: false,
+	optimizeDeps: {
+		include: ["react", "react-dom"],
+	},
+	define: {
+		"process.env.NODE_ENV": JSON.stringify("production"),
 	},
 });

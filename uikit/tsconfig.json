@@ -22,5 +22,13 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true
 	},
-	"include": ["src", "delete/ai-Table"]
+	"include": ["src"],
+	"exclude": [
+		"delete",
+		"src/dev/**/*",
+		"src/**/*.test.tsx",
+		"src/**/*.stories.tsx",
+		"src/main.tsx",
+		"src/vite-env.d.ts"
+	]
 }
