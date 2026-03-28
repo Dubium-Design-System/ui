@@ -3,6 +3,11 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"homepage": "https://dubium-design-system.github.io/ui/",
+	"bugs": {
+		"url": "https://github.com/Dubium-Design-System/ui/issues"
+	},
+	"repository": "https://github.com/Dubium-Design-System/ui/",
 	"scripts": {
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
