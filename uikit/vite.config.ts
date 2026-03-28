@@ -20,6 +20,7 @@ function getComponentEntries() {
 
 	componentDirs.forEach((componentName) => {
 		const componentPath = `src/components/${componentName}/${componentName}.tsx`;
+
 		if (fs.existsSync(resolve(__dirname, componentPath))) {
 			entries[componentName] = resolve(__dirname, componentPath);
 		}
@@ -68,7 +69,15 @@ export default defineConfig({
 					return "[name].js";
 				},
 				preserveModules: false,
-				sourcemap: true,
+				sourcemap: false,
+				exports: "named",
+				interop: "auto",
+			},
+			treeshake: {
+				moduleSideEffects: false,
+				propertyReadSideEffects: false,
+				tryCatchDeoptimization: false,
+				unknownGlobalSideEffects: false,
 			},
 		},
 		cssCodeSplit: true,
@@ -76,12 +85,24 @@ export default defineConfig({
 		chunkSizeWarningLimit: 1000,
 		target: "es2020",
 		minify: true,
+		commonjsOptions: {
+			include: [/node_modules/],
+			strictRequires: true,
+		},
 	},
+
 	publicDir: false,
+
 	optimizeDeps: {
 		include: ["react", "react-dom"],
+		exclude: [],
+		esbuildOptions: {
+			target: "es2020",
+			treeShaking: true,
+		},
 	},
 	define: {
 		"process.env.NODE_ENV": JSON.stringify("production"),
+		"import.meta.vitest": "undefined",
 	},
 });
