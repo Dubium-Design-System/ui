@@ -1,0 +1,143 @@
+.table {
+	display: grid;
+	row-gap: 10px;
+	min-width: 100%;
+	grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+
+	&_container {
+		overflow-x: auto;
+	}
+
+	&__head {
+		display: contents;
+
+		&_item {
+			display: flex;
+			align-items: flex-end;
+
+			font-style: normal;
+			font-weight: 400;
+			font-size: 16px;
+			line-height: 18px;
+
+			white-space: nowrap;
+
+			letter-spacing: -0.03em;
+
+			color: #181d26;
+
+			padding: 10px 10px 2px;
+
+			// Выравнивание содержимого в заголовке
+			&.left {
+				justify-content: flex-start;
+			}
+
+			&.center {
+				justify-content: center;
+			}
+
+			&.right {
+				justify-content: flex-end;
+			}
+		}
+	}
+
+	&__body {
+		display: contents;
+
+		&_row {
+			display: contents;
+
+			&_active {
+				.table__body_item {
+					&:first-child {
+						border-top-left-radius: var(
+							--uikit-table-row-border-radius,
+							11px
+						);
+						border-bottom-left-radius: 0;
+					}
+
+					&:last-child {
+						border-top-right-radius: var(
+							--uikit-table-row-border-radius,
+							11px
+						);
+						border-bottom-right-radius: 0;
+					}
+				}
+			}
+		}
+
+		&_small {
+			.table__body {
+				&_item {
+					padding: 2px 4px;
+				}
+			}
+		}
+
+		&_default {
+			.table__body {
+				&_item {
+					padding: 10px;
+				}
+			}
+		}
+
+		&_item {
+			display: flex;
+			align-items: center;
+
+			min-height: 56px;
+
+			font-style: normal;
+			font-weight: var(--uikit-table-row-fw, 400);
+			font-size: var(--uikit-table-row-fs, 16px);
+			line-height: var(--uikit-table-row-lh, 18px);
+
+			white-space: nowrap;
+
+			letter-spacing: -0.03em;
+
+			color: var(--color-white);
+			background-color: var(--uikit-table-row-bg, #181d26);
+
+			&:first-child {
+				border-top-left-radius: var(
+					--uikit-table-row-border-radius,
+					11px
+				);
+				border-bottom-left-radius: var(
+					--uikit-table-row-border-radius,
+					11px
+				);
+			}
+
+			&:last-child {
+				border-top-right-radius: var(
+					--uikit-table-row-border-radius,
+					11px
+				);
+				border-bottom-right-radius: var(
+					--uikit-table-row-border-radius,
+					11px
+				);
+			}
+
+			// Выравнивание содержимого в ячейке
+			&.left {
+				justify-content: flex-start;
+			}
+
+			&.center {
+				justify-content: center;
+			}
+
+			&.right {
+				justify-content: flex-end;
+			}
+		}
+	}
+}

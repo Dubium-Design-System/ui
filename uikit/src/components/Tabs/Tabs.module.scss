@@ -1,0 +1,11 @@
+.tabs {
+	display: flex;
+	align-items: center;
+}
+
+.tab {
+	color: #000;
+	&_active {
+		color: #c9c9c9;
+	}
+}

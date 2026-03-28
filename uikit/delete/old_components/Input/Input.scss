@@ -1,0 +1,95 @@
+.form {
+	display: flex;
+	flex-direction: column;
+	row-gap: var(--space-xs);
+	width: 100%;
+}
+
+.label {
+	font-size: 0.9em;
+	font-weight: var(--font-weight-medium);
+	color: var(--color-text);
+}
+
+.container {
+	padding: var(--space-md) var(--space-lg);
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--color-light);
+	background: var(--color-white);
+	display: flex;
+	align-items: center;
+	column-gap: var(--space-sm);
+	width: 100%;
+	transition:
+		border-color 0.3s ease 0.1s,
+		box-shadow 0.3s ease;
+
+	.icon {
+		color: var(--color-light);
+	}
+
+	.input {
+		border: none;
+		outline: none;
+		background: transparent;
+		font-size: 1em;
+		line-height: 1.125em;
+		width: 100%;
+		padding: 0;
+		color: var(--color-black);
+
+		&:focus {
+			outline: none;
+		}
+
+		&::placeholder {
+			color: var(--color-light);
+			opacity: 1;
+		}
+
+		&:not(:placeholder-shown) ~ .icon {
+			color: var(--color-black);
+		}
+	}
+
+	&:focus-within {
+		border-color: var(--color-dark);
+		box-shadow: 0 0 0 2px
+			color-mix(in srgb, var(--color-dark) 20%, transparent);
+
+		.icon {
+			color: var(--color-black);
+		}
+	}
+
+	// Состояние ошибки
+	/* &.error {
+		border-color: var(--color-error);
+
+		.icon {
+			color: var(--color-error);
+		}
+
+		&:focus-within {
+			box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-error) 20%, transparent);
+
+			.icon {
+				color: var(--color-error-dark);
+			}
+		}
+	} */
+
+	// Отключенное состояние
+	&.disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
+
+		.icon {
+			opacity: 0.6;
+		}
+
+		.input {
+			cursor: not-allowed;
+		}
+	}
+}

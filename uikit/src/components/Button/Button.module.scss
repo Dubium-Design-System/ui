@@ -1,0 +1,236 @@
+//
+// Стили для компонента Button.
+//
+// @file Button.module.scss
+// @version 0.0.24
+//
+
+//
+// Основной класс для кнопки.
+// Применяется ко всем вариантам кнопок.
+//
+// @cssprop --dui-button-alignItems - Выравнивание элементов по вертикали (по умолчанию: center)
+// @cssprop --dui-button-justifyContent - Выравнивание элементов по горизонтали (по умолчанию: center)
+// @cssprop --dui-button-gap - Расстояние между элементами внутри кнопки (по умолчанию: 0.25rem)
+// @cssprop --dui-button-transition - Анимация перехода (по умолчанию: color 0.3s linear, background 0.3s linear, border-color 0.3s linear)
+// @cssprop --dui-button-cursor - Тип курсора при наведении (по умолчанию: pointer)
+// @cssprop --dui-button-fontSize - Размер шрифта (по умолчанию: 1rem)
+// @cssprop --dui-button-lineHeight - Высота строки (по умолчанию: 1.4)
+// @cssprop --dui-button-paddingBlock - Вертикальные отступы (по умолчанию: 0.375rem)
+// @cssprop --dui-button-paddingInline - Горизонтальные отступы (по умолчанию: 1rem)
+// @cssprop --dui-button-color - Цвет текста (по умолчанию: #000)
+// @cssprop --dui-button-background - Фоновый цвет (по умолчанию: #ccc)
+// @cssprop --dui-button-borderWidth - Ширина границы (по умолчанию: 1px)
+// @cssprop --dui-button-borderStyle - Стиль границы (по умолчанию: solid)
+// @cssprop --dui-button-borderColor - Цвет границы (по умолчанию: var(--dui-button-background, #ccc))
+// @cssprop --dui-button-radius - Радиус скругления углов (по умолчанию: 0.25rem)
+// @cssprop --dui-button-minWidth - Минимальная ширина кнопки (по умолчанию: 6rem)
+.button {
+	box-sizing: border-box;
+	position: relative;
+
+	display: inline-flex;
+	align-items: var(--dui-button-alignItems, center);
+	justify-content: var(--dui-button-justifyContent, center);
+	gap: var(--dui-button-gap, 0.25rem);
+
+	transition: var(
+		--dui-button-transition,
+		color 0.3s linear,
+		background 0.3s linear,
+		border-color 0.3s linear
+	);
+
+	cursor: var(--dui-button-cursor, pointer);
+
+	font-size: var(--dui-button-fontSize, 1rem);
+	font-weight: var(--dui-button-fontWeight, 400);
+	line-height: var(--dui-button-lineHeight, 1.4);
+
+	padding-block: var(--dui-button-paddingBlock, 0.5rem);
+	padding-inline: var(--dui-button-paddingInline, 1rem);
+
+	color: var(--dui-button-color, hsl(0, 0%, 0%));
+	background: var(--dui-button-background, hsl(0, 0%, 80%));
+
+	border-width: var(--dui-button-borderWidth, 1px);
+	border-style: var(--dui-button-borderStyle, solid);
+	border-color: var(
+		--dui-button-borderColor,
+		var(--dui-button-background, hsl(0, 0%, 80%))
+	);
+	border-radius: var(--dui-button-radius, 3px);
+
+	min-width: var(--dui-button-minWidth, 8rem);
+
+	// Вариант кнопки - primary (основная).
+	// Используется для основных действий.
+	//
+	// @cssprop --dui-button-color-primary - Цвет текста для primary кнопки (по умолчанию: #fff)
+	// @cssprop --dui-button-background-primary - Фоновый цвет для primary кнопки (по умолчанию: #005fb8)
+	&_primary {
+		--dui-button-color: var(--dui-button-color-primary, hsl(0, 0%, 100%));
+		--dui-button-background: var(
+			--dui-button-background-primary,
+			hsl(224, 81%, 50%)
+		);
+
+		--dui-button-borderColor: hsla(0, 0%, 100%, 0.1);
+
+		&:hover:not(:disabled) {
+			--dui-button-color-hover: hsl(0, 0%, 100%);
+			--dui-button-background-hover: hsl(227, 43%, 23%);
+			--dui-button-borderColor-hover: hsla(0, 0%, 100%, 0.1);
+		}
+
+		&_black {
+			--dui-button-color: var(
+				--dui-button-color-primary,
+				hsl(0, 0%, 100%)
+			);
+			--dui-button-background: var(
+				--dui-button-background-primary,
+				hsl(222, 47%, 11%)
+			);
+			--dui-button-borderColor: var(
+				--dui-button-background-primary,
+				hsla(0, 0%, 100%, 0.1)
+			);
+
+			&:hover:not(:disabled) {
+				--dui-button-color-hover: hsl(0, 0%, 100%);
+				--dui-button-background-hover: hsl(206, 77%, 21%);
+				--dui-button-borderColor-hover: hsla(0, 0%, 100%, 0.1);
+			}
+		}
+
+		&_white {
+			--dui-button-color: var(
+				--dui-button-color-primary,
+				hsl(222, 47%, 11%)
+			);
+			--dui-button-background: var(
+				--dui-button-background-primary,
+				hsl(0, 0%, 100%)
+			);
+			--dui-button-borderColor: var(
+				--dui-button-background-primary,
+				hsla(0, 0%, 100%, 0.1)
+			);
+		}
+	}
+
+	// Вариант кнопки - secondary (второстепенная).
+	// Используется для второстепенных действий.
+	//
+	// @cssprop --dui-button-color-secondary - Цвет текста для secondary кнопки (по умолчанию: #333)
+	// @cssprop --dui-button-background-secondary - Фоновый цвет для secondary кнопки (по умолчанию: #ececec)
+	&_secondary {
+		--dui-button-color: var(--dui-button-color-secondary, hsl(0, 0%, 20%));
+		--dui-button-background: var(
+			--dui-button-background-secondary,
+			hsl(0, 0%, 93%)
+		);
+
+		--dui-button-borderColor: var(
+			--dui-button-background-secondary,
+			hsl(0, 0%, 93%)
+		);
+	}
+
+	// Вариант кнопки - outline (контурная).
+	// Используется для действий с низким приоритетом.
+	//
+	// @cssprop --dui-button-color-outline - Цвет текста для outline кнопки (по умолчанию: #000)
+	// @cssprop --dui-button-background-outline - Фоновый цвет для outline кнопки (по умолчанию: transparent)
+	// @cssprop --dui-button-border-color-outline - Цвет границы для outline кнопки (по умолчанию: currentColor)
+	&_outline {
+		--dui-button-color: var(--dui-button-color-outline, hsl(0, 0%, 0%));
+		--dui-button-background: var(
+			--dui-button-background-outline,
+			transparent
+		);
+		--dui-button-borderColor: var(
+			--dui-button-borderColor-outline,
+			currentColor
+		);
+	}
+
+	// Вариант кнопки - link (ссылка).
+	// Используется для действий, похожих на ссылки.
+	//
+	// @cssprop --dui-button-color-link - Цвет текста для link кнопки (по умолчанию: #0066ff)
+	// @cssprop --dui-button-background-link - Фоновый цвет для link кнопки (по умолчанию: transparent)
+	// @cssprop --dui-button-borderColor-link - Цвет границы для link кнопки (по умолчанию: transparent)
+	// @cssprop --dui-button-minWidth - Минимальная ширина для link кнопки (по умолчанию: auto)
+	&_link {
+		--dui-button-color: var(--dui-button-color-link, hsl(216, 100%, 50%));
+		--dui-button-background: var(--dui-button-background-link, transparent);
+		--dui-button-borderColor: var(
+			--dui-button-borderColor-link,
+			transparent
+		);
+		--dui-button-minWidth: auto;
+	}
+
+	// Модификатор для растягивания кнопки на всю ширину контейнера.
+	// Применяется при добавлении класса fluid к кнопке.
+	&.fluid {
+		width: 100%;
+	}
+
+	// Стили при наведении на кнопку.
+	// Применяются только к неотключенным кнопкам.
+	//
+	// @cssprop --dui-button-color-hover - Цвет текста при наведении (по умолчанию: значение --dui-button-color)
+	// @cssprop --dui-button-background-hover - Фоновый цвет при наведении (по умолчанию: значение --dui-button-background)
+	// @cssprop --dui-button-borderColor-hover - Цвет границы при наведении (по умолчанию: значение --dui-button-border-color)
+	&:hover:not(:disabled) {
+		color: var(--dui-button-color-hover, hsl(0, 0%, 0%));
+		background: var(--dui-button-background-hover, hsl(0, 0%, 80%));
+		border-color: var(--dui-button-borderColor-hover, hsl(0, 0%, 80%));
+	}
+
+	// Стили при активном состоянии кнопки (нажатие).
+	// Применяются только к неотключенным кнопкам.
+	//
+	// @cssprop --dui-button-color-active - Цвет текста при активном состоянии (по умолчанию: значение --dui-button-color)
+	// @cssprop --dui-button-background-active - Фоновый цвет при активном состоянии (по умолчанию: значение --dui-button-background)
+	// @cssprop --dui-button-borderColor-active - Цвет границы при активном состоянии (по умолчанию: значение --dui-button-border-color)
+	&:active:not(:disabled) {
+		color: var(
+			--dui-button-color-active,
+			var(--dui-button-color, hsl(0, 0%, 0%))
+		);
+		background: var(
+			--dui-button-background-active,
+			var(--dui-button-background, hsl(0, 0%, 80%))
+		);
+		border-color: var(
+			--dui-button-borderColor-active,
+			var(--dui-button-borderColor, hsl(0, 0%, 80%))
+		);
+	}
+
+	// Стили при фокусе на кнопке.
+	// Применяются при фокусе с клавиатуры.
+	//
+	// @cssprop --dui-button-focus-outline - Стиль обводки при фокусе (по умолчанию: 2px solid currentColor)
+	// @cssprop --dui-button-focus-offset - Отступ обводки от кнопки (по умолчанию: 2px)
+	&:focus-visible {
+		outline: var(--dui-button-focus-outline, 2px solid currentColor);
+		outline-offset: var(--dui-button-focus-offset, 2px);
+	}
+
+	// Стили для отключенной кнопки.
+	// Применяются когда кнопка имеет атрибут disabled.
+	//
+	// @cssprop --dui-button-cursor-disabled - Тип курсора для отключенной кнопки (по умолчанию: not-allowed)
+	// @cssprop --dui-button-pointerEvents-disabled - Обработка событий для отключенной кнопки (по умолчанию: none)
+	// @cssprop --dui-button-opacity-disabled - Прозрачность отключенной кнопки (по умолчанию: 0.4)
+	&:disabled {
+		cursor: var(--dui-button-cursor-disabled, not-allowed);
+		pointer-events: var(--dui-button-pointerEvents-disabled, none);
+		opacity: var(--dui-button-opacity-disabled, 0.4);
+	}
+}

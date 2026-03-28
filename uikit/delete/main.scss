@@ -1,0 +1,72 @@
+:root {
+	// Основные цвета
+	--color-white: #ffffff;
+	--color-white-soft: #fafafa;
+	--color-black: #000000;
+	--color-gray: #555555;
+	--color-dark: #333333;
+	--color-light: #d2d6da;
+	--color-text: var(--color-gray);
+	--color-active: var(--color-white);
+
+	// Прозрачность
+	--glass-opacity: 0.75;
+	--border-opacity: 0.18;
+	--shadow-opacity: 0.1;
+
+	// Акцентный цвет
+	--color-accent: #2563eb;
+
+	// Специальные цвета
+	--glass-bg: color-mix(
+		in srgb,
+		var(--color-white) calc(var(--glass-opacity) * 100%),
+		transparent
+	);
+	--glass-border: color-mix(
+		in srgb,
+		var(--color-white) calc(var(--border-opacity) * 100%),
+		transparent
+	);
+	--shadow-color: color-mix(
+		in srgb,
+		var(--color-black) calc(var(--shadow-opacity) * 100%),
+		transparent
+	);
+
+	// Типографика
+	--font-family: Montserrat, sans-serif;
+	--font-size: 14px;
+	--font-weight-regular: 400;
+	--font-weight-medium: 500;
+	--font-weight-semibold: 600;
+
+	// Размеры
+	--radius-sm: 6px;
+	--radius-md: 9px;
+	--radius-lg: 12px;
+
+	// Отступы
+	--space-xs: 6px;
+	--space-sm: 9px;
+	--space-md: 12px;
+	--space-lg: 16px;
+	--space-xl: 24px;
+	--space-xxl: 96px;
+}
+
+* {
+	margin: 0;
+	padding: 0;
+	outline: 0;
+	appearance: none;
+	border: 0;
+	text-decoration: none;
+	list-style: none;
+
+	&,
+	&::after,
+	&::before {
+		box-sizing: border-box;
+	}
+}
