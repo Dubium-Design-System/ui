@@ -1,1 +1,3 @@
 # Dubium Design System
+
+## Описание
