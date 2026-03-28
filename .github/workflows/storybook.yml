@@ -40,7 +40,7 @@ jobs:
       # Шаг 3: Установка зависимостей для Storybook (в папке docs)
       - name: Install dependencies
         working-directory: docs
-        run: npm ci --timeout=300000 || npm install --timeout=300000
+        run: npm ci --timeout=30000 || npm install --timeout=30000 || npm i --legacy-peer-deps --timeout=30000
         # npm ci использует package-lock.json, если его нет - падает на npm install
 
       # Шаг 4: Сборка Storybook
