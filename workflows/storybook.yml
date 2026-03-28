@@ -1,54 +1,63 @@
+# Имя workflow (отображается в интерфейсе GitHub Actions)
 name: Deploy Storybook
 
+# Триггеры запуска workflow
 on:
   push:
     branches:
-      - main
+      - main # Запускается при пуше в ветку main
 
+# Определение задач (jobs)
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
+  deploy: # Задача развертывания
+    runs-on: ubuntu-latest # Используем последнюю версию Ubuntu
+    timeout-minutes: 15 # Максимальное время выполнения - 15 минут
 
-    # Add these permissions
+    # Настройка прав доступа для GitHub Actions
     permissions:
-      contents: write
-      pages: write
-      id-token: write
+      contents: write # Право на запись содержимого репозитория
+      pages: write # Право на запись GitHub Pages
+      id-token: write # Право на создание токена аутентификации
 
     steps:
+      # Шаг 1: Клонирование репозитория
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Используем официальный action для checkout
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Полная история коммитов (глубокое клонирование)
 
+      # Шаг 2: Установка Node.js
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4 # Используем официальный action для Node.js
         with:
-          node-version: "24.x"
-          cache: "yarn"
+          node-version: "24.x" # Используем версию Node.js 24.x
+          cache: "npm" # Включаем кэширование зависимостей через npm
 
+      # Шаг 3: Установка зависимостей проекта
       - name: Install dependencies
-        working-directory: apps/docs
-        run: yarn install --network-timeout 300000
+        run: npm ci --timeout=300000 # Установка зависимостей с таймаутом 300 секунд
+        # npm ci - более быстрая и надежная установка, использует package-lock.json
 
+      # Шаг 4: Сборка Storybook
       - name: Build Storybook
-        working-directory: apps/docs
-        run: yarn build
+        working-directory: docs # Рабочая директория - папка docs
+        run: npm run build # Запуск команды сборки (определена в docs/package.json)
         env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
+          NODE_OPTIONS: "--max_old_space_size=4096" # Увеличиваем память Node.js до 4GB
 
+      # Шаг 5: Проверка результата сборки
       - name: Verify build output
-        working-directory: apps/docs
+        working-directory: docs # Рабочая директория - папка docs
         run: |
-          ls -la storybook-static
-          [ -f storybook-static/index.html ] || exit 1
+          ls -la storybook-static                    # Выводим содержимое папки со сборкой
+          [ -f storybook-static/index.html ] || exit 1  # Проверяем наличие index.html
 
+      # Шаг 6: Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v4 # Используем action для деплоя на GitHub Pages
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: apps/docs/storybook-static
-          destination_dir: ./
-          keep_files: false
-          force_orphan: true
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Используем автоматический токен GitHub
+          publish_dir: docs/storybook-static # Папка для публикации
+          destination_dir: ./ # Публикуем в корень ветки gh-pages
+          keep_files: false # Удаляем старые файлы перед публикацией
+          force_orphan: true # Создаем ветку gh-pages как orphan (без истории)
