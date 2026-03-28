@@ -117,10 +117,6 @@ const areRowPropsEqual = <T extends object>(
 	return deepEqual(prev.row, next.row);
 };
 
-export const TableRow = memo(
-	Row as <T extends object>(props: RowProps<T>) => JSX.Element,
-	areRowPropsEqual as <T extends object>(
-		prev: RowProps<T>,
-		next: RowProps<T>,
-	) => boolean,
-);
+export const TableRow = memo(Row, areRowPropsEqual) as <T extends object>(
+	props: RowProps<T>,
+) => JSX.Element;

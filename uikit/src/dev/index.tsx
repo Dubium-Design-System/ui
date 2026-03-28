@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "../components/Button/Button";
-import { Switch } from "../components/Switch";
+import { Switch } from "../components/Switch/Switch";
 
 import style from "./global.module.scss";
 import clsx from "clsx";
@@ -19,7 +19,9 @@ export const App = () => {
 				>
 					<Switch
 						checked={isChecked}
-						onChange={(event) => {
+						onChange={(
+							event: React.ChangeEvent<HTMLInputElement>,
+						) => {
 							setIsChecked(event.target.checked);
 						}}
 						label="Привет, это обязательный пункт заполнения"

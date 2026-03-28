@@ -1,4 +1,4 @@
-import type { Column } from "../components/Table/types";
+import type { Column } from "../../delete/ai-Table/types";
 
 // Тип для данных таблицы
 export interface SampleDataItem {

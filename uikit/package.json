@@ -1,7 +1,7 @@
 {
 	"name": "@dubium/ui",
 	"private": false,
-	"version": "0.0.25",
+	"version": "0.0.27",
 	"type": "module",
 	"homepage": "https://dubiumekb.github.io/dubium-design/",
 	"bugs": {
@@ -30,7 +30,7 @@
 		"build": "tsc -b && vite build",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"version:push": "npm publish --access=public"
+		"version:push": "npm run build && npm publish --access=public"
 	},
 	"peerDependencies": {
 		"@dubium/hooks": "^0.0.6",
