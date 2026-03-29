@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
-    # Add these permissions
     permissions:
       contents: write
       pages: write
@@ -25,12 +24,11 @@ jobs:
       - name: Установка Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.x"
-          cache: "npm"
+          node-version: 20
 
       - name: Установка зависимостей для Storybook
         working-directory: docs
-        run: npm ci --legacy-peer-deps
+        run: npm i --legacy-peer-deps
 
       - name: Сборка Storybook
         working-directory: docs
