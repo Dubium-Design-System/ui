@@ -1,0 +1,132 @@
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+button,
+input,
+textarea,
+select {
+	appearance: none;
+	border: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+html,
+body {
+	overscroll-behavior: none;
+}
+
+html {
+	font-size: 16px;
+}
+
+.main {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 12px;
+	width: 100%;
+	max-width: 760px;
+	margin: 0px auto;
+}
+
+.buttons {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 24px;
+	flex: 0 0 40%;
+	max-width: 40%;
+}
+
+.white {
+	padding: 9px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	background: hsl(0, 0%, 100%);
+}
+
+.black {
+	padding: 9px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	background-color: hsl(0, 0%, 0%);
+}
+
+:root {
+	--font-family-base:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+		"Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+	--font-family-monospace: Consolas, "Courier New", Courier, monospace;
+	--font-family-numeric:
+		Bahnschrift, "Segoe UI", "Segoe UI Web (West European)", -apple-system,
+		BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+	--header: #ffffff;
+	--uikit-table-row-border-radius: 11px;
+	--uikit-table-row-fw: 400;
+	--uikit-table-row-fs: 16px;
+	--uikit-table-row-lh: 18px;
+	--color-white: #ffffff;
+	--uikit-table-row-bg: #181d26;
+}
+
+body {
+	font-family: var(--font-family-base);
+}
+
+code,
+pre {
+	font-family: var(--font-family-monospace);
+}
+
+.numeric {
+	font-family: var(--font-family-numeric);
+}
+
+:root {
+	--dui-color-primary: #221c44;
+	--dui-color-white: #ffffff;
+	--dui-color-black: #000000;
+	--dui-color-accessibility-outline: var(--dui-color-primary);
+	--dui-style-accessibility-outline: solid;
+	--dui-size-accessibility-outline-width: 2px;
+	--dui-size-accessibility-outline-offset: 2px;
+	--dui-switch-slider-width: 40px;
+	--dui-switch-slider-padding: 3px 4px;
+	--dui-switch-slider-radius: 50px;
+	--dui-switch-slider-background: var(--dui-color-white);
+	--dui-switch-slider-border-width: 1px;
+	--dui-switch-slider-border-style: solid;
+	--dui-switch-slider-border-color: var(--dui-color-black);
+	--dui-switch-slider-transition-duration: 0.2s;
+	--dui-switch-slider-transition-timing: ease;
+	--dui-switch-slider-checked-background: var(--dui-color-black);
+	--dui-switch-slider-checked-border-color: var(--dui-color-black);
+	--dui-switch-thumb-size: 14px;
+	--dui-switch-thumb-radius: 50px;
+	--dui-switch-thumb-background: var(--dui-color-black);
+	--dui-switch-thumb-transition-duration: 0.2s;
+	--dui-switch-thumb-transition-timing: ease;
+	--dui-switch-thumb-size-active: calc(var(--dui-switch-thumb-size) + 8px);
+	--dui-switch-thumb-checked-background: var(--dui-color-white);
+	--dui-switch-align-items: flex-start;
+	--dui-switch-gap: 8px;
+	--dui-switch-padding: 4px;
+	--dui-switch-label-font-size: 16px;
+	--dui-switch-label-line-height: 18px;
+}

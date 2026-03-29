@@ -576,7 +576,7 @@
 <header>
   <div class="wrap">
     <h1>Manifest Debugger</h1>
-    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">1/3 prop type error</a><a class="filter-pill info" data-k="infos" href="#filter-infos">3/3 infos</a><span class="filter-pill ok" aria-disabled="true">5 stories ok</span><a class="filter-pill ok" data-k="docs" href="#filter-docs">1 doc ok</a></div>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">2/4 prop type errors</a><a class="filter-pill info" data-k="infos" href="#filter-infos">4/4 infos</a><span class="filter-pill ok" aria-disabled="true">15 stories ok</span><a class="filter-pill ok" data-k="docs" href="#filter-docs">1 doc ok</a></div>
   </div>
 </header>
 <main>
@@ -629,50 +629,29 @@
           
     <div class="note err">
       <div class="note-title">Prop type error</div>
-      <div class="note-body"><pre><code>No component file found for the &quot;Button&quot; component.
-  4 | import { Button, type ButtonProps } from &quot;@dubium/ui&quot;;
-  5 |
-&gt; 6 | const meta = {
-    | ^
-  7 | 	title: &quot;Components/Button&quot;,
-  8 | 	component: Button,
-  9 | 	parameters: {
+      <div class="note-body"><pre><code>File: /home/dubium/projects/work/dubium-design-system/ui/docs/node_modules/@dubium/ui/dist/index.js
+Error:
+Component files in node_modules are not supported.
+The distributed files in node_modules usually don&#39;t contain the necessary comments or types needed to analyze component information.
+Configure TypeScript path aliases to map your package name to the source file instead.
 
-./src/components/Button.stories.ts:
-import type { Meta, StoryObj } from &quot;@storybook/react-vite&quot;;
-import { fn } from &quot;storybook/test&quot;;
+Example (tsconfig.json):
+{
+  &quot;compilerOptions&quot;: {
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;paths&quot;: {
+      &quot;@design-system/button&quot;: [&quot;src/components/Button.tsx&quot;],
+      &quot;@design-system/*&quot;: [&quot;src/components/*&quot;]
+    }
+  }
+}
 
-import { Button, type ButtonProps } from &quot;@dubium/ui&quot;;
+Then import using:
+import { Button } from &#39;@design-system/button&#39;
 
-const meta = {
-	title: &quot;Components/Button&quot;,
-	component: Button,
-	parameters: {
-		layout: &quot;centered&quot;,
-	},
-	tags: [&quot;autodocs&quot;],
-
-	argTypes: {
-		type: {
-			control: { type: &quot;select&quot; },
-			options: [&quot;button&quot;, &quot;submit&quot;, &quot;reset&quot;],
-		},
-	},
-
-	args: { onClick: fn() },
-} satisfies Meta&lt;ButtonProps&gt;;
-
-export default meta;
-
-type Story = StoryObj&lt;typeof meta&gt;;
-
-export const Primary: Story = {
-	args: {
-		children: &quot;Button&quot;,
-		type: &quot;button&quot;,
-	},
-};
-</code></pre></div>
+Storybook resolves tsconfig paths automatically.
+Code:
+/* File in node_modules */</code></pre></div>
     </div>
         </div>
     
@@ -693,7 +672,7 @@ export const Primary: Story = {
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button } from "docs";</code></pre>
+                <pre><code>import { Button } from "@dubium/ui";</code></pre>
               </div>
           
           
@@ -889,14 +868,245 @@ user?: {
     
   </div>
 </article>
+<article
+  class="card 
+  has-error 
+  has-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Switch">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Switch</h2>
+      <div class="badges">
+        <label for="c-3-components-switch-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-3-components-switch-info" class="badge info as-toggle">1 info</label>
+        <label for="c-3-components-switch-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Switch.stories.ts">components-switch · ./src/components/Switch.stories.ts</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-3-components-switch-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-3-components-switch-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-3-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">Prop type error</div>
+      <div class="note-body"><pre><code>File: /home/dubium/projects/work/dubium-design-system/ui/docs/node_modules/@dubium/ui/dist/index.js
+Error:
+Component files in node_modules are not supported.
+The distributed files in node_modules usually don&#39;t contain the necessary comments or types needed to analyze component information.
+Configure TypeScript path aliases to map your package name to the source file instead.
+
+Example (tsconfig.json):
+{
+  &quot;compilerOptions&quot;: {
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;paths&quot;: {
+      &quot;@design-system/button&quot;: [&quot;src/components/Button.tsx&quot;],
+      &quot;@design-system/*&quot;: [&quot;src/components/*&quot;]
+    }
+  }
+}
+
+Then import using:
+import { Button } from &#39;@design-system/button&#39;
+
+Storybook resolves tsconfig paths automatically.
+Code:
+/* File in node_modules */</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Switch } from "@dubium/ui";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Primary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Базовое состояние переключателя с меткой справа</div>
+              <pre><code>const Primary = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Switch label&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Checked</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель во включенном состоянии</div>
+              <pre><code>const Checked = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Checked switch&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Label Left</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель с меткой слева</div>
+              <pre><code>const LabelLeft = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;left&quot;
+    label=&quot;Label on the left&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Отключенный переключатель</div>
+              <pre><code>const Disabled = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled
+    labelPosition=&quot;right&quot;
+    label=&quot;Disabled switch&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled Checked</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Отключенный переключатель во включенном состоянии</div>
+              <pre><code>const DisabledChecked = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked
+    disabled
+    labelPosition=&quot;right&quot;
+    label=&quot;Disabled checked switch&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Without Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель без метки</div>
+              <pre><code>const WithoutLabel = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label={undefined} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Aria Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель с ARIA-меткой для улучшенной доступности</div>
+              <pre><code>const WithAriaLabel = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Notifications&quot;
+    ariaLabel=&quot;Enable or disable notifications&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Aria Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель с ARIA-описанием</div>
+              <pre><code>const WithAriaDescription = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Auto-save&quot;
+    ariaDescription=&quot;When enabled, your changes will be saved automatically&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Управляемый режим (интерактивный пример)</div>
+              <pre><code>const Controlled = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Controlled switch&quot;
+    checked /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Uncontrolled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Неуправляемый режим с начальным состоянием</div>
+              <pre><code>const Uncontrolled = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Uncontrolled switch&quot; /&gt;;</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
     </div>
     <div class="error-groups" role="region" aria-label="Prop type error groups">
         <section class="group">
-          <input id="no-component-import-found-toggle" class="group-tg" type="checkbox" hidden />
-          <label for="no-component-import-found-toggle" class="group-header">
+          <input id="component-file-in-node-modules-toggle" class="group-tg" type="checkbox" hidden />
+          <label for="component-file-in-node-modules-toggle" class="group-header">
             <span class="caret">▸</span>
-            <span class="group-title">No component import found</span>
-            <span class="group-count">1</span>
+            <span class="group-title">Component file in node_modules</span>
+            <span class="group-count">2</span>
           </label>
           <div class="group-cards">
 <article
@@ -936,50 +1146,29 @@ user?: {
           
     <div class="note err">
       <div class="note-title">Prop type error</div>
-      <div class="note-body"><pre><code>No component file found for the &quot;Button&quot; component.
-  4 | import { Button, type ButtonProps } from &quot;@dubium/ui&quot;;
-  5 |
-&gt; 6 | const meta = {
-    | ^
-  7 | 	title: &quot;Components/Button&quot;,
-  8 | 	component: Button,
-  9 | 	parameters: {
+      <div class="note-body"><pre><code>File: /home/dubium/projects/work/dubium-design-system/ui/docs/node_modules/@dubium/ui/dist/index.js
+Error:
+Component files in node_modules are not supported.
+The distributed files in node_modules usually don&#39;t contain the necessary comments or types needed to analyze component information.
+Configure TypeScript path aliases to map your package name to the source file instead.
 
-./src/components/Button.stories.ts:
-import type { Meta, StoryObj } from &quot;@storybook/react-vite&quot;;
-import { fn } from &quot;storybook/test&quot;;
+Example (tsconfig.json):
+{
+  &quot;compilerOptions&quot;: {
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;paths&quot;: {
+      &quot;@design-system/button&quot;: [&quot;src/components/Button.tsx&quot;],
+      &quot;@design-system/*&quot;: [&quot;src/components/*&quot;]
+    }
+  }
+}
 
-import { Button, type ButtonProps } from &quot;@dubium/ui&quot;;
+Then import using:
+import { Button } from &#39;@design-system/button&#39;
 
-const meta = {
-	title: &quot;Components/Button&quot;,
-	component: Button,
-	parameters: {
-		layout: &quot;centered&quot;,
-	},
-	tags: [&quot;autodocs&quot;],
-
-	argTypes: {
-		type: {
-			control: { type: &quot;select&quot; },
-			options: [&quot;button&quot;, &quot;submit&quot;, &quot;reset&quot;],
-		},
-	},
-
-	args: { onClick: fn() },
-} satisfies Meta&lt;ButtonProps&gt;;
-
-export default meta;
-
-type Story = StoryObj&lt;typeof meta&gt;;
-
-export const Primary: Story = {
-	args: {
-		children: &quot;Button&quot;,
-		type: &quot;button&quot;,
-	},
-};
-</code></pre></div>
+Storybook resolves tsconfig paths automatically.
+Code:
+/* File in node_modules */</code></pre></div>
     </div>
         </div>
     
@@ -1000,7 +1189,7 @@ export const Primary: Story = {
                 <div class="row">
                   <span class="ex-name">Imports</span>
                 </div>
-                <pre><code>import { Button } from "docs";</code></pre>
+                <pre><code>import { Button } from "@dubium/ui";</code></pre>
               </div>
           
           
@@ -1012,6 +1201,237 @@ export const Primary: Story = {
               
               
               <pre><code>const Primary = () =&gt; &lt;Button onClick={fn()} type=&quot;button&quot;&gt;Button&lt;/Button&gt;;</code></pre>
+            </div>
+        </div>
+    
+  </div>
+</article>
+<article
+  class="card 
+  has-error 
+  has-info 
+  no-story-error
+  no-doc-error"
+  role="listitem"
+  aria-label="Switch">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Switch</h2>
+      <div class="badges">
+        <label for="c-error-1-components-switch-err" class="badge err as-toggle">prop type error</label>
+        <label for="c-error-1-components-switch-info" class="badge info as-toggle">1 info</label>
+        <label for="c-error-1-components-switch-stories" class="badge ok as-toggle">10 stories</label>
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Switch.stories.ts">components-switch · ./src/components/Switch.stories.ts</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-error-1-components-switch-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-error-1-components-switch-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-error-1-components-switch-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">Prop type error</div>
+      <div class="note-body"><pre><code>File: /home/dubium/projects/work/dubium-design-system/ui/docs/node_modules/@dubium/ui/dist/index.js
+Error:
+Component files in node_modules are not supported.
+The distributed files in node_modules usually don&#39;t contain the necessary comments or types needed to analyze component information.
+Configure TypeScript path aliases to map your package name to the source file instead.
+
+Example (tsconfig.json):
+{
+  &quot;compilerOptions&quot;: {
+    &quot;baseUrl&quot;: &quot;.&quot;,
+    &quot;paths&quot;: {
+      &quot;@design-system/button&quot;: [&quot;src/components/Button.tsx&quot;],
+      &quot;@design-system/*&quot;: [&quot;src/components/*&quot;]
+    }
+  }
+}
+
+Then import using:
+import { Button } from &#39;@design-system/button&#39;
+
+Storybook resolves tsconfig paths automatically.
+Code:
+/* File in node_modules */</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Switch } from "@dubium/ui";</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Primary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Базовое состояние переключателя с меткой справа</div>
+              <pre><code>const Primary = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Switch label&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Checked</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель во включенном состоянии</div>
+              <pre><code>const Checked = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Checked switch&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Label Left</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель с меткой слева</div>
+              <pre><code>const LabelLeft = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;left&quot;
+    label=&quot;Label on the left&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Отключенный переключатель</div>
+              <pre><code>const Disabled = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled
+    labelPosition=&quot;right&quot;
+    label=&quot;Disabled switch&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Disabled Checked</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Отключенный переключатель во включенном состоянии</div>
+              <pre><code>const DisabledChecked = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked
+    disabled
+    labelPosition=&quot;right&quot;
+    label=&quot;Disabled checked switch&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Without Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель без метки</div>
+              <pre><code>const WithoutLabel = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label={undefined} /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Aria Label</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель с ARIA-меткой для улучшенной доступности</div>
+              <pre><code>const WithAriaLabel = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Notifications&quot;
+    ariaLabel=&quot;Enable or disable notifications&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">With Aria Description</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Переключатель с ARIA-описанием</div>
+              <pre><code>const WithAriaDescription = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Auto-save&quot;
+    ariaDescription=&quot;When enabled, your changes will be saved automatically&quot; /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Controlled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Управляемый режим (интерактивный пример)</div>
+              <pre><code>const Controlled = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked={false}
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Controlled switch&quot;
+    checked /&gt;;</code></pre>
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Uncontrolled</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Неуправляемый режим с начальным состоянием</div>
+              <pre><code>const Uncontrolled = () =&gt; &lt;Switch
+    onChange={fn()}
+    defaultChecked
+    disabled={false}
+    labelPosition=&quot;right&quot;
+    label=&quot;Uncontrolled switch&quot; /&gt;;</code></pre>
             </div>
         </div>
     
