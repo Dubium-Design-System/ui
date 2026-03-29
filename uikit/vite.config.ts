@@ -48,7 +48,7 @@ export default defineConfig({
 		minify: true,
 		sourcemap: false,
 		cssCodeSplit: true,
-		chunkSizeWarningLimit: 1000,
+		// chunkSizeWarningLimit: 1000,
 
 		lib: {
 			entry: {
@@ -68,7 +68,13 @@ export default defineConfig({
 			],
 
 			treeshake: {
-				moduleSideEffects: false,
+				moduleSideEffects: (id) => {
+					// сохраняем CSS
+					if (id.endsWith(".css")) return true;
+
+					// остальное можно трешейкать
+					return false;
+				},
 				propertyReadSideEffects: false,
 				unknownGlobalSideEffects: false,
 			},
