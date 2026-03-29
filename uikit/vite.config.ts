@@ -47,7 +47,7 @@ export default defineConfig({
 		target: "es2020",
 		minify: true,
 		sourcemap: false,
-		cssCodeSplit: true,
+		cssCodeSplit: false,
 		// chunkSizeWarningLimit: 1000,
 
 		lib: {
