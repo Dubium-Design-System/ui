@@ -3,15 +3,11 @@ import react from "@vitejs/plugin-react-swc";
 import { resolve } from "node:path";
 import { visualizer } from "rollup-plugin-visualizer";
 import fs from "node:fs";
-import dts from "vite-plugin-dts";
+import { libInjectCss } from "vite-plugin-lib-inject-css";
 
 function getComponentEntries() {
 	const componentsDir = resolve(__dirname, "src/components");
 	const entries: Record<string, string> = {};
-
-	if (!fs.existsSync(componentsDir)) {
-		return entries;
-	}
 
 	const componentDirs = fs
 		.readdirSync(componentsDir, { withFileTypes: true })
@@ -19,10 +15,14 @@ function getComponentEntries() {
 		.map((dirent) => dirent.name);
 
 	componentDirs.forEach((componentName) => {
-		const componentPath = `src/components/${componentName}/${componentName}.tsx`;
+		const componentPath = resolve(
+			__dirname,
+			`src/components/${componentName}/${componentName}.tsx`,
+		);
 
-		if (fs.existsSync(resolve(__dirname, componentPath))) {
-			entries[componentName] = resolve(__dirname, componentPath);
+		if (fs.existsSync(componentPath)) {
+			entries[`components/${componentName}/${componentName}`] =
+				componentPath;
 		}
 	});
 
@@ -34,75 +34,74 @@ export default defineConfig({
 		react({
 			jsxImportSource: "react",
 		}),
-		visualizer(),
 
-		dts({
-			exclude: ["src/main.tsx", "src/dev"],
-		}),
+		libInjectCss(),
+
+		visualizer(),
 	],
+
+	publicDir: false,
+
 	build: {
+		emptyOutDir: true,
+		target: "es2020",
+		minify: true,
+		sourcemap: false,
+		cssCodeSplit: true,
+		chunkSizeWarningLimit: 1000,
+
 		lib: {
 			entry: {
 				index: resolve(__dirname, "src/index.ts"),
 				...getComponentEntries(),
 			},
 			formats: ["es"],
-			fileName: (_, entryName) => {
-				if (entryName === "index") return "index.js";
-				return `components/${entryName}/${entryName}.js`;
-			},
 		},
+
 		rollupOptions: {
-			external: ["react", "react-dom", "react/jsx-runtime"],
-			output: {
-				assetFileNames: (assetInfo) => {
-					if (assetInfo.name && assetInfo.name.endsWith(".css")) {
-						const baseName = assetInfo.name.replace(/\.css$/, "");
-						return `components/${baseName}/[name][extname]`;
-					}
-					return `assets/[name][extname]`;
-				},
-				chunkFileNames: (chunkInfo) => {
-					if (chunkInfo.name && chunkInfo.name.match(/.*Icon$/)) {
-						return "icons/[name].js";
-					}
-					return "[name].js";
-				},
-				preserveModules: false,
-				sourcemap: false,
-				exports: "named",
-				interop: "auto",
-			},
+			external: [
+				"react",
+				"react-dom",
+				"react/jsx-runtime",
+				"clsx",
+				"uuid",
+			],
+
 			treeshake: {
 				moduleSideEffects: false,
 				propertyReadSideEffects: false,
-				tryCatchDeoptimization: false,
 				unknownGlobalSideEffects: false,
 			},
+
+			output: {
+				format: "es",
+				exports: "named",
+
+				preserveModules: true,
+				preserveModulesRoot: "src",
+
+				entryFileNames: "[name].js",
+				chunkFileNames: "[name].js",
+				assetFileNames: "[name][extname]",
+
+				globals: {
+					react: "React",
+					"react-dom": "ReactDOM",
+				},
+			},
 		},
-		cssCodeSplit: true,
-		emptyOutDir: true,
-		chunkSizeWarningLimit: 1000,
-		target: "es2020",
-		minify: true,
+
 		commonjsOptions: {
 			include: [/node_modules/],
 			strictRequires: true,
 		},
 	},
 
-	publicDir: false,
-
 	optimizeDeps: {
 		include: ["react", "react-dom"],
-		exclude: [],
 		esbuildOptions: {
 			target: "es2020",
 			treeShaking: true,
 		},
-	},
-	define: {
-		"process.env.NODE_ENV": JSON.stringify("production"),
-		"import.meta.vitest": "undefined",
 	},
 });
