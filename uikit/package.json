@@ -8,11 +8,6 @@
 		"url": "https://github.com/Dubium-Design-System/ui/issues"
 	},
 	"repository": "https://github.com/Dubium-Design-System/ui/",
-	"files": [
-		"dist",
-		"README.md",
-		"LICENSE"
-	],
 	"description": "A lightweight and customizable UI component library for React, designed to streamline the development of modern web applications. @dubium/ui includes an array of responsive, accessible, and reusable UI components, optimized for performance and ease of use.",
 	"keywords": [
 		"react",
@@ -24,9 +19,6 @@
 	],
 	"author": "https://github.com/DubiumEkb",
 	"license": "MIT",
-	"sideEffects": [
-		"**/*.css"
-	],
 	"scripts": {
 		"dev": "vite --port 5000",
 		"clean": "rimraf dist",
@@ -62,15 +54,20 @@
 		"vite": "^8.0.3",
 		"vite-plugin-lib-inject-css": "^2.2.2"
 	},
+	"sideEffects": [
+		"**/*.css"
+	],
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE"
+	],
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
-		},
-		"./*": {
-			"types": "./dist/components/*/index.d.ts",
-			"import": "./dist/components/*/index.js",
-			"style": "./dist/components/*/*.css"
 		}
 	},
 	"dependencies": {
