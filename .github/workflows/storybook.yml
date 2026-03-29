@@ -1,269 +1,54 @@
-# Имя workflow (отображается в интерфейсе GitHub Actions)
 name: Deploy Storybook
 
-# Триггеры запуска workflow
 on:
-    push:
-        branches:
-            - main
-        # Игнорируем изменения в файлах, не влияющих на сборку Storybook
-        paths-ignore:
-            - "**/*.md"
-            - "**/*.txt"
-            - "**/.gitignore"
-            - "**/.editorconfig"
-            - "**/.prettierrc"
-            - "**/.eslintignore"
-            - "**/LICENSE"
-            - "**/CHANGELOG.md"
+  push:
+    branches:
+      - main
 
-    # Ручной запуск workflow из интерфейса GitHub
-    workflow_dispatch:
-        inputs:
-            environment:
-                description: "Среда развертывания"
-                required: false
-                default: "production"
-                type: choice
-                options:
-                    - production
-                    - staging
-            skip_tests:
-                description: "Пропустить тесты"
-                required: false
-                default: false
-                type: boolean
-
-# Переменные окружения и конфигурация
-env:
-    NODE_VERSION: "25.x"
-    WORKING_DIRECTORY: "docs"
-    BUILD_DIRECTORY: "storybook-static"
-    GITHUB_PAGES_BRANCH: "gh-pages"
-    CACHE_KEY_PREFIX: "storybook-deps"
-
-# Определение задач (jobs)
 jobs:
-    # Задача проверки кода перед сборкой
-    lint-and-test:
-        name: Проверка кода и тесты
-        runs-on: ubuntu-latest
-        timeout-minutes: 10
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
 
-        steps:
-            - name: Клонирование репозитория
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 1 # Уменьшаем глубину для ускорения клонирования
+    # Add these permissions
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
 
-            - name: Установка Node.js
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ env.NODE_VERSION }}
-                  cache: "npm"
-                  cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
+    steps:
+      - name: Клонирование репозитория
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-            - name: Установка зависимостей
-              working-directory: ${{ env.WORKING_DIRECTORY }}
-              run: |
-                  npm ci --legacy-peer-deps --prefer-offline
-                  echo "Зависимости установлены"
+      - name: Установка Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
 
-            - name: Проверка линтера
-              working-directory: ${{ env.WORKING_DIRECTORY }}
-              run: |
-                  if [ -f "package.json" ] && grep -q '"lint"' package.json; then
-                    npm run lint
-                  else
-                    echo "Скрипт lint не найден, пропускаем"
-                  fi
+      - name: Установка зависимостей для Storybook
+        working-directory: docs
+        run: npm ci --legacy-peer-deps
 
-            - name: Запуск тестов
-              working-directory: ${{ env.WORKING_DIRECTORY }}
-              if: ${{ !github.event.inputs.skip_tests }}
-              run: |
-                  if [ -f "package.json" ] && grep -q '"test"' package.json; then
-                    npm run test -- --run
-                  else
-                    echo "Скрипт test не найден, пропускаем"
-                  fi
-
-    # Основная задача развертывания
-    deploy:
-        name: Сборка и деплой Storybook
-        runs-on: ubuntu-latest
-        timeout-minutes: 20
-        needs: lint-and-test # Зависимость от задачи проверки
-        if: ${{ !failure() && !cancelled() }} # Запускаем только если предыдущая задача успешна
-
-        # Настройка прав доступа для GitHub Actions
-        permissions:
-            contents: write
-            pages: write
-            id-token: write
-            deployments: write
-
-        # Стратегия для обработки сбоев
-        strategy:
-            matrix:
-                node-version: [25.x]
-            fail-fast: false
-
-        # Переменные окружения для задачи
+      - name: Сборка Storybook
+        working-directory: docs
+        run: rnm run build-storybook
         env:
-            BUILD_OUTPUT: ${{ env.WORKING_DIRECTORY }}/${{ env.BUILD_DIRECTORY }}
+          NODE_OPTIONS: "--max_old_space_size=4096"
 
-        steps:
-            # Шаг 1: Клонирование репозитория с кэшированием
-            - name: Клонирование репозитория
-              uses: actions/checkout@v4
-              with:
-                  fetch-depth: 0
-                  persist-credentials: false # Для безопасности
+      - name: Проверка результата сборки
+        working-directory: docs
+        run: |
+          ls -la storybook-static
+          [ -f storybook-static/index.html ] || exit 1
 
-            # Шаг 2: Установка Node.js с кэшированием зависимостей
-            - name: Установка Node.js ${{ env.NODE_VERSION }}
-              uses: actions/setup-node@v4
-              with:
-                  node-version: ${{ env.NODE_VERSION }}
-                  cache: "npm"
-                  cache-dependency-path: ${{ env.WORKING_DIRECTORY }}/package-lock.json
-
-            # Шаг 3: Восстановление кэша зависимостей
-            - name: Восстановление кэша npm
-              uses: actions/cache@v4
-              id: npm-cache
-              with:
-                  path: ${{ env.WORKING_DIRECTORY }}/node_modules
-                  key: ${{ env.CACHE_KEY_PREFIX }}-${{ hashFiles(format('{0}/package-lock.json', env.WORKING_DIRECTORY)) }}
-                  restore-keys: |
-                      ${{ env.CACHE_KEY_PREFIX }}-
-
-            # Шаг 4: Установка зависимостей (если кэш не найден)
-            - name: Установка зависимостей
-              working-directory: ${{ env.WORKING_DIRECTORY }}
-              if: steps.npm-cache.outputs.cache-hit != 'true'
-              run: |
-                  echo "Кэш не найден, устанавливаем зависимости..."
-                  npm ci --legacy-peer-deps --prefer-offline --audit=false
-                  echo "Зависимости установлены"
-
-            # Шаг 5: Проверка структуры проекта
-            - name: Проверка структуры проекта
-              working-directory: ${{ env.WORKING_DIRECTORY }}
-              run: |
-                  echo "Проверяем структуру проекта..."
-                  [ -f "package.json" ] || { echo "Ошибка: package.json не найден"; exit 1; }
-                  [ -f "vite.config.ts" ] || [ -f "vite.config.js" ] || echo "Предупреждение: конфигурация Vite не найдена"
-                  echo "Структура проекта проверена"
-
-            # Шаг 6: Сборка Storybook с таймаутом
-            - name: Сборка Storybook
-              working-directory: ${{ env.WORKING_DIRECTORY }}
-              timeout-minutes: 10
-              run: |
-                  echo "Начинаем сборку Storybook..."
-                  npm run build -- --quiet
-                  echo "Сборка завершена"
-
-            # Шаг 7: Проверка результата сборки
-            - name: Проверка результата сборки
-              working-directory: ${{ env.WORKING_DIRECTORY }}
-              run: |
-                  echo "Проверяем результат сборки..."
-
-                  # Проверяем существование директории сборки
-                  if [ ! -d "${{ env.BUILD_DIRECTORY }}" ]; then
-                    echo "Ошибка: директория сборки '${{ env.BUILD_DIRECTORY }}' не найдена"
-                    exit 1
-                  fi
-
-                  # Проверяем основные файлы
-                  REQUIRED_FILES=("index.html" "iframe.html" "index.json")
-                  for file in "${REQUIRED_FILES[@]}"; do
-                    if [ ! -f "${{ env.BUILD_DIRECTORY }}/$file" ]; then
-                      echo "Ошибка: обязательный файл '$file' не найден"
-                      exit 1
-                    fi
-                  done
-
-                  # Проверяем размер сборки
-                  BUILD_SIZE=$(du -sh ${{ env.BUILD_DIRECTORY }} | cut -f1)
-                  echo "Размер сборки: $BUILD_SIZE"
-
-                  # Проверяем, что сборка не пустая
-                  FILE_COUNT=$(find ${{ env.BUILD_DIRECTORY }} -type f | wc -l)
-                  if [ "$FILE_COUNT" -lt 10 ]; then
-                    echo "Предупреждение: сборка содержит мало файлов ($FILE_COUNT)"
-                  fi
-
-                  echo "Проверка пройдена успешно"
-
-            # Шаг 8: Архивирование артефактов (для отладки)
-            - name: Архивирование артефактов сборки
-              uses: actions/upload-artifact@v4
-              if: ${{ failure() }} # Только при сбое для отладки
-              with:
-                  name: storybook-build-failure
-                  path: ${{ env.BUILD_OUTPUT }}
-                  retention-days: 7
-
-            # Шаг 9: Деплой на GitHub Pages
-            - name: Деплой на GitHub Pages
-              uses: peaceiris/actions-gh-pages@v4
-              with:
-                  # Используем автоматически созданный токен
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-
-                  # Директория для публикации
-                  publish_dir: ${{ env.BUILD_OUTPUT }}
-
-                  # Настройки ветки
-                  publish_branch: ${{ env.GITHUB_PAGES_BRANCH }}
-                  destination_dir: ./
-
-                  # Очистка предыдущей сборки
-                  keep_files: false
-                  force_orphan: true
-
-                  # Дополнительные настройки
-                  user_name: "github-actions[bot]"
-                  user_email: "github-actions[bot]@users.noreply.github.com"
-                  commit_message: "Deploy Storybook: ${{ github.sha }}"
-
-                  # Включаем подробный вывод для отладки
-                  verbose: true
-
-            # Шаг 10: Создание статуса деплоя
-            - name: Создание статуса деплоя
-              if: ${{ success() }}
-              run: |
-                  DEPLOYMENT_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-                  echo "Storybook успешно развернут: $DEPLOYMENT_URL"
-                  echo "::notice title=Storybook Deployed::Доступно по адресу: $DEPLOYMENT_URL"
-
-            # Шаг 11: Очистка (опционально)
-            - name: Очистка временных файлов
-              if: ${{ always() }}
-              run: |
-                  echo "Очищаем временные файлы..."
-                  rm -rf node_modules 2>/dev/null || true
-                  echo "Очистка завершена"
-
-    # Задача уведомлений (опционально)
-    notify:
-        name: Уведомление о результате
-        runs-on: ubuntu-latest
-        needs: [lint-and-test, deploy]
-        if: ${{ always() }}
-
-        steps:
-            - name: Отправка уведомления
-              run: |
-                  if [ "${{ needs.lint-and-test.result }}" == "success" ] && [ "${{ needs.deploy.result }}" == "success" ]; then
-                    echo "Все задачи выполнены успешно!"
-                  else
-                    echo "Некоторые задачи завершились с ошибкой"
-                    echo "lint-and-test: ${{ needs.lint-and-test.result }}"
-                    echo "deploy: ${{ needs.deploy.result }}"
-                  fi
+      - name: Деплой на GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/storybook-static
+          destination_dir: ./
+          keep_files: false
+          force_orphan: true
