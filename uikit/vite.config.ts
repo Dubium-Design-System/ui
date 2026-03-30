@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
-import { resolve } from "node:path";
+import path, { resolve } from "node:path";
 import { visualizer } from "rollup-plugin-visualizer";
 import fs from "node:fs";
 import { libInjectCss } from "vite-plugin-lib-inject-css";
@@ -29,6 +29,72 @@ function getComponentEntries() {
 	return entries;
 }
 
+function fixBuiltCssModules() {
+	return {
+		name: "fix-built-css-modules",
+		apply: "build",
+		closeBundle() {
+			const distDir = path.resolve(__dirname, "dist");
+
+			function walk(dir: string) {
+				const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+				for (const entry of entries) {
+					const fullPath = path.join(dir, entry.name);
+
+					if (entry.isDirectory()) {
+						walk(fullPath);
+						continue;
+					}
+
+					if (entry.isFile() && entry.name.endsWith(".module.css")) {
+						const newPath = fullPath.replace(
+							/\.module\.css$/,
+							".css",
+						);
+						fs.renameSync(fullPath, newPath);
+						continue;
+					}
+				}
+			}
+
+			walk(distDir);
+
+			function patchJsImports(dir: string) {
+				const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+				for (const entry of entries) {
+					const fullPath = path.join(dir, entry.name);
+
+					if (entry.isDirectory()) {
+						patchJsImports(fullPath);
+						continue;
+					}
+
+					if (entry.isFile() && entry.name.endsWith(".js")) {
+						const content = fs.readFileSync(fullPath, "utf-8");
+						const patched = content
+							.replace(
+								/from\s+['"](.+?)\.module\.css['"]/g,
+								(_, p1) => `from "${p1}.css"`,
+							)
+							.replace(
+								/import\s+['"](.+?)\.module\.css['"]/g,
+								(_, p1) => `import "${p1}.css"`,
+							);
+
+						if (patched !== content) {
+							fs.writeFileSync(fullPath, patched, "utf-8");
+						}
+					}
+				}
+			}
+
+			patchJsImports(distDir);
+		},
+	};
+}
+
 export default defineConfig({
 	plugins: [
 		react({
@@ -36,6 +102,8 @@ export default defineConfig({
 		}),
 
 		libInjectCss(),
+
+		fixBuiltCssModules(),
 
 		visualizer(),
 	],
@@ -48,7 +116,6 @@ export default defineConfig({
 		minify: true,
 		sourcemap: false,
 		cssCodeSplit: false,
-		// chunkSizeWarningLimit: 1000,
 
 		lib: {
 			entry: {
@@ -69,10 +136,8 @@ export default defineConfig({
 
 			treeshake: {
 				moduleSideEffects: (id) => {
-					// сохраняем CSS
 					if (id.endsWith(".css")) return true;
 
-					// остальное можно трешейкать
 					return false;
 				},
 				propertyReadSideEffects: false,
