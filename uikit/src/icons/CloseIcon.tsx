@@ -1,8 +1,6 @@
-interface CloseIconProps {
-	color?: string;
-}
+import type { IIconComponentProps } from "../components/Icon/Icon.types";
 
-export const CloseIcon = ({ color = "currentColor" }: CloseIconProps) => {
+const CloseIcon = ({ color = "currentColor" }: IIconComponentProps) => {
 	return (
 		<svg
 			width="100%"
@@ -18,3 +16,5 @@ export const CloseIcon = ({ color = "currentColor" }: CloseIconProps) => {
 		</svg>
 	);
 };
+
+export default CloseIcon;

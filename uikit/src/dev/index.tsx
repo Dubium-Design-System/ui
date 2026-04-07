@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Button } from "../components/Button/Button";
 import { Switch } from "../components/Switch/Switch";
+import { Icon } from "../components/Icon/Icon";
 
 import style from "./global.module.scss";
 import clsx from "clsx";
@@ -40,6 +41,23 @@ export const App = () => {
 					<Button variant="primary">Primary</Button>
 
 					<Button variant="primary-white">Primary White</Button>
+
+					<div>
+						{/* Базовая иконка Close */}
+						<Icon name="Close" />
+
+						{/* С кастомным размером и цветом */}
+						<Icon name="Close" size={32} color="red" />
+
+						{/* С поворотом на 45 градусов */}
+						<Icon name="Close" size={40} color="#333" deg={45} />
+
+						{/* С обработчиком клика */}
+						<Icon
+							name="Close"
+							onClick={() => console.log("Clicked!")}
+						/>
+					</div>
 				</div>
 			</div>
 		</>

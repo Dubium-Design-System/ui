@@ -1,6 +1,5 @@
 import {
 	memo,
-	useCallback,
 	type ButtonHTMLAttributes,
 	type JSX,
 	type MouseEvent,
@@ -119,22 +118,19 @@ export const Button = memo(
 		fluid = false,
 		...props
 	}: ButtonProps): JSX.Element => {
-		const handleClick = useCallback(
-			(event: MouseEvent<HTMLButtonElement>) => {
-				if (stopPropagation) {
-					event.stopPropagation();
-				}
+		const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+			if (stopPropagation) {
+				event.stopPropagation();
+			}
 
-				if (preventDefault) {
-					event.preventDefault();
-				}
+			if (preventDefault) {
+				event.preventDefault();
+			}
 
-				if (onClick) {
-					onClick(event);
-				}
-			},
-			[stopPropagation, preventDefault, onClick],
-		);
+			if (onClick) {
+				onClick(event);
+			}
+		};
 
 		return (
 			<button

@@ -1,102 +1,260 @@
-import type { Column } from "../../delete/ai-Table/types";
+import type { ReactNode } from "react";
 
-// Тип для данных таблицы
-export interface SampleDataItem {
-	id?: string;
+export interface User {
+	id: string;
 	name: string;
-	age: number;
 	email: string;
+	age: number;
+	address: string;
+	phone: string;
+	role: string;
+	createAt: string;
+	updateAt: string;
 }
 
-// Пример колонок для таблицы
-export const sampleColumns: Column<SampleDataItem>[] = [
+export type TableAlign = "left" | "center" | "right";
+
+export interface Column<T extends object> {
+	key: string;
+	title: string;
+	dataIndex?: keyof T;
+	width?: number;
+	alignHeader?: TableAlign;
+	alignCell?: TableAlign;
+	searchable?: boolean;
+	render?: (args: {
+		value: unknown;
+		record: T;
+		column: Column<T>;
+		index: number;
+	}) => ReactNode;
+}
+
+export const users: User[] = [
 	{
-		title: "Имя",
-		dataIndex: "name",
-		alignCell: "left",
+		id: "1",
+		name: "Mikhail Ivanov",
+		email: "mikhail.ivanov@test.dev",
+		age: 29,
+		address: "Moscow, Tverskaya St, 12",
+		phone: "+7-999-111-22-33",
+		role: "Tech Lead",
+		createAt: "2026-01-10",
+		updateAt: "2026-03-28",
 	},
 	{
-		title: "Возраст",
-		dataIndex: "age",
-		alignCell: "center",
+		id: "2",
+		name: "Ivan Petrov",
+		email: "ivan.petrov@test.dev",
+		age: 25,
+		address: "Saint Petersburg, Nevsky Ave, 45",
+		phone: "+7-999-222-33-44",
+		role: "Frontend Developer",
+		createAt: "2026-01-12",
+		updateAt: "2026-03-22",
 	},
 	{
-		title: "Email",
-		dataIndex: "email",
-		alignCell: "left",
+		id: "3",
+		name: "Petr Sidorov",
+		email: "petr.sidorov@test.dev",
+		age: 31,
+		address: "Kazan, Bauman St, 18",
+		phone: "+7-999-333-44-55",
+		role: "Backend Developer",
+		createAt: "2026-01-15",
+		updateAt: "2026-03-30",
+	},
+	{
+		id: "4",
+		name: "Anna Smirnova",
+		email: "anna.smirnova@test.dev",
+		age: 27,
+		address: "Yekaterinburg, Lenin Ave, 7",
+		phone: "+7-999-444-55-66",
+		role: "UI Designer",
+		createAt: "2026-01-18",
+		updateAt: "2026-03-26",
+	},
+	{
+		id: "5",
+		name: "Sergey Volkov",
+		email: "sergey.volkov@test.dev",
+		age: 34,
+		address: "Novosibirsk, Sovetskaya St, 33",
+		phone: "+7-999-555-66-77",
+		role: "DevOps Engineer",
+		createAt: "2026-01-20",
+		updateAt: "2026-03-25",
+	},
+	{
+		id: "6",
+		name: "Elena Kozlova",
+		email: "elena.kozlova@test.dev",
+		age: 30,
+		address: "Samara, Gagarina St, 21",
+		phone: "+7-999-666-77-88",
+		role: "Project Manager",
+		createAt: "2026-01-24",
+		updateAt: "2026-03-24",
+	},
+	{
+		id: "7",
+		name: "Dmitry Morozov",
+		email: "dmitry.morozov@test.dev",
+		age: 28,
+		address: "Nizhny Novgorod, Bolshaya Pokrovskaya, 10",
+		phone: "+7-999-777-88-99",
+		role: "QA Engineer",
+		createAt: "2026-01-27",
+		updateAt: "2026-03-20",
+	},
+	{
+		id: "8",
+		name: "Olga Fedorova",
+		email: "olga.fedorova@test.dev",
+		age: 26,
+		address: "Rostov-on-Don, Pushkinskaya St, 14",
+		phone: "+7-999-888-99-00",
+		role: "Frontend Developer",
+		createAt: "2026-02-01",
+		updateAt: "2026-03-18",
+	},
+	{
+		id: "9",
+		name: "Alexey Pavlov",
+		email: "alexey.pavlov@test.dev",
+		age: 32,
+		address: "Krasnodar, Severnaya St, 56",
+		phone: "+7-999-101-20-30",
+		role: "Backend Developer",
+		createAt: "2026-02-03",
+		updateAt: "2026-03-19",
+	},
+	{
+		id: "10",
+		name: "Natalia Orlova",
+		email: "natalia.orlova@test.dev",
+		age: 24,
+		address: "Ufa, October Ave, 63",
+		phone: "+7-999-202-30-40",
+		role: "HR Manager",
+		createAt: "2026-02-05",
+		updateAt: "2026-03-21",
+	},
+	{
+		id: "11",
+		name: "Kirill Lebedev",
+		email: "kirill.lebedev@test.dev",
+		age: 33,
+		address: "Chelyabinsk, Kirova St, 9",
+		phone: "+7-999-303-40-50",
+		role: "System Analyst",
+		createAt: "2026-02-08",
+		updateAt: "2026-03-17",
+	},
+	{
+		id: "12",
+		name: "Maria Nikolaeva",
+		email: "maria.nikolaeva@test.dev",
+		age: 28,
+		address: "Perm, Lenin St, 40",
+		phone: "+7-999-404-50-60",
+		role: "Product Manager",
+		createAt: "2026-02-10",
+		updateAt: "2026-03-16",
+	},
+	{
+		id: "13",
+		name: "Andrey Zaitsev",
+		email: "andrey.zaitsev@test.dev",
+		age: 35,
+		address: "Voronezh, Mira St, 27",
+		phone: "+7-999-505-60-70",
+		role: "Security Engineer",
+		createAt: "2026-02-13",
+		updateAt: "2026-03-15",
+	},
+	{
+		id: "14",
+		name: "Svetlana Belova",
+		email: "svetlana.belova@test.dev",
+		age: 29,
+		address: "Volgograd, Rabochaya St, 11",
+		phone: "+7-999-606-70-80",
+		role: "Support Engineer",
+		createAt: "2026-02-15",
+		updateAt: "2026-03-14",
+	},
+	{
+		id: "15",
+		name: "Roman Egorov",
+		email: "roman.egorov@test.dev",
+		age: 27,
+		address: "Omsk, Karl Marx Ave, 52",
+		phone: "+7-999-707-80-90",
+		role: "Mobile Developer",
+		createAt: "2026-02-18",
+		updateAt: "2026-03-12",
 	},
 ];
 
-// Пример данных для таблицы (25 записей)
-export const sampleData: SampleDataItem[] = [
-	{ id: "1", name: "Иван Иванов", age: 30, email: "ivan@example.com" },
-	{ id: "2", name: "Мария Петрова", age: 25, email: "maria@example.com" },
-	{ id: "3", name: "Алексей Сидоров", age: 35, email: "alexey@example.com" },
-	{ id: "4", name: "Елена Васильева", age: 28, email: "elena@example.com" },
-	{ id: "5", name: "Дмитрий Козлов", age: 42, email: "dmitry@example.com" },
-	{ id: "6", name: "Анна Морозова", age: 31, email: "anna@example.com" },
-	{ id: "7", name: "Сергей Новиков", age: 38, email: "sergey@example.com" },
-	{ id: "8", name: "Ольга Лебедева", age: 29, email: "olga@example.com" },
-	{ id: "9", name: "Андрей Павлов", age: 45, email: "andrey@example.com" },
+export const columns = [
 	{
-		id: "10",
-		name: "Татьяна Семенова",
-		age: 26,
-		email: "tatiana@example.com",
-	},
-	{ id: "11", name: "Михаил Волков", age: 33, email: "mikhail@example.com" },
-	{
-		id: "12",
-		name: "Наталья Зайцева",
-		age: 37,
-		email: "natalia@example.com",
-	},
-	{ id: "13", name: "Артем Федоров", age: 24, email: "artem@example.com" },
-	{ id: "14", name: "Юлия Михайлова", age: 32, email: "yulia@example.com" },
-	{
-		id: "15",
-		name: "Владимир Смирнов",
-		age: 39,
-		email: "vladimir@example.com",
+		key: "id",
+		title: "ID",
+		dataIndex: "id",
+		width: 80,
+		searchable: true,
 	},
 	{
-		id: "16",
-		name: "Екатерина Иванова",
-		age: 27,
-		email: "ekaterina@example.com",
-	},
-	{ id: "17", name: "Игорь Соколов", age: 41, email: "igor@example.com" },
-	{
-		id: "18",
-		name: "Светлана Орлова",
-		age: 34,
-		email: "svetlana@example.com",
+		key: "name",
+		title: "Name",
+		dataIndex: "name",
+		searchable: true,
 	},
 	{
-		id: "19",
-		name: "Николай Абрамов",
-		age: 44,
-		email: "nikolay@example.com",
+		key: "email",
+		title: "Email",
+		dataIndex: "email",
+		searchable: true,
 	},
 	{
-		id: "20",
-		name: "Виктория Андреева",
-		age: 30,
-		email: "viktoria@example.com",
+		key: "age",
+		title: "Age",
+		dataIndex: "age",
+		width: 100,
+		alignHeader: "center",
+		alignCell: "center",
+		searchable: true,
 	},
 	{
-		id: "21",
-		name: "Константин Никифоров",
-		age: 36,
-		email: "konstantin@example.com",
+		key: "address",
+		title: "Address",
+		dataIndex: "address",
+		searchable: true,
 	},
-	{ id: "22", name: "Алина Кузнецова", age: 23, email: "alina@example.com" },
-	{ id: "23", name: "Роман Макаров", age: 40, email: "roman@example.com" },
-	{ id: "24", name: "Дарья Алексеева", age: 28, email: "darya@example.com" },
 	{
-		id: "25",
-		name: "Станислав Белов",
-		age: 43,
-		email: "stanislav@example.com",
+		key: "phone",
+		title: "Phone",
+		dataIndex: "phone",
+		searchable: true,
 	},
-];
+	{
+		key: "role",
+		title: "Role",
+		dataIndex: "role",
+		searchable: true,
+	},
+	{
+		key: "createAt",
+		title: "Created At",
+		dataIndex: "createAt",
+		searchable: true,
+	},
+	{
+		key: "updateAt",
+		title: "Updated At",
+		dataIndex: "updateAt",
+		searchable: true,
+	},
+] satisfies Column<User>[];

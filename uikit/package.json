@@ -1,13 +1,16 @@
 {
 	"name": "@dubium/ui",
 	"private": false,
-	"version": "0.0.34",
+	"version": "0.1.0",
 	"type": "module",
 	"homepage": "https://dubium-design-system.github.io/ui/",
 	"bugs": {
 		"url": "https://github.com/Dubium-Design-System/ui/issues"
 	},
-	"repository": "https://github.com/Dubium-Design-System/ui/",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Dubium-Design-System/ui.git"
+	},
 	"description": "A lightweight and customizable UI component library for React, designed to streamline the development of modern web applications. @dubium/ui includes an array of responsive, accessible, and reusable UI components, optimized for performance and ease of use.",
 	"keywords": [
 		"react",
@@ -17,22 +20,31 @@
 		"library",
 		"frontend"
 	],
-	"author": "https://github.com/DubiumEkb",
+	"author": {
+		"name": "DubiumEkb",
+		"url": "https://github.com/DubiumEkb"
+	},
 	"license": "MIT",
 	"scripts": {
 		"dev": "vite --port 5000",
 		"clean": "rimraf dist",
 		"build": "npm run clean && npm run build:js && npm run build:types",
-		"build:vite": "tsc -b && vite build",
 		"build:js": "vite build",
 		"build:types": "tsc -p tsconfig.build.json",
 		"lint": "eslint .",
 		"preview": "vite preview",
-		"version:push": "npm run build && npm publish --access=public"
+		"pack:check": "npm pack",
+		"release:patch": "npm run build && npm pack && npm version patch && npm publish --access=public",
+		"release:minor": "npm run build && npm pack && npm version minor && npm publish --access=public",
+		"release:major": "npm run build && npm pack && npm version major && npm publish --access=public"
+	},
+	"dependencies": {
+		"@dubium/hooks": "^0.0.6",
+		"clsx": "^2.1.1",
+		"uuid": "^13.0.0"
 	},
 	"peerDependencies": {
-		"@dubium/hooks": "^0.0.6",
-		"react": " ^18.0.0 || ^19.0.0",
+		"react": "^18.0.0 || ^19.0.0",
 		"react-dom": "^18.0.0 || ^19.0.0"
 	},
 	"devDependencies": {
@@ -62,21 +74,14 @@
 		"README.md",
 		"LICENSE"
 	],
+	"main": "./dist/index.js",
 	"module": "./dist/index.js",
 	"types": "./dist/index.d.ts",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"import": "./dist/index.js"
-		},
-		"./*": {
-			"types": "./dist/components/*/index.d.ts",
-			"import": "./dist/components/*/index.js",
-			"style": "./dist/components/*/*.css"
+			"import": "./dist/index.js",
+			"default": "./dist/index.js"
 		}
-	},
-	"dependencies": {
-		"clsx": "^2.1.1",
-		"uuid": "^13.0.0"
 	}
 }
