@@ -1,9 +1,4 @@
-import {
-	memo,
-	type ButtonHTMLAttributes,
-	type JSX,
-	type MouseEvent,
-} from "react";
+import { memo, type ButtonHTMLAttributes, type MouseEvent } from "react";
 import style from "./Button.module.scss";
 import clsx from "clsx";
 
@@ -12,7 +7,7 @@ import clsx from "clsx";
  *
  * @extends ButtonHTMLAttributes<HTMLButtonElement>
  */
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	/**
 	 * Останавливать ли всплытие события `click`.
 	 *
@@ -117,7 +112,7 @@ export const Button = memo(
 		preventDefault = false,
 		fluid = false,
 		...props
-	}: ButtonProps): JSX.Element => {
+	}: IButtonProps) => {
 		const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
 			if (stopPropagation) {
 				event.stopPropagation();

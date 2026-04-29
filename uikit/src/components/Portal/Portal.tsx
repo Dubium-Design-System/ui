@@ -1,7 +1,7 @@
 import { type ReactNode, useMemo } from "react";
 import { createPortal } from "react-dom";
 
-export interface PortalProps {
+export interface IPortalProps {
 	/**
 	 * Дочерние элементы, которые будут отрендерены в портале.
 	 */
@@ -48,7 +48,7 @@ export interface PortalProps {
  * </Portal>
  * ```
  */
-export const Portal = ({ children, container }: PortalProps) => {
+export const Portal = ({ children, container }: IPortalProps) => {
 	const mountNode = useMemo(() => {
 		if (typeof document === "undefined") return null;
 		return container ?? document.body;

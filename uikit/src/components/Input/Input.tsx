@@ -1,15 +1,26 @@
 import {
 	forwardRef,
+	memo,
 	useId,
 	type InputHTMLAttributes,
 	type ReactNode,
 } from "react";
 
-export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+export interface IInputProps extends Omit<
+	InputHTMLAttributes<HTMLInputElement>,
+	"required"
+> {
 	label?: string;
 	before?: ReactNode;
 	after?: ReactNode;
+	hint?: ReactNode;
+	error?: ReactNode;
 	required?: boolean;
+
+	rootClassName?: string;
+	labelClassName?: string;
+	wrapperClassName?: string;
+	inputClassName?: string;
 }
 
 /**
@@ -46,31 +57,105 @@ export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
  *
  * @see {@link InputProps} для детального описания всех доступных свойств
  */
-export const Input = forwardRef<HTMLInputElement, InputProps>(
-	({ label, before, after, required, ...props }, ref) => {
-		const id = useId();
+const InputBase = forwardRef<HTMLInputElement, IInputProps>(
+	(
+		{
+			id,
+			label,
+			before,
+			after,
+			hint,
+			error,
+			required,
+			disabled,
+			type = "text",
+			autoComplete,
+			rootClassName,
+			labelClassName,
+			wrapperClassName,
+			inputClassName,
+			...props
+		},
+		ref,
+	) => {
+		const generatedId = useId();
+		const inputId = id ?? generatedId;
+
+		const hintId = hint ? `${inputId}-hint` : undefined;
+		const errorId = error ? `${inputId}-error` : undefined;
+
+		const describedBy =
+			[hintId, errorId].filter(Boolean).join(" ") || undefined;
+		const isInvalid = Boolean(error);
 
 		return (
-			<div>
-				{label ? (
-					<label htmlFor={id}>
+			<div
+				className={rootClassName}
+				data-disabled={disabled || undefined}
+				data-invalid={isInvalid || undefined}
+				data-required={required || undefined}
+			>
+				{label && (
+					<label htmlFor={inputId} className={labelClassName}>
 						<span>{label}</span>
-						{required ? <span>*</span> : null}
+						{required && <span aria-hidden="true"> *</span>}
 					</label>
-				) : null}
+				)}
 
-				<div>
-					{before ? before : null}
+				<div className={wrapperClassName}>
+					{before && <span aria-hidden="true">{before}</span>}
 
-					<input ref={ref} id={id} required={required} {...props} />
+					<input
+						{...props}
+						ref={ref}
+						id={inputId}
+						type={type}
+						required={required}
+						disabled={disabled}
+						autoComplete={autoComplete}
+						aria-required={required || undefined}
+						aria-invalid={isInvalid || undefined}
+						aria-describedby={describedBy}
+						className={inputClassName}
+					/>
 
-					{after ? after : null}
+					{after && <span aria-hidden="true">{after}</span>}
 				</div>
+
+				{hint && <div id={hintId}>{hint}</div>}
+
+				{error && (
+					<div id={errorId} role="alert">
+						{error}
+					</div>
+				)}
 			</div>
 		);
 	},
 );
 
-Input.displayName = "Input";
+InputBase.displayName = "Input";
 
-// TODO: добавить memo
+/**
+ * Кастомный shallow-compare:
+ * игнорируем ref, минимально проверяем примитивы и ссылки
+ */
+const areEqual = (prev: IInputProps, next: IInputProps) => {
+	return (
+		prev.value === next.value &&
+		prev.defaultValue === next.defaultValue &&
+		prev.disabled === next.disabled &&
+		prev.required === next.required &&
+		prev.error === next.error &&
+		prev.hint === next.hint &&
+		prev.before === next.before &&
+		prev.after === next.after &&
+		prev.className === next.className &&
+		prev.inputClassName === next.inputClassName &&
+		prev.wrapperClassName === next.wrapperClassName &&
+		prev.rootClassName === next.rootClassName
+	);
+};
+
+export const Input = memo(InputBase, areEqual);
+Input.displayName = "Input";

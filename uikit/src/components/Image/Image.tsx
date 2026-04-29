@@ -1,282 +1,387 @@
 import {
-	type CSSProperties,
-	type DetailedHTMLProps,
-	type ImgHTMLAttributes,
 	memo,
-	type ReactNode,
+	type ReactEventHandler,
 	useEffect,
 	useMemo,
-	useRef,
 	useState,
 } from "react";
 import { getContainerStyle, getImageStyle } from "./Image.style";
-import { loadImage } from "./Image.utils";
-
-export interface ImageProps {
-	/**
-	 * Соотношение сторон изображения. Может быть строкой в формате "width/height" (например, "16/9")
-	 * или "auto" для автоматического определения.
-	 * @default "1/1"
-	 */
-	aspectRatio?: string;
-
-	/**
-	 * Определяет, как изображение должно быть вписано в контейнер.
-	 * Используется стандартное CSS-свойство `object-fit`.
-	 * - "cover": Изображение заполняет контейнер, сохраняя соотношение сторон (может обрезаться).
-	 * - "contain": Изображение вписывается в контейнер целиком, сохраняя соотношение сторон.
-	 * - "fill": Изображение растягивается на весь контейнер, игнорируя соотношение сторон.
-	 * - "none": Изображение отображается в исходном размере.
-	 * - "scale-down": Изображение масштабируется до минимального размера, чтобы вписаться в контейнер.
-	 * @default "fill"
-	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/object-fit
-	 */
-	objectFit?: CSSProperties["objectFit"];
-
-	/**
-	 * Определяет позицию изображения внутри контейнера.
-	 * Используется стандартное CSS-свойство `object-position`.
-	 * - Формат: "x y", где x и y могут быть значениями вроде "left", "center", "right", "top", "bottom" или процентами.
-	 * @default "center center"
-	 * @see https://developer.mozilla.org/en-US/docs/Web/CSS/object-position
-	 */
-	objectPosition?: CSSProperties["objectPosition"];
-
-	/**
-	 * Ширина изображения. Может быть строкой (например, "100%"), числом (в пикселях) или "auto".
-	 * @default "100%"
-	 */
-	width?: string;
-
-	/**
-	 * Высота изображения. Может быть строкой (например, "100%") или числом (в пикселях).
-	 * @default "100%"
-	 */
-	height?: string;
-
-	/**
-	 * Основной URL изображения (формат png/jpg). Обязательное поле.
-	 */
-	src: string;
-
-	/**
-	 * Опциональный URL изображения в формате webp. Если браузер поддерживает webp, будет использован этот URL.
-	 */
-	webpSrc?: string;
-
-	/**
-	 * Альтернативный текст для изображения. Используется для доступности и SEO.
-	 * @default "image"
-	 */
-	alt: string;
-
-	/**
-	 * Атрибут srcSet для указания нескольких источников изображения с разным разрешением.
-	 */
-	srcSet?: string;
-
-	/**
-	 * Атрибут sizes для указания размеров изображения в разных условиях (например, медиа-запросы).
-	 */
-	sizes?: string;
-
-	/**
-	 * Дополнительные CSS-классы для контейнера изображения.
-	 */
-	className?: string;
-
-	/**2
-	 * Дополнительные inline-стили для контейнера изображения.
-	 */
-	style?: CSSProperties;
-
-	/**
-	 * Компонент, который отображается в случае ошибки загрузки изображения.
-	 * Если не указан, отображается текст из свойства `alt`.
-	 */
-	errorComponent?: ReactNode;
-
-	/**
-	 * Определяет, нужно ли использовать размытый placeholder.
-	 * - "blur": Использовать размытый placeholder.
-	 * - "empty": Не использовать placeholder.
-	 * @default "empty"
-	 */
-	placeholder?: "blur" | "empty";
-
-	/**
-	 * Base64-encoded изображение с низким разрешением, которое будет использоваться как placeholder.
-	 * Пока основное изображение загружается, будет отображаться это размытое изображение.
-	 */
-	blurDataURL?: string;
-
-	/**
-	 * Определяет, как изображение должно быть загружено.
-	 * - "lazy": Отложенная загрузка изображения до момента, когда оно окажется близко к области видимости.
-	 * - "eager": Загрузка изображения сразу, независимо от его положения на странице.
-	 * - "auto": Браузер сам решает, когда загружать изображение.
-	 * @default "lazy"
-	 * @see https://developer.mozilla.org/en-US/docs/Web/HTML/Element/img#attr-loading
-	 */
-	loading?: DetailedHTMLProps<
-		ImgHTMLAttributes<HTMLImageElement>,
-		HTMLImageElement
-	>["loading"];
-
-	/**
-	 * Компонент, который отображается во время загрузки изображения.
-	 */
-	loader?: ReactNode;
-}
+import type { IImageProps } from "./Image.types";
+import {
+	createImageCacheKey,
+	isImageFailed,
+	isImageLoaded,
+	markImageAsFailed,
+	markImageAsLoaded,
+	normalizeSrcSet,
+} from "./Image.utils";
 
 /**
- * Компонент `Image` отображает изображение с поддержкой:
- * - webp и fallback-форматов;
- * - кастомных стилей, размеров и позиционирования;
- * - соотношения сторон (включая `aspect-ratio`);
- * - плейсхолдера при загрузке (`blur` или кастомный loader);
- * - обработки ошибок загрузки;
- * - srcSet и sizes для адаптивных изображений.
+ * Статус загрузки изображения.
  *
- * Поддерживает передачу кастомного компонента при ошибке и плейсхолдера при загрузке.
+ * @remarks
+ * Используется для отслеживания состояния загрузки изображения внутри компонента {@link Image}.
  *
- * @component
+ * - `"loading"` - изображение загружается
+ * - `"loaded"` - изображение успешно загружено
+ * - `"error"` - произошла ошибка загрузки изображения
+ */
+type TImageStatus = "loading" | "loaded" | "error";
+
+/**
+ * Компонент для отображения изображений с поддержкой адаптивной загрузки, кэширования и fallback-ов.
+ *
+ * @remarks
+ * Компонент предоставляет расширенную функциональность по сравнению со стандартным `<img>`:
+ * - Кэширование состояния загрузки изображений (успех/ошибка) для избежания повторных запросов
+ * - Поддержка `<picture>` с несколькими источниками (`sources`)
+ * - Автоматический fallback на следующий источник при ошибке загрузки
+ * - Плейсхолдеры (blur-эффект или кастомный loader)
+ * - Контроль соотношения сторон (`aspectRatio`)
+ * - Оптимизированная загрузка (`loading="lazy"`, `decoding="async"`)
+ * - Доступность (ARIA-атрибуты)
+ *
+ * @param props - Свойства компонента, расширяющие стандартные атрибуты `<img>`.
+ * @returns React-элемент изображения с оберткой и дополнительными функциями.
+ *
  * @example
  * ```tsx
  * <Image
- *   src="/images/photo.jpg"
- *   webpSrc="/images/photo.webp"
- *   alt="My photo"
- *   aspectRatio="4/3"
- *   objectFit="cover"
+ *   src="/image.jpg"
+ *   alt="Описание изображения"
+ *   width={300}
+ *   height={200}
+ *   aspectRatio="16/9"
  *   placeholder="blur"
- *   blurDataURL="/images/photo-blur.jpg"
+ *   blurDataURL="/blur.jpg"
  * />
  * ```
  *
- * @param {ImageProps} props - Свойства компонента Image.
- * @param {string} [props.src] - Путь к изображению.
- * @param {string} [props.webpSrc] - Путь к webp-версии изображения.
- * @param {string} [props.alt="image"] - Альтернативный текст изображения.
- * @param {string} [props.aspectRatio="1/1"] - Соотношение сторон, например, "16/9" или "auto".
- * @param {string} [props.objectFit="fill"] - Поведение содержимого внутри контейнера (например, "cover", "contain").
- * @param {string} [props.objectPosition="center center"] - Позиционирование изображения внутри контейнера.
- * @param {string} [props.width="100%"] - Ширина контейнера.
- * @param {string} [props.height="100%"] - Высота контейнера.
- * @param {string} [props.srcSet] - Значения srcSet для адаптивных изображений.
- * @param {string} [props.sizes] - Атрибут sizes для адаптивной загрузки.
- * @param {string} [props.placeholder="empty"] - Тип плейсхолдера: `"empty"`, `"blur"` или любой другой.
- * @param {string} [props.blurDataURL] - Путь к размытой версии изображения (используется с placeholder="blur").
- * @param {React.ReactNode} [props.loader] - Кастомный плейсхолдер во время загрузки.
- * @param {React.ReactNode} [props.errorComponent] - Компонент, отображаемый при ошибке загрузки изображения.
- * @param {string} [props.className] - CSS-классы для контейнера.
- * @param {React.CSSProperties} [props.style] - Инлайн-стили для контейнера.
- * @param {"lazy" | "eager"} [props.loading="lazy"] - Стратегия загрузки изображения.
- *
- * @returns {JSX.Element} Компонент изображения с обработкой загрузки, ошибок и webp.
+ * @example
+ * ```tsx
+ * <Image
+ *   src="/image.jpg"
+ *   alt="Адаптивное изображение"
+ *   srcSet={[
+ *     { src: "/small.jpg", width: 320 },
+ *     { src: "/medium.jpg", width: 640 },
+ *     { src: "/large.jpg", width: 1024 },
+ *   ]}
+ *   sizes="(max-width: 768px) 100vw, 50vw"
+ *   sources={[
+ *     {
+ *       srcSet: "/image.webp",
+ *       type: "image/webp",
+ *     },
+ *   ]}
+ * />
+ * ```
  */
-
 export const Image = memo(
 	({
-		objectFit = "fill",
-		objectPosition = "center center",
-		aspectRatio = "1/1",
-		width = "100%",
-		height = "100%",
 		src,
-		webpSrc,
-		alt = "image",
+		alt,
 		srcSet,
 		sizes,
-		className: classNames,
-		style: customStyle,
+		sources,
+
+		aspectRatio = "1/1",
+		objectFit = "cover",
+		objectPosition = "center center",
+
+		width = "100%",
+		height = "100%",
+
+		className,
+		style,
+
+		imgClassName,
+		imgStyle,
+
 		errorComponent,
+		loader,
+
 		placeholder = "empty",
 		blurDataURL,
+
 		loading = "lazy",
-		loader,
-	}: ImageProps) => {
-		const [isLoading, setIsLoading] = useState<boolean>(false);
-		const [isError, setIsError] = useState<boolean>(false);
-		const [isWebpError, setIsWebpError] = useState<boolean>(false);
-		const imageRef = useRef<HTMLImageElement | null>(null);
+		decoding = "async",
 
-		const [widthRatio, heightRatio] = useMemo(() => {
-			if (aspectRatio === "auto") return ["auto", "auto"];
-			const [width, height] = aspectRatio.split("/").map(Number);
-			return isNaN(width) || isNaN(height) ? [1, 1] : [width, height];
-		}, [aspectRatio]);
+		onLoad,
+		onError,
 
+		...imgProps
+	}: IImageProps) => {
+		/**
+		 * Ключ кэша для текущего изображения, основанный на его источниках.
+		 *
+		 * @remarks
+		 * Используется для проверки, было ли изображение уже загружено или завершилось ошибкой
+		 * в предыдущих рендерах. Это позволяет избежать повторной загрузки уже загруженных изображений.
+		 */
+		const cacheKey = useMemo(() => {
+			return createImageCacheKey({
+				src,
+				srcSet,
+				sizes,
+				sources,
+			});
+		}, [src, srcSet, sizes, sources]);
+
+		/**
+		 * Текущий статус загрузки изображения.
+		 *
+		 * @remarks
+		 * Инициализируется на основе данных из кэша. Если изображение уже было загружено
+		 * ранее (в другом компоненте или на предыдущем рендере), статус сразу устанавливается
+		 * в `"loaded"`. Аналогично для ошибок.
+		 */
+		const [status, setStatus] = useState<TImageStatus>(() => {
+			if (isImageLoaded(cacheKey)) {
+				return "loaded";
+			}
+
+			if (isImageFailed(cacheKey)) {
+				return "error";
+			}
+
+			return "loading";
+		});
+
+		/**
+		 * Флаг, указывающий, что источники (`<source>`) внутри `<picture>` должны быть отключены.
+		 *
+		 * @remarks
+		 * Используется для реализации fallback-логики: если загрузка из источников завершилась ошибкой,
+		 * отключаем все `<source>` и пытаемся загрузить основное изображение (`src`).
+		 */
+		const [skippedSourcesCount, setSkippedSourcesCount] = useState(0);
+
+		/**
+		 * Эффект для синхронизации статуса загрузки при изменении ключа кэша.
+		 *
+		 * @remarks
+		 * При изменении `cacheKey` (например, при смене `src`) сбрасывает флаг отключения источников
+		 * и обновляет статус на основе актуальных данных кэша.
+		 */
 		useEffect(() => {
-			loadImage(src, webpSrc, setIsLoading, setIsError, setIsWebpError);
-		}, [src, webpSrc]);
+			setSkippedSourcesCount(0);
 
+			if (isImageLoaded(cacheKey)) {
+				setStatus("loaded");
+				return;
+			}
+
+			if (isImageFailed(cacheKey)) {
+				setStatus("error");
+				return;
+			}
+
+			setStatus("loading");
+		}, [cacheKey]);
+
+		/**
+		 * Нормализованный `srcSet` для основного изображения.
+		 *
+		 * @remarks
+		 * Преобразует массив кандидатов `ImageSrcSetCandidate[]` в строку формата `"url width, url 2x"`,
+		 * либо возвращает исходную строку `srcSet` без изменений.
+		 */
+		const normalizedImgSrcSet = useMemo(() => {
+			return normalizeSrcSet(srcSet);
+		}, [srcSet]);
+
+		/**
+		 * Нормализованные источники для элемента `<picture>`.
+		 *
+		 * @remarks
+		 * Преобразует массив `sources`, нормализуя `srcSet` каждого источника и фильтруя пустые.
+		 * Если источники отключены (`areSourcesDisabled`), возвращает пустой массив.
+		 */
+		const normalizedSources = useMemo(() => {
+			if (!sources?.length) {
+				return [];
+			}
+
+			return sources
+				.map((source) => ({
+					...source,
+					srcSet: normalizeSrcSet(source.srcSet),
+				}))
+				.filter((source) => Boolean(source.srcSet));
+		}, [sources]);
+
+		const activeSources = useMemo(() => {
+			return normalizedSources.slice(skippedSourcesCount);
+		}, [normalizedSources, skippedSourcesCount]);
+
+		/**
+		 * Стили контейнера изображения.
+		 *
+		 * @remarks
+		 * Генерируются с помощью {@link getContainerStyle} на основе параметров `width`, `height`,
+		 * `aspectRatio` и пользовательских стилей `style`.
+		 */
 		const containerStyle = useMemo(() => {
-			return getContainerStyle(width, height, aspectRatio, customStyle);
-		}, [width, height, aspectRatio, customStyle]);
+			return getContainerStyle({
+				width,
+				height,
+				aspectRatio,
+				customStyle: style,
+			});
+		}, [width, height, aspectRatio, style]);
 
-		const imgStyle = useMemo(() => {
-			return getImageStyle(
-				widthRatio,
-				heightRatio,
+		/**
+		 * Стили самого изображения (`<img>`).
+		 *
+		 * @remarks
+		 * Генерируются с помощью {@link getImageStyle} на основе параметров `aspectRatio`,
+		 * `objectFit`, `objectPosition` и пользовательских стилей `imgStyle`.
+		 * Прозрачность (`opacity`) управляется в зависимости от статуса загрузки:
+		 * изображение становится полностью видимым только после успешной загрузки.
+		 */
+		const imageStyle = useMemo(() => {
+			return getImageStyle({
+				aspectRatio,
 				objectFit,
 				objectPosition,
-			);
-		}, [widthRatio, heightRatio, objectFit, objectPosition]);
+				customStyle: {
+					...imgStyle,
+					opacity: status === "loaded" ? imgStyle?.opacity : 0,
+				},
+			});
+		}, [aspectRatio, objectFit, objectPosition, imgStyle, status]);
 
-		const renderPlaceholder = () => {
-			if (!isLoading) return null;
+		/**
+		 * Обработчик успешной загрузки изображения.
+		 *
+		 * @remarks
+		 * Вызывается когда изображение (`<img>`) успешно загружено. Помечает изображение как загруженное
+		 * в кэше, обновляет статус и вызывает пользовательский обработчик `onLoad`, если он предоставлен.
+		 *
+		 * @param event - Событие загрузки изображения.
+		 */
+		const handleLoad: ReactEventHandler<HTMLImageElement> = (event) => {
+			markImageAsLoaded(cacheKey);
+			setStatus("loaded");
 
-			if (placeholder === "blur" && blurDataURL) {
-				return (
-					<img
-						src={blurDataURL}
-						alt={alt}
+			if (onLoad) {
+				onLoad(event);
+			}
+		};
+
+		/**
+		 * Обработчик ошибки загрузки изображения.
+		 *
+		 * @remarks
+		 * Вызывается когда изображение (`<img>`) не смогло загрузиться. Если есть альтернативные источники
+		 * (`normalizedSources`) и они ещё не отключены, отключает источники и пытается загрузить основное
+		 * изображение повторно. В противном случае помечает изображение как ошибочное в кэше, обновляет
+		 * статус и вызывает пользовательский обработчик `onError`.
+		 *
+		 * @param event - Событие ошибки изображения.
+		 */
+		const handleError: ReactEventHandler<HTMLImageElement> = (event) => {
+			if (skippedSourcesCount < normalizedSources.length) {
+				setSkippedSourcesCount((prev) => prev + 1);
+				setStatus("loading");
+				return;
+			}
+
+			markImageAsFailed(cacheKey);
+			setStatus("error");
+
+			if (onError) {
+				onError(event);
+			}
+		};
+
+		/**
+		 * Флаг, указывающий нужно ли показывать плейсхолдер.
+		 */
+		const shouldShowPlaceholder = status === "loading";
+
+		/**
+		 * Флаг, указывающий нужно ли показывать компонент ошибки.
+		 */
+		const shouldShowError = status === "error";
+
+		return (
+			<div
+				className={className}
+				style={containerStyle}
+				aria-busy={status === "loading" || undefined}
+			>
+				{shouldShowPlaceholder ? (
+					<div
 						style={{
-							...imgStyle,
-							filter: "blur(10px)",
+							position: "absolute",
+							inset: 0,
 							width: "100%",
 							height: "100%",
 						}}
 						aria-hidden="true"
-					/>
-				);
-			}
+					>
+						{placeholder === "blur" && blurDataURL ? (
+							<img
+								src={blurDataURL}
+								alt=""
+								style={{
+									display: "block",
+									width: "100%",
+									height: "100%",
+									objectFit,
+									objectPosition,
+									filter: "blur(10px)",
+									transform: "scale(1.03)",
+								}}
+							/>
+						) : (
+							loader
+						)}
+					</div>
+				) : null}
 
-			return loader ?? null;
-		};
-
-		return (
-			<div className={classNames} style={containerStyle}>
-				{renderPlaceholder()}
-
-				{isError && !isLoading && (errorComponent || <div>{alt}</div>)}
-				{!isLoading && !isError && (
+				{shouldShowError ? (
+					(errorComponent ?? <div>{alt}</div>)
+				) : (
 					<picture
+						key={`sources-offset-${skippedSourcesCount}`}
 						style={{
-							// ...imgStyle,
 							display: "block",
 							width: "100%",
 							height: "100%",
 						}}
 					>
-						{webpSrc && !isWebpError ? (
-							<source srcSet={webpSrc} type="image/webp" />
-						) : null}
+						{activeSources.map((source, index) => (
+							<source
+								key={[
+									source.type,
+									source.media,
+									source.srcSet,
+									skippedSourcesCount + index,
+								].join("-")}
+								srcSet={source.srcSet}
+								type={source.type}
+								media={source.media}
+								sizes={source.sizes ?? sizes}
+								width={source.width}
+								height={source.height}
+							/>
+						))}
+
 						<img
-							ref={imageRef}
+							{...imgProps}
+							className={imgClassName}
 							src={src}
+							srcSet={normalizedImgSrcSet}
+							sizes={sizes}
 							alt={alt}
 							loading={loading}
-							style={{
-								...imgStyle,
-								display: "block",
-								width: "100%",
-								height: "100%",
-							}}
-							srcSet={srcSet}
-							sizes={sizes}
-							decoding="async"
+							decoding={decoding}
+							style={imageStyle}
+							onLoad={handleLoad}
+							onError={handleError}
 						/>
 					</picture>
 				)}

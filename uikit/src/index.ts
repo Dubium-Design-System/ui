@@ -1,8 +1,38 @@
-export { Button, type ButtonProps } from "./components/Button/Button";
-export { Icon, type IconProps } from "./components/Icon/Icon";
-export { Portal, type PortalProps } from "./components/Portal/Portal";
-export { Image, type ImageProps } from "./components/Image/Image";
+// Components
+export { Button, type IButtonProps } from "./components/Button";
+export {
+	Icon,
+	createIcon,
+	type IIconComponentProps,
+	type TIcon,
+	type TIconModule,
+	type TIconLoader,
+	type TIconRegistry,
+	type TIconName,
+	type TEmptyIconRegistry,
+	type IconProps,
+} from "./components/Icon";
+export {
+	Image,
+	type IImageProps,
+	type IImageSource,
+	type TImageSrcSet,
+	type TImageSrcSetCandidate,
+} from "./components/Image";
+
+// TODO: Обновить
+export { Input, type IInputProps } from "./components/Input";
+// TODO: Сделать компонент
+export { Pagination, type IPaginationProps } from "./components/Pagination";
+export { Portal, type IPortalProps } from "./components/Portal";
+export { Switch, type ISwitchProps } from "./components/Switch";
 export { Tabs, type TabsProps } from "./components/Tabs/Tabs";
-export { Input, type InputProps } from "./components/Input/Input";
 export { TextArea, type TextAreaProps } from "./components/TextArea/TextArea";
-export { Switch, type SwitchProps } from "./components/Switch/Switch";
+
+// Providers
+export {
+	DUIProvider,
+	useDUIContext,
+	type IDUIProviderProps,
+	type IDUIContextValue,
+} from "./providers/DUIProvider";

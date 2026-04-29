@@ -1,17 +1,20 @@
 import { useState } from "react";
 import { Button } from "../components/Button/Button";
 import { Switch } from "../components/Switch/Switch";
-import { Icon } from "../components/Icon/Icon";
+import { DUIProvider } from "../providers/DUIProvider";
+import { AppIcon } from "./assets/AppIcon";
+import { ImageDocs } from "./image-doc";
 
 import style from "./global.module.scss";
 import clsx from "clsx";
+import { appIcons } from "./assets/icons";
 
 // TODO: с табами проверить <Activity />
 
 export const App = () => {
 	const [isChecked, setIsChecked] = useState(false);
 	return (
-		<>
+		<DUIProvider icons={appIcons}>
 			<div className={style.main}>
 				<div
 					style={{
@@ -42,24 +45,28 @@ export const App = () => {
 
 					<Button variant="primary-white">Primary White</Button>
 
-					<div>
+					<div style={{ color: "blue" }}>
 						{/* Базовая иконка Close */}
-						<Icon name="Close" />
+						<AppIcon name="User" color="#fff" />
+
+						<AppIcon name="Settings" color="red" />
 
 						{/* С кастомным размером и цветом */}
-						<Icon name="Close" size={32} color="red" />
+						<AppIcon name="Close" size={32} color="red" />
 
 						{/* С поворотом на 45 градусов */}
-						<Icon name="Close" size={40} color="#333" deg={45} />
+						<AppIcon name="Close" size={40} color="#333" deg={45} />
 
 						{/* С обработчиком клика */}
-						<Icon
+						<AppIcon
 							name="Close"
 							onClick={() => console.log("Clicked!")}
 						/>
 					</div>
 				</div>
+
+				<ImageDocs />
 			</div>
-		</>
+		</DUIProvider>
 	);
 };

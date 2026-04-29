@@ -22,7 +22,7 @@ import clsx from "clsx";
  *
  * @public
  */
-export interface SwitchProps {
+export interface ISwitchProps {
 	/**
 	 * Текущее состояние переключателя (управляемый режим).
 	 * Если не передано, используется неуправляемый режим с `defaultChecked`.
@@ -126,7 +126,7 @@ export const Switch = memo(
 		ariaLabel,
 		ariaDescription,
 		labelPosition = "right",
-	}: SwitchProps) => {
+	}: ISwitchProps) => {
 		const [uncontrolledChecked, setUncontrolledChecked] =
 			useState<boolean>(defaultChecked);
 		const inputRef = useRef<HTMLInputElement>(null);

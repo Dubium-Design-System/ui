@@ -1,5 +1,5 @@
-interface PaginationProps {}
+export interface IPaginationProps {}
 
-export const Pagination = ({}: PaginationProps) => {
+export const Pagination = ({}: IPaginationProps) => {
 	return <></>;
 };

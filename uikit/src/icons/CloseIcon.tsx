@@ -1,6 +1,6 @@
-import type { IIconComponentProps } from "../components/Icon/Icon.types";
+import type { IIconComponentProps } from "../components/Icon";
 
-const CloseIcon = ({ color = "currentColor" }: IIconComponentProps) => {
+const CloseIcon = ({ color }: IIconComponentProps) => {
 	return (
 		<svg
 			width="100%"

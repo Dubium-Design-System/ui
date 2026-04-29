@@ -1,79 +1,145 @@
 import type { CSSProperties } from "react";
 
 /**
- * Вычисляет и возвращает стиль контейнера изображения с учётом ширины, высоты, соотношения сторон и пользовательских стилей.
+ * Параметры для генерации стилей контейнера изображения.
  *
- * - При заданном `aspectRatio` функция может автоматически вычислять одну из сторон, если она равна `"auto"`.
- * - Все числовые значения ширины/высоты конвертируются в строки с единицами `px`.
- * - По умолчанию добавляются ограничения `maxWidth: 100%` и `maxHeight: 100%`.
+ * @remarks
+ * Используется функцией {@link getContainerStyle} для создания CSS-стилей
+ * контейнера, который оборачивает изображение.
  *
- * @param {string | number} width - Ширина контейнера. Можно указать строку (например, `"100%"`) или число (в пикселях).
- * @param {string | number} height - Высота контейнера. Можно указать строку или число.
- * @param {string} aspectRatio - Соотношение сторон в формате `"16/9"`, `"4/3"` и т.п. Если `"auto"`, ничего не вычисляется.
- * @param {CSSProperties} [customStyle] - Дополнительные пользовательские стили, которые будут объединены с результатом.
- *
- * @returns {CSSProperties} Финальный стиль для контейнера.
+ * @property width - Ширина контейнера. Может быть числом (пиксели), строкой ("100%", "auto") или undefined.
+ * @property height - Высота контейнера. Может быть числом (пиксели), строкой ("100%", "auto") или undefined.
+ * @property aspectRatio - Соотношение сторон в формате "width/height" (например, "16/9") или "auto".
+ * @property customStyle - Дополнительные пользовательские стили, которые будут объединены с базовыми.
  */
-export const getContainerStyle = (
-	width: string | number,
-	height: string | number,
-	aspectRatio: string,
-	customStyle?: CSSProperties,
-): CSSProperties => {
-	let finalWidth = typeof width === "number" ? `${width}px` : width;
-	let finalHeight = typeof height === "number" ? `${height}px` : height;
+interface GetContainerStyleParams {
+	width: CSSProperties["width"];
+	height: CSSProperties["height"];
+	aspectRatio: string;
+	customStyle?: CSSProperties;
+}
 
-	if (aspectRatio !== "auto") {
-		const [widthRatio, heightRatio] = aspectRatio.split("/").map(Number);
+/**
+ * Параметры для генерации стилей самого изображения.
+ *
+ * @remarks
+ * Используется функцией {@link getImageStyle} для создания CSS-стилей
+ * элемента <img> внутри контейнера.
+ *
+ * @property aspectRatio - Соотношение сторон в формате "width/height" (например, "16/9") или "auto".
+ * @property objectFit - Определяет, как изображение вписывается в контейнер (аналогично CSS свойству object-fit).
+ * @property objectPosition - Позиционирование изображения внутри контейнера (аналогично CSS свойству object-position).
+ * @property customStyle - Дополнительные пользовательские стили, которые будут объединены с базовыми.
+ */
+interface GetImageStyleParams {
+	aspectRatio: string;
+	objectFit: CSSProperties["objectFit"];
+	objectPosition: CSSProperties["objectPosition"];
+	customStyle?: CSSProperties;
+}
 
-		if (
-			!isNaN(widthRatio) &&
-			!isNaN(heightRatio) &&
-			widthRatio > 0 &&
-			heightRatio > 0
-		) {
-			if (finalWidth !== "auto" && finalHeight === "auto") {
-				// Если задана только ширина, рассчитываем высоту
-				finalHeight = `calc(${finalWidth} * ${heightRatio} / ${widthRatio})`;
-			} else if (finalHeight !== "auto" && finalWidth === "auto") {
-				// Если задана только высота, рассчитываем ширину
-				finalWidth = `calc(${finalHeight} * ${widthRatio} / ${heightRatio})`;
-			}
-		}
+/**
+ * Нормализует числовые значения размеров в строки с пикселями.
+ *
+ * @remarks
+ * Если значение является числом, преобразует его в строку с суффиксом "px".
+ * Если значение уже является строкой или undefined, возвращает его без изменений.
+ *
+ * @param value - Значение ширины или высоты (число, строка или undefined).
+ * @returns Нормализованное значение, готовое для использования в CSS.
+ *
+ * @example
+ * ```ts
+ * normalizeSize(100); // "100px"
+ * normalizeSize("50%"); // "50%"
+ * normalizeSize(undefined); // undefined
+ * ```
+ */
+const normalizeSize = (
+	value: CSSProperties["width"] | CSSProperties["height"],
+): CSSProperties["width"] | CSSProperties["height"] => {
+	if (typeof value === "number") {
+		return `${value}px`;
 	}
 
+	return value;
+};
+
+/**
+ * Генерирует CSS-стили для контейнера изображения.
+ *
+ * @remarks
+ * Создает объект стилей, который обеспечивает корректное отображение контейнера
+ * с заданными размерами, соотношением сторон и дополнительными пользовательскими стилями.
+ * Контейнер позиционируется относительно, имеет скрытое переполнение и максимальные размеры 100%.
+ *
+ * @param params - Параметры стилей контейнера.
+ * @returns Объект CSS-стилей для применения к контейнеру изображения.
+ *
+ * @example
+ * ```ts
+ * const containerStyles = getContainerStyle({
+ *   width: 300,
+ *   height: 200,
+ *   aspectRatio: "16/9",
+ *   customStyle: { borderRadius: "8px" }
+ * });
+ * ```
+ */
+export const getContainerStyle = ({
+	width,
+	height,
+	aspectRatio,
+	customStyle,
+}: GetContainerStyleParams): CSSProperties => {
 	return {
-		...customStyle,
-		width: finalWidth,
-		height: finalHeight,
+		position: "relative",
+		display: "block",
+		overflow: "hidden",
+		width: normalizeSize(width),
+		height: normalizeSize(height),
 		aspectRatio: aspectRatio !== "auto" ? aspectRatio : undefined,
 		maxWidth: "100%",
 		maxHeight: "100%",
+		...customStyle,
 	};
 };
 
 /**
- * Возвращает стили для изображения с учетом `aspectRatio`, `objectFit` и `objectPosition`.
+ * Генерирует CSS-стили для самого изображения.
  *
- * @param {string | number} widthRatio - Ширина соотношения сторон или `"auto"`.
- * @param {string | number} heightRatio - Высота соотношения сторон или `"auto"`.
- * @param {CSSProperties["objectFit"]} objectFit - Значение CSS-свойства `object-fit`.
- * @param {CSSProperties["objectPosition"]} objectPosition - Значение CSS-свойства `object-position`.
+ * @remarks
+ * Создает объект стилей, который обеспечивает корректное отображение изображения
+ * внутри контейнера с заданными параметрами object-fit, object-position и соотношением сторон.
+ * Изображение занимает 100% ширины и высоты контейнера, имеет плавный переход прозрачности.
  *
- * @returns {CSSProperties} Стили для применения к элементу `<img>` или его обёртке.
+ * @param params - Параметры стилей изображения.
+ * @returns Объект CSS-стилей для применения к элементу <img>.
+ *
+ * @example
+ * ```ts
+ * const imageStyles = getImageStyle({
+ *   aspectRatio: "16/9",
+ *   objectFit: "cover",
+ *   objectPosition: "center",
+ *   customStyle: { filter: "brightness(0.9)" }
+ * });
+ * ```
  */
-export const getImageStyle = (
-	widthRatio: string | number,
-	heightRatio: string | number,
-	objectFit: CSSProperties["objectFit"],
-	objectPosition: CSSProperties["objectPosition"],
-): CSSProperties => {
+export const getImageStyle = ({
+	aspectRatio,
+	objectFit,
+	objectPosition,
+	customStyle,
+}: GetImageStyleParams): CSSProperties => {
 	return {
-		aspectRatio:
-			widthRatio !== "auto"
-				? `${widthRatio} / ${heightRatio}`
-				: undefined,
+		display: "block",
+		width: "100%",
+		height: "100%",
+		aspectRatio: aspectRatio !== "auto" ? aspectRatio : undefined,
 		objectFit,
 		objectPosition,
+		transition: "opacity 150ms ease",
+		...customStyle,
 	};
 };

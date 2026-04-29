@@ -1,14 +1,28 @@
-import { memo, useEffect, useMemo, useState, type ComponentType } from "react";
-import type { IconName, IIconComponentProps } from "./Icon.types";
-import { iconPaths } from "./Icon.paths";
+import {
+	memo,
+	useEffect,
+	useMemo,
+	useState,
+	type MemoExoticComponent,
+} from "react";
+import type {
+	TIconName,
+	TIcon,
+	TIconRegistry,
+	TEmptyIconRegistry,
+} from "./Icon.types";
+import { useDUIContext } from "../../providers/DUIProvider/DUIProvider.context";
+import { defaultIcons } from "./Icon.registry";
 
 // Кэш загруженных иконок
-const iconCache = new Map<IconName, TIconComponent>();
+const iconCache = new Map<string, TIcon>();
 
 /** Свойства компонента иконки */
-export interface IconProps {
+export interface IconProps<
+	TCustomIcons extends TIconRegistry = TEmptyIconRegistry,
+> {
 	/** Имя иконки */
-	name: IconName;
+	name: TIconName<TCustomIcons>;
 	/** Приоритетный размер (квадратный) */
 	size?: number;
 	/** Ширина (если нужен прямоугольник) */
@@ -25,8 +39,6 @@ export interface IconProps {
 	ariaLabel?: string;
 }
 
-type TIconComponent = ComponentType<IIconComponentProps>;
-
 /**
  * Компонент иконки, который динамически загружает SVG иконки по имени.
  *
@@ -42,114 +54,134 @@ type TIconComponent = ComponentType<IIconComponentProps>;
  *
  * @returns React-элемент иконки
  */
-export const Icon = memo(
-	({
-		name,
-		size = 24,
-		width: propWidth,
-		height: propHeight,
-		color = "currentColor",
-		deg = 0,
-		onClick: handleOnClick,
-		ariaLabel,
-	}: IconProps) => {
-		const [IconComponent, setIconComponent] =
-			useState<TIconComponent | null>(() => iconCache.get(name) || null);
+const IconComponentBase = <
+	TCustomIcons extends TIconRegistry = TEmptyIconRegistry,
+>({
+	name,
+	size = 24,
+	width: propWidth,
+	height: propHeight,
+	color = "currentColor",
+	deg = 0,
+	onClick: handleOnClick,
+	ariaLabel,
+}: IconProps<TCustomIcons>) => {
+	const { icons } = useDUIContext<TCustomIcons>();
 
-		const [isLoading, setIsLoading] = useState<boolean>(false);
+	const registry = useMemo(
+		() => ({
+			...defaultIcons,
+			...icons,
+		}),
+		[icons],
+	);
 
-		// Вычисляем итоговые ширину и высоту
-		const computedWidth = propWidth ?? size;
-		const computedHeight = propHeight ?? size;
+	const [IconComponent, setIconComponent] = useState<TIcon | null>(
+		() => iconCache.get(name) || null,
+	);
 
-		// Мемоизация стилей для предотвращения перерисовок
-		const containerStyle = useMemo(
-			() => ({
-				display: "inline-flex",
-				alignItems: "center",
-				justifyContent: "center",
-				width: computedWidth,
-				height: computedHeight,
-				transform: `rotate(${deg}deg)`,
-			}),
-			[computedWidth, computedHeight, deg],
-		);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-		// Единый эффект для загрузки иконки при изменении имени
-		useEffect(() => {
-			let ignore = false;
+	// Вычисляем итоговые ширину и высоту
+	const computedWidth = propWidth ?? size;
+	const computedHeight = propHeight ?? size;
 
-			const loadIcon = async () => {
-				// Если уже есть в кэше — сразу используем
-				if (iconCache.has(name)) {
-					if (!ignore) {
-						setIconComponent(iconCache.get(name) as TIconComponent);
-					}
-					return;
-				}
+	// Мемоизация стилей для предотвращения перерисовок
+	const containerStyle = useMemo(
+		() => ({
+			display: "inline-flex",
+			alignItems: "center",
+			justifyContent: "center",
+			width: computedWidth,
+			height: computedHeight,
+			transform: `rotate(${deg}deg)`,
+		}),
+		[computedWidth, computedHeight, deg],
+	);
 
-				// Проверяем, существует ли такая иконка
-				if (!iconPaths[name]) {
-					console.warn(`Иконка "${name}" не найдена`);
-					if (!ignore) {
-						setIconComponent(null);
-					}
-					return;
-				}
+	useEffect(() => {
+		let ignore = false;
 
-				// Начинаем загрузку
-				setIsLoading(true);
-				try {
-					const importFn = iconPaths[name];
-					const module = await importFn();
+		const loadIcon = async () => {
+			const cacheKey = String(name);
+			const cachedIcon = iconCache.get(cacheKey);
+
+			if (cachedIcon) {
+				setIconComponent(() => cachedIcon as TIcon);
+				return;
+			}
+
+			const importIcon = registry[name];
+
+			if (!importIcon) {
+				console.warn(`Иконка "${cacheKey}" не найдена`);
+				setIconComponent(() => null);
+				return;
+			}
+
+			setIsLoading(true);
+			setIconComponent(() => null);
+
+			importIcon()
+				.then((module) => {
+					if (ignore) return;
+
 					const Component = module.default;
-					if (Component) {
-						iconCache.set(name, Component);
-						if (!ignore) {
-							setIconComponent(Component);
-						}
-					}
-				} catch (error) {
-					console.error(`Ошибка загрузки иконки "${name}":`, error);
-					if (!ignore) {
-						setIconComponent(null);
-					}
-				} finally {
-					if (!ignore) {
-						setIsLoading(false);
-					}
-				}
-			};
 
-			loadIcon();
+					iconCache.set(cacheKey, Component);
+					setIconComponent(() => Component);
+				})
+				.catch((error) => {
+					if (ignore) return;
 
-			return () => {
-				ignore = true;
-			};
-		}, [name]);
+					console.error(
+						`Ошибка загрузки иконки "${cacheKey}":`,
+						error,
+					);
+					setIconComponent(() => null);
+				})
+				.finally(() => {
+					if (ignore) return;
 
-		// Состояние загрузки: скрываем от скринридера, но сохраняем размеры
-		if (isLoading || !IconComponent) {
-			return (
-				<div
-					style={{ ...containerStyle, visibility: "hidden" }}
-					role="img"
-					aria-hidden="true"
-				/>
-			);
-		}
+					setIsLoading(false);
+				});
+		};
 
+		loadIcon();
+
+		return () => {
+			ignore = true;
+		};
+	}, [name, registry]);
+
+	// Состояние загрузки: скрываем от скринридера, но сохраняем размеры
+	if (isLoading || !IconComponent) {
 		return (
 			<div
-				style={containerStyle}
-				onClick={handleOnClick}
+				style={{ ...containerStyle, visibility: "hidden" }}
 				role="img"
-				aria-label={ariaLabel || name}
-			>
-				{IconComponent ? <IconComponent color={color} /> : null}
-			</div>
+				aria-hidden="true"
+			/>
 		);
-	},
-);
+	}
 
-Icon.displayName = "Icon";
+	return (
+		<div
+			style={containerStyle}
+			onClick={handleOnClick}
+			role="img"
+			aria-label={ariaLabel || name}
+		>
+			{IconComponent ? <IconComponent color={color} /> : null}
+		</div>
+	);
+};
+
+const MemoizedIcon = memo(IconComponentBase) as MemoExoticComponent<
+	typeof IconComponentBase
+> &
+	typeof IconComponentBase;
+
+MemoizedIcon.displayName = "Icon";
+
+export { MemoizedIcon as Icon };
