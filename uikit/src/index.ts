@@ -27,7 +27,7 @@ export { Pagination, type IPaginationProps } from "./components/Pagination";
 export { Portal, type IPortalProps } from "./components/Portal";
 export { Switch, type ISwitchProps } from "./components/Switch";
 export { Tabs, type TabsProps } from "./components/Tabs/Tabs";
-export { TextArea, type TextAreaProps } from "./components/TextArea/TextArea";
+export { TextArea, type TextAreaProps } from "./components/Textarea/Textarea";
 
 // Providers
 export {
