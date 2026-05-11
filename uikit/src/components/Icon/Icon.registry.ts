@@ -1,3 +1,5 @@
+import type { TIconRegistry } from "./Icon.types";
+
 /**
  * Реестр встроенных (UIKit) иконок.
  *
@@ -20,7 +22,7 @@
  */
 export const defaultIcons = {
 	Close: () => import("../../icons/CloseIcon"),
-} as const;
+} as const satisfies TIconRegistry;
 
 /**
  * Объединение имён всех встроенных (UIKit) иконок.

@@ -35,15 +35,13 @@ export const App = () => {
 			</div>
 			<div className={style.main}>
 				<div className={clsx(style.buttons, style.white)}>
-					<Button variant="primary">Primary</Button>
-
-					<Button variant="primary-black">Primary Black</Button>
+					<Button>Button</Button>
 				</div>
 
 				<div className={clsx(style.buttons, style.black)}>
-					<Button variant="primary">Primary</Button>
+					<Button>Primary</Button>
 
-					<Button variant="primary-white">Primary White</Button>
+					<Button>Primary White</Button>
 
 					<div style={{ color: "blue" }}>
 						{/* Базовая иконка Close */}

@@ -1,4 +1,4 @@
-import type { IImageSource, TImageSrcSet } from "./Image.types";
+import type { ICreateImageCacheKeyParams, TImageSrcSet } from "./Image.types";
 
 /**
  * Максимальное количество записей в кэше загруженных и ошибочных изображений.
@@ -87,7 +87,9 @@ const touchCacheEntry = <T>(cache: Map<string, T>, key: string, value: T) => {
  * ```
  */
 export const normalizeSrcSet = (srcSet?: TImageSrcSet): string | undefined => {
-	if (!srcSet) return undefined;
+	if (!srcSet) {
+		return undefined;
+	}
 
 	if (typeof srcSet === "string") {
 		return srcSet;
@@ -111,27 +113,6 @@ export const normalizeSrcSet = (srcSet?: TImageSrcSet): string | undefined => {
 		})
 		.join(", ");
 };
-
-/**
- * Параметры для создания ключа кэша изображения.
- *
- * @remarks
- * Ключ кэша должен уникально идентифицировать не только URL изображения (`src`),
- * но и весь контекст его загрузки: адаптивные наборы (`srcSet`), размеры (`sizes`)
- * и альтернативные источники (`sources`). Это важно, потому что один и тот же `src`
- * может использоваться с разными адаптивными источниками и иметь разный результат загрузки.
- *
- * @property src - URL основного изображения.
- * @property srcSet - Адаптивный набор изображений.
- * @property sizes - Размеры изображения для разных условий.
- * @property sources - Альтернативные источники для элемента `<picture>`.
- */
-export interface CreateImageCacheKeyParams {
-	src: string;
-	srcSet?: TImageSrcSet;
-	sizes?: string;
-	sources?: IImageSource[];
-}
 
 /**
  * Создает уникальный ключ кэша для изображения на основе его параметров загрузки.
@@ -161,7 +142,7 @@ export const createImageCacheKey = ({
 	srcSet,
 	sizes,
 	sources,
-}: CreateImageCacheKeyParams): string => {
+}: ICreateImageCacheKeyParams): string => {
 	const normalizedSources = sources?.map((source) => ({
 		...source,
 		srcSet: normalizeSrcSet(source.srcSet),

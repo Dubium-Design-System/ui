@@ -66,7 +66,7 @@ export type TIconLoader = () => Promise<TIconModule>;
  * };
  * ```
  */
-export type TIconRegistry = Record<string, TIconLoader>;
+export type TIconRegistry = Readonly<Record<string, TIconLoader>>;
 
 /**
  * Тип допустимых имён иконок.

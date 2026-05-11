@@ -37,76 +37,68 @@ export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	preventDefault?: boolean;
 
 	/**
-	 * Вариант стилизации кнопки.
+	 * Растягивать ли кнопку на всю доступную ширину контейнера.
 	 *
-	 * @defaultValue undefined
+	 * @defaultValue false
 	 *
 	 * @example
 	 * ```tsx
-	 * <Button variant="primary">Primary Button</Button>
-	 * <Button variant="secondary">Secondary Button</Button>
-	 * <Button variant="outline">Outline Button</Button>
-	 * <Button variant="link">Link Button</Button>
+	 * <Button fluid>Full-width button</Button>
 	 * ```
 	 */
-	variant?:
-		| "primary"
-		| "secondary"
-		| "outline"
-		| "link"
-		| "primary-alt"
-		| "primary-black"
-		| "primary-white";
-
 	fluid?: boolean;
 }
 
 /**
  * Универсальный компонент кнопки с поддержкой всех стандартных HTML-атрибутов.
  *
+ * @remarks
  * Компонент `Button` используется для выполнения действий при клике
  * и поддерживает все стандартные свойства HTML-кнопок.
  *
- * **Примеры использования:**
+ * Компонент обёрнут в `React.memo` для оптимизации производительности.
  *
- * — Простое использование
- * `<Button onClick={() => console.log("Clicked")}>Click me</Button>`
+ * @param props - Пропсы компонента, расширяющие {@link IButtonProps | интерфейс IButtonProps}.
+ * @param props.className - Дополнительный CSS-класс для кастомизации стилей.
+ * @param props.children - Содержимое кнопки (текст, иконки и т.д.).
+ * @param props.onClick - Обработчик события клика.
+ * @param props.stopPropagation - Останавливать ли всплытие события `click`. По умолчанию `false`.
+ * @param props.preventDefault - Предотвращать ли действие по умолчанию для события `click`. По умолчанию `false`.
+ * @param props.fluid - Растягивать ли кнопку на всю доступную ширину контейнера. По умолчанию `false`.
+ * @param props... - Все остальные стандартные атрибуты HTML-кнопки (type, disabled, title и т.д.).
  *
- * — С остановкой всплытия
- * `<Button stopPropagation onClick={() => console.log("Clicked")}>
- *   Click me (no propagation)
- * </Button>`
+ * @returns React-элемент кнопки (`<button>`).
  *
- * — Отправка формы
- * `<Button type="submit">Submit Form</Button>`
- *
- * **Основные пропсы:**
- * - `className` — дополнительный CSS-класс.
- * - `preventDefault` - предотвращает действие по умолчанию.
- * - `stopPropagation` — останавливает всплытие клика.
- * - `onClick` — обработчик события клика.
- *
- * @component
- * @example
- * // Простое использование
+ * @example Простое использование
+ * ```tsx
  * <Button onClick={() => console.log("Clicked")}>Click me</Button>
+ * ```
  *
- * @example
- * // С остановкой всплытия
+ * @example С остановкой всплытия
+ * ```tsx
  * <Button stopPropagation onClick={() => console.log("Clicked")}>
  *   Click me (no propagation)
  * </Button>
+ * ```
  *
- * @example
- * // Отправка формы
+ * @example Отправка формы
+ * ```tsx
  * <Button type="submit">Submit Form</Button>
+ * ```
+ *
+ * @example Растянутая кнопка
+ * ```tsx
+ * <Button fluid>Full-width button</Button>
+ * ```
+ *
+ * @see {@link IButtonProps} для подробного описания пропсов.
+ * @component
  */
 
 export const Button = memo(
 	({
 		className,
 		children,
-		variant = undefined,
 		onClick,
 		stopPropagation = false,
 		preventDefault = false,
@@ -131,17 +123,6 @@ export const Button = memo(
 			<button
 				className={clsx(
 					style.button,
-					{
-						[style.button_primary]: variant === "primary",
-						[style.button_primary_alt]: variant === "primary-alt",
-						[style.button_primary_white]:
-							variant === "primary-white",
-						[style.button_primary_black]:
-							variant === "primary-black",
-						[style.button_secondary]: variant === "secondary",
-						[style.button_outline]: variant === "outline",
-						[style.button_link]: variant === "link",
-					},
 					{
 						[style.fluid]: fluid,
 					},

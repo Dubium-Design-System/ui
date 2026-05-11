@@ -15,6 +15,8 @@ import {
 	markImageAsLoaded,
 	normalizeSrcSet,
 } from "./Image.utils";
+import styles from "./Image.module.scss";
+import { clsx } from "clsx";
 
 /**
  * Статус загрузки изображения.
@@ -93,7 +95,7 @@ export const Image = memo(
 		height = "100%",
 
 		className,
-		style,
+		style: containerStyleProp,
 
 		imgClassName,
 		imgStyle,
@@ -169,11 +171,13 @@ export const Image = memo(
 
 			if (isImageLoaded(cacheKey)) {
 				setStatus("loaded");
+
 				return;
 			}
 
 			if (isImageFailed(cacheKey)) {
 				setStatus("error");
+
 				return;
 			}
 
@@ -211,9 +215,33 @@ export const Image = memo(
 				.filter((source) => Boolean(source.srcSet));
 		}, [sources]);
 
+		/**
+		 * Активные источники для элемента `<picture>`.
+		 *
+		 * @remarks
+		 * Содержит подмассив `normalizedSources`, начиная с индекса `skippedSourcesCount`.
+		 * Используется для реализации последовательного fallback: при ошибке загрузки
+		 * очередного источника он исключается из активных, и следующий источник становится текущим.
+		 */
 		const activeSources = useMemo(() => {
 			return normalizedSources.slice(skippedSourcesCount);
 		}, [normalizedSources, skippedSourcesCount]);
+
+		/**
+		 * CSS-класс контейнера изображения.
+		 *
+		 * @remarks
+		 * Формируется с помощью `clsx` из базового класса `styles.container`,
+		 * модификатора `container_withAspectRatio` (если задано явное соотношение сторон),
+		 * и пользовательского класса `className`.
+		 */
+		const containerClassName = useMemo(() => {
+			return clsx(
+				styles.container,
+				aspectRatio !== "auto" && styles.container_withAspectRatio,
+				className,
+			);
+		}, [aspectRatio, className]);
 
 		/**
 		 * Стили контейнера изображения.
@@ -227,9 +255,29 @@ export const Image = memo(
 				width,
 				height,
 				aspectRatio,
-				customStyle: style,
+				objectFit,
+				objectPosition,
+				customStyle: containerStyleProp,
 			});
-		}, [width, height, aspectRatio, style]);
+		}, [
+			width,
+			height,
+			aspectRatio,
+			objectFit,
+			objectPosition,
+			containerStyleProp,
+		]);
+
+		/**
+		 * CSS-класс элемента `<img>`.
+		 *
+		 * @remarks
+		 * Формируется с помощью `clsx` из базового класса `styles.image`
+		 * и пользовательского класса `imgClassName`.
+		 */
+		const imageClassName = useMemo(() => {
+			return clsx(styles.image, imgClassName);
+		}, [imgClassName]);
 
 		/**
 		 * Стили самого изображения (`<img>`).
@@ -242,15 +290,10 @@ export const Image = memo(
 		 */
 		const imageStyle = useMemo(() => {
 			return getImageStyle({
-				aspectRatio,
-				objectFit,
-				objectPosition,
-				customStyle: {
-					...imgStyle,
-					opacity: status === "loaded" ? imgStyle?.opacity : 0,
-				},
+				opacity: status === "loaded" ? (imgStyle?.opacity ?? 1) : 0,
+				customStyle: imgStyle,
 			});
-		}, [aspectRatio, objectFit, objectPosition, imgStyle, status]);
+		}, [imgStyle, status]);
 
 		/**
 		 * Обработчик успешной загрузки изображения.
@@ -263,6 +306,7 @@ export const Image = memo(
 		 */
 		const handleLoad: ReactEventHandler<HTMLImageElement> = (event) => {
 			markImageAsLoaded(cacheKey);
+
 			setStatus("loaded");
 
 			if (onLoad) {
@@ -284,11 +328,14 @@ export const Image = memo(
 		const handleError: ReactEventHandler<HTMLImageElement> = (event) => {
 			if (skippedSourcesCount < normalizedSources.length) {
 				setSkippedSourcesCount((prev) => prev + 1);
+
 				setStatus("loading");
+
 				return;
 			}
 
 			markImageAsFailed(cacheKey);
+
 			setStatus("error");
 
 			if (onError) {
@@ -298,43 +345,35 @@ export const Image = memo(
 
 		/**
 		 * Флаг, указывающий нужно ли показывать плейсхолдер.
+		 *
+		 * @remarks
+		 * Возвращает `true`, когда статус загрузки равен `"loading"`.
+		 * В этом случае отображается компонент-плейсхолдер (blur-изображение или кастомный loader).
 		 */
 		const shouldShowPlaceholder = status === "loading";
 
 		/**
 		 * Флаг, указывающий нужно ли показывать компонент ошибки.
+		 *
+		 * @remarks
+		 * Возвращает `true`, когда статус загрузки равен `"error"`.
+		 * В этом случае отображается компонент ошибки (`errorComponent`) или fallback с текстом `alt`.
 		 */
 		const shouldShowError = status === "error";
 
 		return (
 			<div
-				className={className}
+				className={containerClassName}
 				style={containerStyle}
 				aria-busy={status === "loading" || undefined}
 			>
 				{shouldShowPlaceholder ? (
-					<div
-						style={{
-							position: "absolute",
-							inset: 0,
-							width: "100%",
-							height: "100%",
-						}}
-						aria-hidden="true"
-					>
+					<div className={styles.placeholder} aria-hidden="true">
 						{placeholder === "blur" && blurDataURL ? (
 							<img
 								src={blurDataURL}
 								alt=""
-								style={{
-									display: "block",
-									width: "100%",
-									height: "100%",
-									objectFit,
-									objectPosition,
-									filter: "blur(10px)",
-									transform: "scale(1.03)",
-								}}
+								className={styles.placeholder_blur}
 							/>
 						) : (
 							loader
@@ -347,11 +386,7 @@ export const Image = memo(
 				) : (
 					<picture
 						key={`sources-offset-${skippedSourcesCount}`}
-						style={{
-							display: "block",
-							width: "100%",
-							height: "100%",
-						}}
+						className={styles.picture}
 					>
 						{activeSources.map((source, index) => (
 							<source
@@ -372,7 +407,7 @@ export const Image = memo(
 
 						<img
 							{...imgProps}
-							className={imgClassName}
+							className={imageClassName}
 							src={src}
 							srcSet={normalizedImgSrcSet}
 							sizes={sizes}

@@ -1,6 +1,30 @@
 import type { CSSProperties } from "react";
 
 /**
+ * Тип, представляющий CSS-переменные для компонента Image.
+ *
+ * @remarks
+ * Расширяет стандартный тип CSSProperties, добавляя кастомные CSS-переменные
+ * для управления отображением изображения. Эти переменные используются
+ * для передачи значений из JavaScript в CSS.
+ *
+ * @property --dui-image-width - Ширина изображения. Может быть числом (пиксели), строкой ("100%", "auto") или undefined.
+ * @property --dui-image-height - Высота изображения. Может быть числом (пиксели), строкой ("100%", "auto") или undefined.
+ * @property --dui-image-aspect-ratio - Соотношение сторон в формате "width/height" (например, "16/9") или undefined.
+ * @property --dui-image-object-fit - Определяет, как изображение вписывается в контейнер (аналогично CSS свойству object-fit).
+ * @property --dui-image-object-position - Позиционирование изображения внутри контейнера (аналогично CSS свойству object-position).
+ * @property --dui-image-opacity - Прозрачность изображения (от 0 до 1).
+ */
+type TImageCSSVariables = CSSProperties & {
+	"--dui-image-width"?: CSSProperties["width"];
+	"--dui-image-height"?: CSSProperties["height"];
+	"--dui-image-aspect-ratio"?: string;
+	"--dui-image-object-fit"?: CSSProperties["objectFit"];
+	"--dui-image-object-position"?: CSSProperties["objectPosition"];
+	"--dui-image-opacity"?: CSSProperties["opacity"];
+};
+
+/**
  * Параметры для генерации стилей контейнера изображения.
  *
  * @remarks
@@ -10,12 +34,16 @@ import type { CSSProperties } from "react";
  * @property width - Ширина контейнера. Может быть числом (пиксели), строкой ("100%", "auto") или undefined.
  * @property height - Высота контейнера. Может быть числом (пиксели), строкой ("100%", "auto") или undefined.
  * @property aspectRatio - Соотношение сторон в формате "width/height" (например, "16/9") или "auto".
+ * @property objectFit - Определяет, как изображение вписывается в контейнер (аналогично CSS свойству object-fit).
+ * @property objectPosition - Позиционирование изображения внутри контейнера (аналогично CSS свойству object-position).
  * @property customStyle - Дополнительные пользовательские стили, которые будут объединены с базовыми.
  */
-interface GetContainerStyleParams {
+interface IGetContainerStyleParams {
 	width: CSSProperties["width"];
 	height: CSSProperties["height"];
 	aspectRatio: string;
+	objectFit: CSSProperties["objectFit"];
+	objectPosition: CSSProperties["objectPosition"];
 	customStyle?: CSSProperties;
 }
 
@@ -24,17 +52,16 @@ interface GetContainerStyleParams {
  *
  * @remarks
  * Используется функцией {@link getImageStyle} для создания CSS-стилей
- * элемента <img> внутри контейнера.
+ * элемента <img> внутри контейнера. Основное назначение - управление
+ * прозрачностью изображения с возможностью добавления дополнительных стилей.
  *
- * @property aspectRatio - Соотношение сторон в формате "width/height" (например, "16/9") или "auto".
- * @property objectFit - Определяет, как изображение вписывается в контейнер (аналогично CSS свойству object-fit).
- * @property objectPosition - Позиционирование изображения внутри контейнера (аналогично CSS свойству object-position).
+ * @property opacity - Прозрачность изображения (от 0 до 1).
  * @property customStyle - Дополнительные пользовательские стили, которые будут объединены с базовыми.
+ *   Примечание: если в customStyle передается opacity, оно будет проигнорировано,
+ *   так как opacity управляется отдельным параметром.
  */
-interface GetImageStyleParams {
-	aspectRatio: string;
-	objectFit: CSSProperties["objectFit"];
-	objectPosition: CSSProperties["objectPosition"];
+interface IGetImageStyleParams {
+	opacity: CSSProperties["opacity"];
 	customStyle?: CSSProperties;
 }
 
@@ -70,7 +97,8 @@ const normalizeSize = (
  *
  * @remarks
  * Создает объект стилей, который обеспечивает корректное отображение контейнера
- * с заданными размерами, соотношением сторон и дополнительными пользовательскими стилями.
+ * с заданными размерами, соотношением сторон, параметрами object-fit/object-position
+ * и дополнительными пользовательскими стилями.
  * Контейнер позиционируется относительно, имеет скрытое переполнение и максимальные размеры 100%.
  *
  * @param params - Параметры стилей контейнера.
@@ -82,6 +110,8 @@ const normalizeSize = (
  *   width: 300,
  *   height: 200,
  *   aspectRatio: "16/9",
+ *   objectFit: "cover",
+ *   objectPosition: "center",
  *   customStyle: { borderRadius: "8px" }
  * });
  * ```
@@ -90,17 +120,17 @@ export const getContainerStyle = ({
 	width,
 	height,
 	aspectRatio,
+	objectFit,
+	objectPosition,
 	customStyle,
-}: GetContainerStyleParams): CSSProperties => {
+}: IGetContainerStyleParams): TImageCSSVariables => {
 	return {
-		position: "relative",
-		display: "block",
-		overflow: "hidden",
-		width: normalizeSize(width),
-		height: normalizeSize(height),
-		aspectRatio: aspectRatio !== "auto" ? aspectRatio : undefined,
-		maxWidth: "100%",
-		maxHeight: "100%",
+		"--dui-image-width": normalizeSize(width),
+		"--dui-image-height": normalizeSize(height),
+		"--dui-image-aspect-ratio":
+			aspectRatio !== "auto" ? aspectRatio : undefined,
+		"--dui-image-object-fit": objectFit,
+		"--dui-image-object-position": objectPosition,
 		...customStyle,
 	};
 };
@@ -109,9 +139,11 @@ export const getContainerStyle = ({
  * Генерирует CSS-стили для самого изображения.
  *
  * @remarks
- * Создает объект стилей, который обеспечивает корректное отображение изображения
- * внутри контейнера с заданными параметрами object-fit, object-position и соотношением сторон.
- * Изображение занимает 100% ширины и высоты контейнера, имеет плавный переход прозрачности.
+ * Создает объект стилей, который управляет прозрачностью изображения
+ * и позволяет добавить дополнительные CSS-свойства. Основная задача -
+ * установить CSS-переменную --dui-image-opacity и объединить с пользовательскими стилями.
+ * Примечание: если в customStyle передается opacity, оно будет исключено,
+ * чтобы избежать конфликта с основным параметром opacity.
  *
  * @param params - Параметры стилей изображения.
  * @returns Объект CSS-стилей для применения к элементу <img>.
@@ -119,27 +151,21 @@ export const getContainerStyle = ({
  * @example
  * ```ts
  * const imageStyles = getImageStyle({
- *   aspectRatio: "16/9",
- *   objectFit: "cover",
- *   objectPosition: "center",
- *   customStyle: { filter: "brightness(0.9)" }
+ *   opacity: 0.8,
+ *   customStyle: { filter: "brightness(0.9)", transition: "opacity 0.3s" }
  * });
  * ```
  */
 export const getImageStyle = ({
-	aspectRatio,
-	objectFit,
-	objectPosition,
+	opacity,
 	customStyle,
-}: GetImageStyleParams): CSSProperties => {
+}: IGetImageStyleParams): TImageCSSVariables => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	const { opacity: _customOpacity, ...customStyleWithoutOpacity } =
+		customStyle ?? {};
+
 	return {
-		display: "block",
-		width: "100%",
-		height: "100%",
-		aspectRatio: aspectRatio !== "auto" ? aspectRatio : undefined,
-		objectFit,
-		objectPosition,
-		transition: "opacity 150ms ease",
-		...customStyle,
+		...customStyleWithoutOpacity,
+		"--dui-image-opacity": opacity,
 	};
 };

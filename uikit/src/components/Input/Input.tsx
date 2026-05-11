@@ -95,15 +95,15 @@ const InputBase = forwardRef<HTMLInputElement, IInputProps>(
 				data-invalid={isInvalid || undefined}
 				data-required={required || undefined}
 			>
-				{label && (
+				{label ? (
 					<label htmlFor={inputId} className={labelClassName}>
 						<span>{label}</span>
 						{required && <span aria-hidden="true"> *</span>}
 					</label>
-				)}
+				) : null}
 
 				<div className={wrapperClassName}>
-					{before && <span aria-hidden="true">{before}</span>}
+					{before ? <span aria-hidden="true">{before}</span> : null}
 
 					<input
 						{...props}
@@ -119,16 +119,16 @@ const InputBase = forwardRef<HTMLInputElement, IInputProps>(
 						className={inputClassName}
 					/>
 
-					{after && <span aria-hidden="true">{after}</span>}
+					{after ? <span aria-hidden="true">{after}</span> : null}
 				</div>
 
-				{hint && <div id={hintId}>{hint}</div>}
+				{hint ? <div id={hintId}>{hint}</div> : null}
 
-				{error && (
+				{error ? (
 					<div id={errorId} role="alert">
 						{error}
 					</div>
-				)}
+				) : null}
 			</div>
 		);
 	},

@@ -1,4 +1,4 @@
-import { type ReactNode, useId, useMemo, useState } from "react";
+import { Activity, type ReactNode, useId, useMemo, useState } from "react";
 import { Image } from "../components/Image";
 
 const PREVIEW_BLUR =
@@ -9,7 +9,7 @@ interface AccordionExample {
 	title: string;
 	description?: string;
 	code: string;
-	render: () => ReactNode;
+	render: (isOpen: boolean) => ReactNode;
 }
 
 const Code = ({ children }: { children: ReactNode }) => {
@@ -70,7 +70,7 @@ interface AccordionItemProps {
 	isOpen: boolean;
 	wasOpened: boolean;
 	onToggle: () => void;
-	render: () => ReactNode;
+	render: (isOpen: boolean) => ReactNode;
 }
 
 const AccordionItem = ({
@@ -166,7 +166,7 @@ const AccordionItem = ({
 				</span>
 			</button>
 
-			{isOpen ? (
+			<Activity mode={isOpen ? "visible" : "hidden"}>
 				<div
 					id={panelId}
 					role="region"
@@ -184,12 +184,12 @@ const AccordionItem = ({
 							borderRadius: 10,
 						}}
 					>
-						{render()}
+						{render(isOpen)}
 					</div>
 
 					<Code>{code}</Code>
 				</div>
-			) : null}
+			</Activity>
 		</section>
 	);
 };
@@ -242,16 +242,17 @@ export const ImageDocs = () => {
 	height="auto"
 	objectFit="cover"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1018/600/400.jpg"
-						alt="Горный пейзаж"
-						aspectRatio="16/9"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1018/600/400.jpg"
+							alt="Горный пейзаж"
+							aspectRatio="16/9"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+						/>
+					) : null,
 			},
 			{
 				id: "webp",
@@ -272,22 +273,23 @@ export const ImageDocs = () => {
 	height="auto"
 	objectFit="cover"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1025/600/400.jpg"
-						alt="Собака"
-						sources={[
-							{
-								type: "image/webp",
-								srcSet: "https://picsum.photos/id/1025/600/400.webp",
-							},
-						]}
-						aspectRatio="3/2"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1025/600/400.jpg"
+							alt="Собака"
+							sources={[
+								{
+									type: "image/webp",
+									srcSet: "https://picsum.photos/id/1025/600/400.webp",
+								},
+							]}
+							aspectRatio="3/2"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+						/>
+					) : null,
 			},
 			{
 				id: "avif-webp-fallback",
@@ -312,26 +314,27 @@ export const ImageDocs = () => {
 	height="auto"
 	objectFit="cover"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1062/600/450.jpg"
-						alt="Изображение товара"
-						sources={[
-							{
-								type: "image/avif",
-								srcSet: "https://picsum.photos/id/1062/600/450.avif",
-							},
-							{
-								type: "image/webp",
-								srcSet: "https://picsum.photos/id/1062/600/450.webp",
-							},
-						]}
-						aspectRatio="4/3"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1062/600/450.jpg"
+							alt="Изображение товара"
+							sources={[
+								{
+									type: "image/avif",
+									srcSet: "https://picsum.photos/id/1062/600/450.avif",
+								},
+								{
+									type: "image/webp",
+									srcSet: "https://picsum.photos/id/1062/600/450.webp",
+								},
+							]}
+							aspectRatio="4/3"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+						/>
+					) : null,
 			},
 			{
 				id: "responsive-img",
@@ -352,31 +355,32 @@ export const ImageDocs = () => {
 	height="auto"
 	objectFit="cover"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1035/600/338.jpg"
-						alt="Адаптивное изображение"
-						srcSet={[
-							{
-								src: "https://picsum.photos/id/1035/320/180.jpg",
-								width: 320,
-							},
-							{
-								src: "https://picsum.photos/id/1035/600/338.jpg",
-								width: 600,
-							},
-							{
-								src: "https://picsum.photos/id/1035/1200/675.jpg",
-								width: 1200,
-							},
-						]}
-						sizes="(max-width: 768px) 100vw, 600px"
-						aspectRatio="16/9"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1035/600/338.jpg"
+							alt="Адаптивное изображение"
+							srcSet={[
+								{
+									src: "https://picsum.photos/id/1035/320/180.jpg",
+									width: 320,
+								},
+								{
+									src: "https://picsum.photos/id/1035/600/338.jpg",
+									width: 600,
+								},
+								{
+									src: "https://picsum.photos/id/1035/1200/675.jpg",
+									width: 1200,
+								},
+							]}
+							sizes="(max-width: 768px) 100vw, 600px"
+							aspectRatio="16/9"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+						/>
+					) : null,
 			},
 			{
 				id: "responsive-picture",
@@ -417,69 +421,70 @@ export const ImageDocs = () => {
 	height="auto"
 	objectFit="cover"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1043/600/338.jpg"
-						alt="Карточка"
-						sources={[
-							{
-								type: "image/avif",
-								srcSet: [
-									{
-										src: "https://picsum.photos/id/1043/320/180.avif",
-										width: 320,
-									},
-									{
-										src: "https://picsum.photos/id/1043/600/338.avif",
-										width: 600,
-									},
-									{
-										src: "https://picsum.photos/id/1043/1200/675.avif",
-										width: 1200,
-									},
-								],
-								sizes: "(max-width: 768px) 100vw, 600px",
-							},
-							{
-								type: "image/webp",
-								srcSet: [
-									{
-										src: "https://picsum.photos/id/1043/320/180.webp",
-										width: 320,
-									},
-									{
-										src: "https://picsum.photos/id/1043/600/338.webp",
-										width: 600,
-									},
-									{
-										src: "https://picsum.photos/id/1043/1200/675.webp",
-										width: 1200,
-									},
-								],
-								sizes: "(max-width: 768px) 100vw, 600px",
-							},
-						]}
-						srcSet={[
-							{
-								src: "https://picsum.photos/id/1043/320/180.jpg",
-								width: 320,
-							},
-							{
-								src: "https://picsum.photos/id/1043/600/338.jpg",
-								width: 600,
-							},
-							{
-								src: "https://picsum.photos/id/1043/1200/675.jpg",
-								width: 1200,
-							},
-						]}
-						sizes="(max-width: 768px) 100vw, 600px"
-						aspectRatio="16/9"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1043/600/338.jpg"
+							alt="Карточка"
+							sources={[
+								{
+									type: "image/avif",
+									srcSet: [
+										{
+											src: "https://picsum.photos/id/1043/320/180.avif",
+											width: 320,
+										},
+										{
+											src: "https://picsum.photos/id/1043/600/338.avif",
+											width: 600,
+										},
+										{
+											src: "https://picsum.photos/id/1043/1200/675.avif",
+											width: 1200,
+										},
+									],
+									sizes: "(max-width: 768px) 100vw, 600px",
+								},
+								{
+									type: "image/webp",
+									srcSet: [
+										{
+											src: "https://picsum.photos/id/1043/320/180.webp",
+											width: 320,
+										},
+										{
+											src: "https://picsum.photos/id/1043/600/338.webp",
+											width: 600,
+										},
+										{
+											src: "https://picsum.photos/id/1043/1200/675.webp",
+											width: 1200,
+										},
+									],
+									sizes: "(max-width: 768px) 100vw, 600px",
+								},
+							]}
+							srcSet={[
+								{
+									src: "https://picsum.photos/id/1043/320/180.jpg",
+									width: 320,
+								},
+								{
+									src: "https://picsum.photos/id/1043/600/338.jpg",
+									width: 600,
+								},
+								{
+									src: "https://picsum.photos/id/1043/1200/675.jpg",
+									width: 1200,
+								},
+							]}
+							sizes="(max-width: 768px) 100vw, 600px"
+							aspectRatio="16/9"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+						/>
+					) : null,
 			},
 			{
 				id: "art-direction",
@@ -511,33 +516,34 @@ export const ImageDocs = () => {
 	height="auto"
 	objectFit="cover"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1050/900/506.jpg"
-						alt="Главный баннер"
-						sources={[
-							{
-								media: "(max-width: 767px)",
-								type: "image/webp",
-								srcSet: "https://picsum.photos/id/1050/500/700.webp",
-							},
-							{
-								media: "(max-width: 767px)",
-								type: "image/jpeg",
-								srcSet: "https://picsum.photos/id/1050/500/700.jpg",
-							},
-							{
-								media: "(min-width: 768px)",
-								type: "image/webp",
-								srcSet: "https://picsum.photos/id/1050/900/506.webp",
-							},
-						]}
-						aspectRatio="16/9"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1050/900/506.jpg"
+							alt="Главный баннер"
+							sources={[
+								{
+									media: "(max-width: 767px)",
+									type: "image/webp",
+									srcSet: "https://picsum.photos/id/1050/500/700.webp",
+								},
+								{
+									media: "(max-width: 767px)",
+									type: "image/jpeg",
+									srcSet: "https://picsum.photos/id/1050/500/700.jpg",
+								},
+								{
+									media: "(min-width: 768px)",
+									type: "image/webp",
+									srcSet: "https://picsum.photos/id/1050/900/506.webp",
+								},
+							]}
+							aspectRatio="16/9"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+						/>
+					) : null,
 			},
 			{
 				id: "density",
@@ -557,29 +563,30 @@ export const ImageDocs = () => {
 	objectFit="cover"
 	style={{ borderRadius: "50%" }}
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1005/64/64.jpg"
-						alt="Аватар пользователя"
-						srcSet={[
-							{
-								src: "https://picsum.photos/id/1005/64/64.jpg",
-								density: 1,
-							},
-							{
-								src: "https://picsum.photos/id/1005/128/128.jpg",
-								density: 2,
-							},
-						]}
-						aspectRatio="1/1"
-						width={64}
-						height={64}
-						objectFit="cover"
-						style={{
-							borderRadius: "50%",
-						}}
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1005/64/64.jpg"
+							alt="Аватар пользователя"
+							srcSet={[
+								{
+									src: "https://picsum.photos/id/1005/64/64.jpg",
+									density: 1,
+								},
+								{
+									src: "https://picsum.photos/id/1005/128/128.jpg",
+									density: 2,
+								},
+							]}
+							aspectRatio="1/1"
+							width={64}
+							height={64}
+							objectFit="cover"
+							style={{
+								borderRadius: "50%",
+							}}
+						/>
+					) : null,
 			},
 			{
 				id: "blur",
@@ -596,18 +603,19 @@ export const ImageDocs = () => {
 	placeholder="blur"
 	blurDataURL="${PREVIEW_BLUR}"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1067/600/400.jpg"
-						alt="Изображение с blur placeholder"
-						aspectRatio="3/2"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-						placeholder="blur"
-						blurDataURL={PREVIEW_BLUR}
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1067/600/400.jpg"
+							alt="Изображение с blur placeholder"
+							aspectRatio="3/2"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+							placeholder="blur"
+							blurDataURL={PREVIEW_BLUR}
+						/>
+					) : null,
 			},
 			{
 				id: "loader",
@@ -623,17 +631,18 @@ export const ImageDocs = () => {
 	objectFit="cover"
 	loader={<CustomLoader />}
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1074/600/400.jpg"
-						alt="Изображение с loader"
-						aspectRatio="3/2"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-						loader={<CustomLoader />}
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1074/600/400.jpg"
+							alt="Изображение с loader"
+							aspectRatio="3/2"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+							loader={<CustomLoader />}
+						/>
+					) : null,
 			},
 			{
 				id: "error",
@@ -653,32 +662,33 @@ export const ImageDocs = () => {
 		</div>
 	}
 />`,
-				render: () => (
-					<Image
-						src="/broken-image.jpg"
-						alt="Сломанное изображение"
-						aspectRatio="16/9"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-						errorComponent={
-							<div
-								style={{
-									display: "grid",
-									placeItems: "center",
-									minHeight: 180,
-									padding: 16,
-									background: "#fff4f4",
-									color: "#a40000",
-									border: "1px solid #ffd1d1",
-									borderRadius: 8,
-								}}
-							>
-								Ошибка загрузки изображения
-							</div>
-						}
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="/broken-image.jpg"
+							alt="Сломанное изображение"
+							aspectRatio="16/9"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+							errorComponent={
+								<div
+									style={{
+										display: "grid",
+										placeItems: "center",
+										minHeight: 180,
+										padding: 16,
+										background: "#fff4f4",
+										color: "#a40000",
+										border: "1px solid #ffd1d1",
+										borderRadius: 8,
+									}}
+								>
+									Ошибка загрузки изображения
+								</div>
+							}
+						/>
+					) : null,
 			},
 			{
 				id: "container-img-props",
@@ -704,27 +714,28 @@ export const ImageDocs = () => {
 		filter: "contrast(1.05)",
 	}}
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1084/600/338.jpg"
-						alt="Карточка товара"
-						aspectRatio="16/9"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-						objectPosition="center"
-						className="image-container"
-						style={{
-							borderRadius: 12,
-							overflow: "hidden",
-							border: "2px solid #ccc",
-						}}
-						imgClassName="image-element"
-						imgStyle={{
-							filter: "contrast(1.05)",
-						}}
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1084/600/338.jpg"
+							alt="Карточка товара"
+							aspectRatio="16/9"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+							objectPosition="center"
+							className="image-container"
+							style={{
+								borderRadius: 12,
+								overflow: "hidden",
+								border: "2px solid #ccc",
+							}}
+							imgClassName="image-element"
+							imgStyle={{
+								filter: "contrast(1.05)",
+							}}
+						/>
+					) : null,
 			},
 			{
 				id: "native-img-props",
@@ -746,23 +757,24 @@ export const ImageDocs = () => {
 	draggable={false}
 	data-testid="photo-image"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/1080/600/400.jpg"
-						alt="Фотография"
-						aspectRatio="3/2"
-						width="100%"
-						height="auto"
-						objectFit="cover"
-						loading="lazy"
-						decoding="async"
-						fetchPriority="low"
-						crossOrigin="anonymous"
-						referrerPolicy="no-referrer"
-						draggable={false}
-						data-testid="photo-image"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/1080/600/400.jpg"
+							alt="Фотография"
+							aspectRatio="3/2"
+							width="100%"
+							height="auto"
+							objectFit="cover"
+							loading="lazy"
+							decoding="async"
+							fetchPriority="low"
+							crossOrigin="anonymous"
+							referrerPolicy="no-referrer"
+							draggable={false}
+							data-testid="photo-image"
+						/>
+					) : null,
 			},
 			{
 				id: "events",
@@ -783,22 +795,24 @@ export const ImageDocs = () => {
 	console.log("Ошибка загрузки изображения");
 	}}
 />`,
-				render: () => (
+				render: (isOpen: boolean) => (
 					<Grid>
-						<Image
-							src="https://picsum.photos/id/1024/600/338.jpg"
-							alt="Фотография"
-							aspectRatio="16/9"
-							width="100%"
-							height="auto"
-							objectFit="cover"
-							onLoad={() => {
-								pushEvent("onLoad: изображение загружено");
-							}}
-							onError={() => {
-								pushEvent("onError: ошибка загрузки");
-							}}
-						/>
+						{isOpen ? (
+							<Image
+								src="https://picsum.photos/id/1024/600/338.jpg"
+								alt="Фотография"
+								aspectRatio="16/9"
+								width="100%"
+								height="auto"
+								objectFit="cover"
+								onLoad={() => {
+									pushEvent("onLoad: изображение загружено");
+								}}
+								onError={() => {
+									pushEvent("onError: ошибка загрузки");
+								}}
+							/>
+						) : null}
 
 						<div
 							style={{
@@ -846,17 +860,18 @@ export const ImageDocs = () => {
 	objectFit="cover"
 	aria-hidden="true"
 />`,
-				render: () => (
-					<Image
-						src="https://picsum.photos/id/111/900/120.jpg"
-						alt=""
-						aspectRatio="auto"
-						width="100%"
-						height={120}
-						objectFit="cover"
-						aria-hidden="true"
-					/>
-				),
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Image
+							src="https://picsum.photos/id/111/900/120.jpg"
+							alt=""
+							aspectRatio="auto"
+							width="100%"
+							height={120}
+							objectFit="cover"
+							aria-hidden="true"
+						/>
+					) : null,
 			},
 			{
 				id: "sizes",
@@ -891,36 +906,37 @@ export const ImageDocs = () => {
 		objectFit="cover"
 	/>
 </Grid>`,
-				render: () => (
-					<Grid>
-						<Image
-							src="https://picsum.photos/id/1011/300/300.jpg"
-							alt="Fixed size"
-							aspectRatio="1/1"
-							width={160}
-							height={160}
-							objectFit="cover"
-						/>
+				render: (isOpen: boolean) =>
+					isOpen ? (
+						<Grid>
+							<Image
+								src="https://picsum.photos/id/1011/300/300.jpg"
+								alt="Fixed size"
+								aspectRatio="1/1"
+								width={160}
+								height={160}
+								objectFit="cover"
+							/>
 
-						<Image
-							src="https://picsum.photos/id/1016/600/338.jpg"
-							alt="Fluid width"
-							aspectRatio="16/9"
-							width="100%"
-							height="auto"
-							objectFit="cover"
-						/>
+							<Image
+								src="https://picsum.photos/id/1016/600/338.jpg"
+								alt="Fluid width"
+								aspectRatio="16/9"
+								width="100%"
+								height="auto"
+								objectFit="cover"
+							/>
 
-						<Image
-							src="https://picsum.photos/id/1020/600/400.jpg"
-							alt="Auto aspect ratio"
-							aspectRatio="auto"
-							width="100%"
-							height={220}
-							objectFit="cover"
-						/>
-					</Grid>
-				),
+							<Image
+								src="https://picsum.photos/id/1020/600/400.jpg"
+								alt="Auto aspect ratio"
+								aspectRatio="auto"
+								width="100%"
+								height={220}
+								objectFit="cover"
+							/>
+						</Grid>
+					) : null,
 			},
 		],
 		[events],
