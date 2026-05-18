@@ -106,9 +106,6 @@ export const Image = memo(
 		placeholder = "empty",
 		blurDataURL,
 
-		loading = "lazy",
-		decoding = "async",
-
 		onLoad,
 		onError,
 
@@ -412,8 +409,6 @@ export const Image = memo(
 							srcSet={normalizedImgSrcSet}
 							sizes={sizes}
 							alt={alt}
-							loading={loading}
-							decoding={decoding}
 							style={imageStyle}
 							onLoad={handleLoad}
 							onError={handleError}
