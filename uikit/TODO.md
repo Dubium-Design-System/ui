@@ -47,6 +47,8 @@
 - [ ] Countdown
 - [ ] NumberAnimation (<https://www.naiveui.com/en-US/os-theme/components/number-animation>)
 - [ ] Marquee (<https://www.naiveui.com/en-US/os-theme/components/marquee>)
+- [ ] Добавить `...props` в Icon, в саму иконку, к примеру нужно для иконок с несколькими color
+- [ ] Добавить в Image работу с repiat svg и обычных картинок (Нужно для паттернов)
 
 ## Рефы, но не в Uikit
 

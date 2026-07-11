@@ -1,176 +1,163 @@
 import {
-	forwardRef,
-	useEffect,
-	useId,
-	useMemo,
-	useRef,
-	type ChangeEvent,
-	type FocusEvent,
-	type ForwardedRef,
-	type InputHTMLAttributes,
-	type KeyboardEvent,
-	type ReactNode,
+  forwardRef,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  type ChangeEvent,
+  type FocusEvent,
+  type ForwardedRef,
+  type InputHTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
 } from "react";
 import "./Input.scss";
 import classNames from "classnames";
 import { useCombinedRefs } from "@dubium/hooks";
 
 type InputType =
-	| "text"
-	| "number"
-	| "email"
-	| "tel"
-	| "url"
-	| "password"
-	| "date"
-	| "search";
+  "text" | "number" | "email" | "tel" | "url" | "password" | "date" | "search";
 type InputModeType =
-	| "text"
-	| "email"
-	| "tel"
-	| "url"
-	| "none"
-	| "numeric"
-	| "decimal"
-	| "search"
-	| undefined;
+  | "text"
+  | "email"
+  | "tel"
+  | "url"
+  | "none"
+  | "numeric"
+  | "decimal"
+  | "search"
+  | undefined;
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-	/**
-	 * Опциональная иконка для отображения внутри поля ввода
-	 *
-	 * @example
-	 * <Input icon={<SearchIcon />} />
-	 *
-	 * @defaultValue undefined
-	 */
-	icon?: ReactNode;
+  /**
+   * Опциональная иконка для отображения внутри поля ввода
+   *
+   * @example
+   * <Input icon={<SearchIcon />} />
+   *
+   * @defaultValue undefined
+   */
+  icon?: ReactNode;
 
-	/**
-	 * Имя поля input, используется как атрибут `name` и `id`
-	 *
-	 * @defaultValue undefined
-	 */
-	name?: string;
+  /**
+   * Имя поля input, используется как атрибут `name` и `id`
+   *
+   * @defaultValue undefined
+   */
+  name?: string;
 
-	/**
-	 * Тип поля input
-	 *
-	 * @defaultValue 'text'
-	 */
-	type?: InputType;
+  /**
+   * Тип поля input
+   *
+   * @defaultValue 'text'
+   */
+  type?: InputType;
 
-	/**
-	 * Текстовая метка для поля ввода
-	 *
-	 * @defaultValue undefined
-	 */
-	label?: string;
+  /**
+   * Текстовая метка для поля ввода
+   *
+   * @defaultValue undefined
+   */
+  label?: string;
 
-	/**
-	 * Текущее значение поля ввода (контролируемый компонент)
-	 */
-	value: string;
+  /**
+   * Текущее значение поля ввода (контролируемый компонент)
+   */
+  value: string;
 
-	/**
-	 * Обработчик изменения значения
-	 *
-	 * @param event - Событие изменения
-	 */
-	onChange?(event: ChangeEvent<HTMLInputElement>): void;
+  /**
+   * Обработчик изменения значения
+   *
+   * @param event - Событие изменения
+   */
+  onChange?(event: ChangeEvent<HTMLInputElement>): void;
 
-	/**
-	 * Обработчик ввода (срабатывает при каждом изменении)
-	 *
-	 * @param event - Событие ввода
-	 */
-	onInput?(event: ChangeEvent<HTMLInputElement>): void;
+  /**
+   * Обработчик ввода (срабатывает при каждом изменении)
+   *
+   * @param event - Событие ввода
+   */
+  onInput?(event: ChangeEvent<HTMLInputElement>): void;
 
-	/**
-	 * Обработчик потери фокуса
-	 *
-	 * @param event - Событие потери фокуса
-	 */
-	onBlur?(event?: FocusEvent<HTMLInputElement>): void;
+  /**
+   * Обработчик потери фокуса
+   *
+   * @param event - Событие потери фокуса
+   */
+  onBlur?(event?: FocusEvent<HTMLInputElement>): void;
 
-	/**
-	 * Обработчик получения фокуса
-	 *
-	 * @param event - Событие получения фокуса
-	 */
-	onFocus?(event?: FocusEvent<HTMLInputElement>): void;
+  /**
+   * Обработчик получения фокуса
+   *
+   * @param event - Событие получения фокуса
+   */
+  onFocus?(event?: FocusEvent<HTMLInputElement>): void;
 
-	/**
-	 * Подсказывающий текст при отсутствии значения
-	 *
-	 * @defaultValue undefined
-	 */
-	placeholder?: string;
+  /**
+   * Подсказывающий текст при отсутствии значения
+   *
+   * @defaultValue undefined
+   */
+  placeholder?: string;
 
-	/**
-	 * Обязательное ли поле для заполнения
-	 *
-	 * @defaultValue false
-	 */
-	required?: boolean;
+  /**
+   * Обязательное ли поле для заполнения
+   *
+   * @defaultValue false
+   */
+  required?: boolean;
 
-	/**
-	 * Валидационное состояние (ошибка)
-	 *
-	 * @defaultValue false
-	 */
-	error?: boolean;
+  /**
+   * Валидационное состояние (ошибка)
+   *
+   * @defaultValue false
+   */
+  error?: boolean;
 
-	/**
-	 * Заблокировано ли поле для ввода
-	 *
-	 * @defaultValue false
-	 */
-	disabled?: boolean;
+  /**
+   * Заблокировано ли поле для ввода
+   *
+   * @defaultValue false
+   */
+  disabled?: boolean;
 
-	/**
-	 * Подсказка для виртуальной клавиатуры о действии по Enter
-	 *
-	 * @defaultValue 'enter'
-	 */
-	enterKeyHint?:
-		| "enter"
-		| "next"
-		| "previous"
-		| "done"
-		| "go"
-		| "search"
-		| "send";
+  /**
+   * Подсказка для виртуальной клавиатуры о действии по Enter
+   *
+   * @defaultValue 'enter'
+   */
+  enterKeyHint?:
+    "enter" | "next" | "previous" | "done" | "go" | "search" | "send";
 
-	/**
-	 * Подсказка для виртуальной клавиатуры о типе вводимых данных
-	 *
-	 * @remarks
-	 * Если не указан, будет вычислен автоматически на основе type
-	 */
-	inputMode?: InputModeType;
+  /**
+   * Подсказка для виртуальной клавиатуры о типе вводимых данных
+   *
+   * @remarks
+   * Если не указан, будет вычислен автоматически на основе type
+   */
+  inputMode?: InputModeType;
 
-	/**
-	 * Автоматически установить фокус при монтировании
-	 *
-	 * @defaultValue false
-	 */
-	autoFocus?: boolean;
+  /**
+   * Автоматически установить фокус при монтировании
+   *
+   * @defaultValue false
+   */
+  autoFocus?: boolean;
 
-	/**
-	 * Обработчик нажатия клавиш
-	 *
-	 * @param event - Событие клавиатуры
-	 */
-	onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
+  /**
+   * Обработчик нажатия клавиш
+   *
+   * @param event - Событие клавиатуры
+   */
+  onKeyDown?(event: KeyboardEvent<HTMLInputElement>): void;
 
-	/**
-	 * Автоматически прокручивать страницу к полю при получении фокуса,
-	 * если поле не видно в области просмотра
-	 *
-	 * @defaultValue true
-	 */
-	scrollIntoViewOnFocus?: boolean;
+  /**
+   * Автоматически прокручивать страницу к полю при получении фокуса,
+   * если поле не видно в области просмотра
+   *
+   * @defaultValue true
+   */
+  scrollIntoViewOnFocus?: boolean;
 }
 
 /**
@@ -209,158 +196,155 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
  */
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-	(
-		{
-			icon,
-			name,
-			type = "text",
-			label,
-			value,
-			onChange,
-			onInput,
-			onBlur,
-			onFocus,
-			placeholder,
-			required = false,
-			error = false,
-			disabled = false,
-			inputMode,
-			enterKeyHint = "enter",
-			autoFocus = false,
-			onKeyDown,
-			scrollIntoViewOnFocus = false,
-			...props
-		},
-		ref: ForwardedRef<HTMLInputElement>
-	) => {
-		const localRef = useRef<HTMLInputElement>(null);
-		const combinedRef = useCombinedRefs(ref, localRef);
-		const fallbackId = useId();
-		const inputId = name || fallbackId;
+  (
+    {
+      icon,
+      name,
+      type = "text",
+      label,
+      value,
+      onChange,
+      onInput,
+      onBlur,
+      onFocus,
+      placeholder,
+      required = false,
+      error = false,
+      disabled = false,
+      inputMode,
+      enterKeyHint = "enter",
+      autoFocus = false,
+      onKeyDown,
+      scrollIntoViewOnFocus = false,
+      ...props
+    },
+    ref: ForwardedRef<HTMLInputElement>,
+  ) => {
+    const localRef = useRef<HTMLInputElement>(null);
+    const combinedRef = useCombinedRefs(ref, localRef);
+    const fallbackId = useId();
+    const inputId = name || fallbackId;
 
-		useEffect(() => {
-			if (value !== undefined && typeof onChange !== "function") {
-				console.warn(
-					'Input is a controlled component, but "onChange" is not provided.'
-				);
-			}
-		}, [value, onChange]);
+    useEffect(() => {
+      if (value !== undefined && typeof onChange !== "function") {
+        console.warn(
+          'Input is a controlled component, but "onChange" is not provided.',
+        );
+      }
+    }, [value, onChange]);
 
-		const computedInputMode = useMemo(() => {
-			if (inputMode) return inputMode;
+    const computedInputMode = useMemo(() => {
+      if (inputMode) return inputMode;
 
-			switch (type) {
-				case "number":
-					return "numeric";
-				case "tel":
-					return "tel";
-				case "email":
-					return "email";
-				case "url":
-					return "url";
-				default:
-					return undefined;
-			}
-		}, [type, inputMode]);
+      switch (type) {
+        case "number":
+          return "numeric";
+        case "tel":
+          return "tel";
+        case "email":
+          return "email";
+        case "url":
+          return "url";
+        default:
+          return undefined;
+      }
+    }, [type, inputMode]);
 
-		const scrollIfNeeded = () => {
-			const input = combinedRef.current;
-			if (!input) return;
+    const scrollIfNeeded = () => {
+      const input = combinedRef.current;
+      if (!input) return;
 
-			const rect = input.getBoundingClientRect();
-			const isVisible =
-				rect.top >= 0 &&
-				rect.left >= 0 &&
-				rect.bottom <=
-					(window.innerHeight ||
-						document.documentElement.clientHeight) &&
-				rect.right <=
-					(window.innerWidth || document.documentElement.clientWidth);
+      const rect = input.getBoundingClientRect();
+      const isVisible =
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <=
+          (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <=
+          (window.innerWidth || document.documentElement.clientWidth);
 
-			if (!isVisible) {
-				input.scrollIntoView({
-					behavior: "smooth",
-					block: "center",
-				});
-			}
-		};
+      if (!isVisible) {
+        input.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
+    };
 
-		const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
-			onFocus?.(event);
+    const handleFocus = (event: FocusEvent<HTMLInputElement>) => {
+      onFocus?.(event);
 
-			if (!scrollIntoViewOnFocus || disabled) return;
+      if (!scrollIntoViewOnFocus || disabled) return;
 
-			requestAnimationFrame(scrollIfNeeded);
-		};
+      requestAnimationFrame(scrollIfNeeded);
+    };
 
-		useEffect(() => {
-			if (
-				autoFocus &&
-				!disabled &&
-				combinedRef.current &&
-				scrollIntoViewOnFocus
-			) {
-				requestAnimationFrame(() => {
-					const input = combinedRef.current;
-					if (!input) return;
+    useEffect(() => {
+      if (
+        autoFocus &&
+        !disabled &&
+        combinedRef.current &&
+        scrollIntoViewOnFocus
+      ) {
+        requestAnimationFrame(() => {
+          const input = combinedRef.current;
+          if (!input) return;
 
-					input.focus();
-					scrollIfNeeded();
-				});
-			}
-		}, [autoFocus, disabled, combinedRef, scrollIntoViewOnFocus]);
+          input.focus();
+          scrollIfNeeded();
+        });
+      }
+    }, [autoFocus, disabled, combinedRef, scrollIntoViewOnFocus]);
 
-		const handleContainerClick = () => {
-			if (disabled) return;
-			combinedRef.current?.focus();
-		};
+    const handleContainerClick = () => {
+      if (disabled) return;
+      combinedRef.current?.focus();
+    };
 
-		return (
-			<div
-				className={classNames("form", {
-					error: error,
-					disabled: disabled,
-				})}
-				onClick={handleContainerClick}
-				role="group"
-				aria-disabled={disabled}
-			>
-				{label && (
-					<label className="label" htmlFor={inputId}>
-						{label}
-						{required ? (
-							<span style={{ marginLeft: "2px" }}>*</span>
-						) : null}
-					</label>
-				)}
-				<div className="container">
-					{icon && <span className="icon">{icon}</span>}
+    return (
+      <div
+        className={classNames("form", {
+          error: error,
+          disabled: disabled,
+        })}
+        onClick={handleContainerClick}
+        role="group"
+        aria-disabled={disabled}
+      >
+        {label && (
+          <label className="label" htmlFor={inputId}>
+            {label}
+            {required ? <span style={{ marginLeft: "2px" }}>*</span> : null}
+          </label>
+        )}
+        <div className="container">
+          {icon && <span className="icon">{icon}</span>}
 
-					<input
-						ref={combinedRef}
-						id={inputId}
-						className="input"
-						name={name}
-						type={type}
-						value={value}
-						onChange={onChange}
-						onInput={onInput}
-						onBlur={onBlur}
-						onFocus={handleFocus}
-						placeholder={placeholder}
-						required={required}
-						disabled={disabled}
-						enterKeyHint={enterKeyHint}
-						autoFocus={autoFocus}
-						inputMode={computedInputMode}
-						onKeyDown={onKeyDown}
-						aria-invalid={error || undefined}
-						{...props}
-					/>
-				</div>
-			</div>
-		);
-	}
+          <input
+            ref={combinedRef}
+            id={inputId}
+            className="input"
+            name={name}
+            type={type}
+            value={value}
+            onChange={onChange}
+            onInput={onInput}
+            onBlur={onBlur}
+            onFocus={handleFocus}
+            placeholder={placeholder}
+            required={required}
+            disabled={disabled}
+            enterKeyHint={enterKeyHint}
+            autoFocus={autoFocus}
+            inputMode={computedInputMode}
+            onKeyDown={onKeyDown}
+            aria-invalid={error || undefined}
+            {...props}
+          />
+        </div>
+      </div>
+    );
+  },
 );
 
 Input.displayName = "Input";

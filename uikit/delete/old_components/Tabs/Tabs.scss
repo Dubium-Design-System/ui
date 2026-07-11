@@ -1,72 +1,72 @@
 .tabs {
-	position: relative;
+  position: relative;
 
-	display: flex;
-	align-items: center;
-	column-gap: var(--space-sm);
+  display: flex;
+  align-items: center;
+  column-gap: var(--space-sm);
 
-	width: 100%;
+  width: 100%;
 
-	overflow-x: auto;
-	overflow-y: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
 
-	white-space: nowrap;
+  white-space: nowrap;
 
-	-webkit-overflow-scrolling: touch;
-	scrollbar-width: none;
-	-ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 
-	&:hover {
-		overscroll-behavior-y: contain;
-	}
+  &:hover {
+    overscroll-behavior-y: contain;
+  }
 
-	&::-webkit-scrollbar {
-		display: none;
-	}
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 .tab {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	column-gap: var(--space-sm);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: var(--space-sm);
 
-	min-width: 80px;
+  min-width: 80px;
 
-	padding: var(--space-sm);
+  padding: var(--space-sm);
 
-	position: relative;
-	z-index: 2;
+  position: relative;
+  z-index: 2;
 
-	font-size: 0.9em;
-	font-weight: var(--font-weight-medium);
-	white-space: nowrap;
-	letter-spacing: -0.03em;
+  font-size: 0.9em;
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  letter-spacing: -0.03em;
 
-	cursor: pointer;
+  cursor: pointer;
 
-	color: var(--color-black);
-	background: transparent;
+  color: var(--color-black);
+  background: transparent;
 
-	border: 1px solid var(--color-black);
-	border-radius: var(--radius-md);
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
 
-	transition: color 0.3s linear;
+  transition: color 0.3s linear;
 
-	&_active {
-		color: var(--color-white);
-	}
+  &_active {
+    color: var(--color-white);
+  }
 }
 
 .indicator {
-	position: absolute;
-	// bottom: 5px;
-	height: 100%;
+  position: absolute;
+  // bottom: 5px;
+  height: 100%;
 
-	background-color: var(--color-black);
+  background-color: var(--color-black);
 
-	border: 1px solid var(--color-black);
-	border-radius: var(--radius-md);
-	z-index: 1;
-	will-change: transform, width;
+  border: 1px solid var(--color-black);
+  border-radius: var(--radius-md);
+  z-index: 1;
+  will-change: transform, width;
 }

@@ -7,36 +7,36 @@ import { AnimatePresence, motion } from "framer-motion";
  * Интерфейс описывает отдельную вкладку.
  */
 export interface ITab {
-	/**
-	 * Уникальный ключ вкладки.
-	 */
-	key: string;
+  /**
+   * Уникальный ключ вкладки.
+   */
+  key: string;
 
-	/**
-	 * Текстовая метка вкладки, отображаемая пользователю.
-	 */
-	label: string;
+  /**
+   * Текстовая метка вкладки, отображаемая пользователю.
+   */
+  label: string;
 }
 
 /**
  * Пропсы компонента Tabs — списка вкладок с активной вкладкой и обработчиком изменения.
  */
 interface TabsProps {
-	/**
-	 * Массив вкладок.
-	 */
-	tabs: ITab[];
+  /**
+   * Массив вкладок.
+   */
+  tabs: ITab[];
 
-	/**
-	 * Ключ активной вкладки.
-	 */
-	isActive: string;
+  /**
+   * Ключ активной вкладки.
+   */
+  isActive: string;
 
-	/**
-	 * Колбэк, вызываемый при смене активной вкладки.
-	 * @param tab — объект вкладки, выбранной пользователем.
-	 */
-	onChange(tab: ITab): void;
+  /**
+   * Колбэк, вызываемый при смене активной вкладки.
+   * @param tab — объект вкладки, выбранной пользователем.
+   */
+  onChange(tab: ITab): void;
 }
 
 /**
@@ -67,129 +67,126 @@ interface TabsProps {
  * ```
  */
 export const Tabs = memo(({ tabs, isActive, onChange }: TabsProps) => {
-	const containerRef = useRef<HTMLDivElement>(null);
-	const activeTabRef = useRef<HTMLButtonElement>(null);
-	const [activeTabPosition, setActiveTabPosition] = useState({
-		left: 0,
-		width: 0,
-	});
-	const [isInitialized, setIsInitialized] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const activeTabRef = useRef<HTMLButtonElement>(null);
+  const [activeTabPosition, setActiveTabPosition] = useState({
+    left: 0,
+    width: 0,
+  });
+  const [isInitialized, setIsInitialized] = useState(false);
 
-	const updateActiveTabPosition = useCallback(() => {
-		if (activeTabRef.current && containerRef.current) {
-			const { offsetLeft, offsetWidth } = activeTabRef.current;
-			setActiveTabPosition({
-				left: offsetLeft,
-				width: offsetWidth,
-			});
-			setIsInitialized(true);
-		}
-	}, []);
+  const updateActiveTabPosition = useCallback(() => {
+    if (activeTabRef.current && containerRef.current) {
+      const { offsetLeft, offsetWidth } = activeTabRef.current;
+      setActiveTabPosition({
+        left: offsetLeft,
+        width: offsetWidth,
+      });
+      setIsInitialized(true);
+    }
+  }, []);
 
-	const scrollToActiveTab = useCallback(() => {
-		if (containerRef.current && activeTabRef.current) {
-			const container = containerRef.current;
-			const tab = activeTabRef.current;
+  const scrollToActiveTab = useCallback(() => {
+    if (containerRef.current && activeTabRef.current) {
+      const container = containerRef.current;
+      const tab = activeTabRef.current;
 
-			const containerRect = container.getBoundingClientRect();
-			const tabRect = tab.getBoundingClientRect();
+      const containerRect = container.getBoundingClientRect();
+      const tabRect = tab.getBoundingClientRect();
 
-			const isTabLeftHidden = tabRect.left < containerRect.left;
-			const isTabRightHidden = tabRect.right > containerRect.right;
+      const isTabLeftHidden = tabRect.left < containerRect.left;
+      const isTabRightHidden = tabRect.right > containerRect.right;
 
-			if (isTabLeftHidden) {
-				container.scrollBy({
-					left: tabRect.left - containerRect.left - 10,
-					behavior: "smooth",
-				});
-			} else if (isTabRightHidden) {
-				container.scrollBy({
-					left: tabRect.right - containerRect.right + 10,
-					behavior: "smooth",
-				});
-			}
-		}
-	}, []);
+      if (isTabLeftHidden) {
+        container.scrollBy({
+          left: tabRect.left - containerRect.left - 10,
+          behavior: "smooth",
+        });
+      } else if (isTabRightHidden) {
+        container.scrollBy({
+          left: tabRect.right - containerRect.right + 10,
+          behavior: "smooth",
+        });
+      }
+    }
+  }, []);
 
-	useEffect(() => {
-		const container = containerRef.current;
-		if (container) {
-			updateActiveTabPosition();
-			container.addEventListener("scroll", updateActiveTabPosition);
-			window.addEventListener("resize", updateActiveTabPosition);
-		}
-		return () => {
-			if (container) {
-				container.removeEventListener(
-					"scroll",
-					updateActiveTabPosition
-				);
-				window.removeEventListener("resize", updateActiveTabPosition);
-			}
-		};
-	}, [updateActiveTabPosition, tabs]);
+  useEffect(() => {
+    const container = containerRef.current;
+    if (container) {
+      updateActiveTabPosition();
+      container.addEventListener("scroll", updateActiveTabPosition);
+      window.addEventListener("resize", updateActiveTabPosition);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", updateActiveTabPosition);
+        window.removeEventListener("resize", updateActiveTabPosition);
+      }
+    };
+  }, [updateActiveTabPosition, tabs]);
 
-	useEffect(() => {
-		const hasActiveTab = tabs.some((tab) => tab.key === isActive);
+  useEffect(() => {
+    const hasActiveTab = tabs.some((tab) => tab.key === isActive);
 
-		if (!hasActiveTab) {
-			setIsInitialized(false);
-			return;
-		}
-		scrollToActiveTab();
-		updateActiveTabPosition();
-	}, [isActive, scrollToActiveTab, tabs, updateActiveTabPosition]);
+    if (!hasActiveTab) {
+      setIsInitialized(false);
+      return;
+    }
+    scrollToActiveTab();
+    updateActiveTabPosition();
+  }, [isActive, scrollToActiveTab, tabs, updateActiveTabPosition]);
 
-	const handleClick = useCallback(
-		(tab: ITab) => {
-			onChange(tab);
+  const handleClick = useCallback(
+    (tab: ITab) => {
+      onChange(tab);
 
-			setTimeout(() => {
-				scrollToActiveTab();
-			}, 0);
-		},
-		[onChange, scrollToActiveTab]
-	);
+      setTimeout(() => {
+        scrollToActiveTab();
+      }, 0);
+    },
+    [onChange, scrollToActiveTab],
+  );
 
-	return (
-		<div ref={containerRef} className="tabs">
-			{tabs?.map((tab) => {
-				return (
-					<button
-						key={tab.key}
-						ref={tab.key === isActive ? activeTabRef : null}
-						className={classNames("tab", {
-							tab_active: tab.key === isActive,
-						})}
-						onClick={() => handleClick(tab)}
-					>
-						{tab.label}
-					</button>
-				);
-			})}
+  return (
+    <div ref={containerRef} className="tabs">
+      {tabs?.map((tab) => {
+        return (
+          <button
+            key={tab.key}
+            ref={tab.key === isActive ? activeTabRef : null}
+            className={classNames("tab", {
+              tab_active: tab.key === isActive,
+            })}
+            onClick={() => handleClick(tab)}
+          >
+            {tab.label}
+          </button>
+        );
+      })}
 
-			<AnimatePresence>
-				{isInitialized ? (
-					<motion.div
-						className={classNames("indicator", "animatedTransform")}
-						initial={{
-							x: activeTabPosition.left,
-							width: activeTabPosition.width,
-						}}
-						animate={{
-							x: activeTabPosition.left,
-							width: activeTabPosition.width,
-						}}
-						transition={{
-							type: "spring",
-							stiffness: 300,
-							damping: 30,
-						}}
-					/>
-				) : null}
-			</AnimatePresence>
-		</div>
-	);
+      <AnimatePresence>
+        {isInitialized ? (
+          <motion.div
+            className={classNames("indicator", "animatedTransform")}
+            initial={{
+              x: activeTabPosition.left,
+              width: activeTabPosition.width,
+            }}
+            animate={{
+              x: activeTabPosition.left,
+              width: activeTabPosition.width,
+            }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+              damping: 30,
+            }}
+          />
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
 });
 
 Tabs.displayName = "Tabs";

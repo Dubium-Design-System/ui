@@ -1,40 +1,41 @@
 import { memo, useCallback } from "react";
+
 import style from "./Tabs.module.scss";
 
 /**
  * Интерфейс описывает отдельную вкладку.
  */
 export interface ITab<T> {
-	/**
-	 * Уникальный ключ вкладки.
-	 */
-	key: T;
+  /**
+   * Уникальный ключ вкладки.
+   */
+  key: T;
 
-	/**
-	 * Текстовая метка вкладки, отображаемая пользователю.
-	 */
-	label: string;
+  /**
+   * Текстовая метка вкладки, отображаемая пользователю.
+   */
+  label: string;
 }
 
 /**
  * Пропсы компонента Tabs — списка вкладок с активной вкладкой и обработчиком изменения.
  */
 export interface TabsProps<T> {
-	/**
-	 * Массив вкладок.
-	 */
-	tabs: ITab<T>[];
+  /**
+   * Ключ активной вкладки.
+   */
+  isActive: T;
 
-	/**
-	 * Ключ активной вкладки.
-	 */
-	isActive: T;
+  /**
+   * Колбэк, вызываемый при смене активной вкладки.
+   * @param tab — объект вкладки, выбранной пользователем.
+   */
+  onChange(tab: ITab<T>): void;
 
-	/**
-	 * Колбэк, вызываемый при смене активной вкладки.
-	 * @param tab — объект вкладки, выбранной пользователем.
-	 */
-	onChange(tab: ITab<T>): void;
+  /**
+   * Массив вкладок.
+   */
+  tabs: ITab<T>[];
 }
 
 /**
@@ -61,31 +62,40 @@ export interface TabsProps<T> {
  * ```
  */
 const TabsComponent = <T,>({ tabs, isActive, onChange }: TabsProps<T>) => {
-	const handleClick = useCallback(
-		(tab: ITab<T>) => {
-			onChange(tab);
-		},
-		[onChange],
-	);
+  /**
+   * Обработчик клика по вкладке.
+   *
+   * @remarks
+   * Вызывает переданный колбэк `onChange` с объектом выбранной вкладки.
+   * Мемоизирован для предотвращения лишних пересозданий функций при рендере.
+   *
+   * @param tab - Объект вкладки, на которую кликнул пользователь.
+   */
+  const handleClick = useCallback(
+    (tab: ITab<T>) => {
+      onChange(tab);
+    },
+    [onChange],
+  );
 
-	return (
-		<div className={style.tabs}>
-			{tabs?.map((tab) => {
-				return (
-					<button
-						key={String(tab.key)}
-						type="button"
-						onClick={() => {
-							handleClick(tab);
-						}}
-						className={`${style.tab} ${isActive === tab.key ? style.tab_active : null}`}
-					>
-						{tab.label}
-					</button>
-				);
-			})}
-		</div>
-	);
+  return (
+    <div className={style.tabs}>
+      {tabs?.map((tab) => {
+        return (
+          <button
+            className={`${style.tab} ${isActive === tab.key ? style.tab_active : null}`}
+            key={String(tab.key)}
+            onClick={() => {
+              handleClick(tab);
+            }}
+            type="button"
+          >
+            {tab.label}
+          </button>
+        );
+      })}
+    </div>
+  );
 };
 
 export const Tabs = memo(TabsComponent);

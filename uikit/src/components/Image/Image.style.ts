@@ -15,14 +15,14 @@ import type { CSSProperties } from "react";
  * @property --dui-image-object-position - Позиционирование изображения внутри контейнера (аналогично CSS свойству object-position).
  * @property --dui-image-opacity - Прозрачность изображения (от 0 до 1).
  */
-type TImageCSSVariables = CSSProperties & {
-	"--dui-image-width"?: CSSProperties["width"];
-	"--dui-image-height"?: CSSProperties["height"];
-	"--dui-image-aspect-ratio"?: string;
-	"--dui-image-object-fit"?: CSSProperties["objectFit"];
-	"--dui-image-object-position"?: CSSProperties["objectPosition"];
-	"--dui-image-opacity"?: CSSProperties["opacity"];
-};
+type TImageCSSVariables = {
+  "--dui-image-aspect-ratio"?: string;
+  "--dui-image-height"?: CSSProperties["height"];
+  "--dui-image-object-fit"?: CSSProperties["objectFit"];
+  "--dui-image-object-position"?: CSSProperties["objectPosition"];
+  "--dui-image-opacity"?: CSSProperties["opacity"];
+  "--dui-image-width"?: CSSProperties["width"];
+} & CSSProperties;
 
 /**
  * Параметры для генерации стилей контейнера изображения.
@@ -39,12 +39,12 @@ type TImageCSSVariables = CSSProperties & {
  * @property customStyle - Дополнительные пользовательские стили, которые будут объединены с базовыми.
  */
 interface IGetContainerStyleParams {
-	width: CSSProperties["width"];
-	height: CSSProperties["height"];
-	aspectRatio: string;
-	objectFit: CSSProperties["objectFit"];
-	objectPosition: CSSProperties["objectPosition"];
-	customStyle?: CSSProperties;
+  aspectRatio: string;
+  customStyle?: CSSProperties;
+  height: CSSProperties["height"];
+  objectFit: CSSProperties["objectFit"];
+  objectPosition: CSSProperties["objectPosition"];
+  width: CSSProperties["width"];
 }
 
 /**
@@ -61,8 +61,8 @@ interface IGetContainerStyleParams {
  *   так как opacity управляется отдельным параметром.
  */
 interface IGetImageStyleParams {
-	opacity: CSSProperties["opacity"];
-	customStyle?: CSSProperties;
+  customStyle?: CSSProperties;
+  opacity: CSSProperties["opacity"];
 }
 
 /**
@@ -83,13 +83,13 @@ interface IGetImageStyleParams {
  * ```
  */
 const normalizeSize = (
-	value: CSSProperties["width"] | CSSProperties["height"],
-): CSSProperties["width"] | CSSProperties["height"] => {
-	if (typeof value === "number") {
-		return `${value}px`;
-	}
+  value: CSSProperties["height"] | CSSProperties["width"],
+): CSSProperties["height"] | CSSProperties["width"] => {
+  if (typeof value === "number") {
+    return `${value}px`;
+  }
 
-	return value;
+  return value;
 };
 
 /**
@@ -117,22 +117,22 @@ const normalizeSize = (
  * ```
  */
 export const getContainerStyle = ({
-	width,
-	height,
-	aspectRatio,
-	objectFit,
-	objectPosition,
-	customStyle,
+  width,
+  height,
+  aspectRatio,
+  objectFit,
+  objectPosition,
+  customStyle,
 }: IGetContainerStyleParams): TImageCSSVariables => {
-	return {
-		"--dui-image-width": normalizeSize(width),
-		"--dui-image-height": normalizeSize(height),
-		"--dui-image-aspect-ratio":
-			aspectRatio !== "auto" ? aspectRatio : undefined,
-		"--dui-image-object-fit": objectFit,
-		"--dui-image-object-position": objectPosition,
-		...customStyle,
-	};
+  return {
+    "--dui-image-width": normalizeSize(width),
+    "--dui-image-height": normalizeSize(height),
+    "--dui-image-aspect-ratio":
+      aspectRatio !== "auto" ? aspectRatio : undefined,
+    "--dui-image-object-fit": objectFit,
+    "--dui-image-object-position": objectPosition,
+    ...customStyle,
+  };
 };
 
 /**
@@ -157,15 +157,15 @@ export const getContainerStyle = ({
  * ```
  */
 export const getImageStyle = ({
-	opacity,
-	customStyle,
+  opacity,
+  customStyle,
 }: IGetImageStyleParams): TImageCSSVariables => {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	const { opacity: _customOpacity, ...customStyleWithoutOpacity } =
-		customStyle ?? {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { opacity: _customOpacity, ...customStyleWithoutOpacity } =
+    customStyle ?? {};
 
-	return {
-		...customStyleWithoutOpacity,
-		"--dui-image-opacity": opacity,
-	};
+  return {
+    ...customStyleWithoutOpacity,
+    "--dui-image-opacity": opacity,
+  };
 };

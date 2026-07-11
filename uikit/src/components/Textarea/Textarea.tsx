@@ -1,46 +1,41 @@
 import {
-	forwardRef,
-	useId,
-	type InputHTMLAttributes,
-	type ReactNode,
+  forwardRef,
+  type InputHTMLAttributes,
+  type ReactNode,
+  useId,
 } from "react";
 
-export interface TextAreaProps
-	extends InputHTMLAttributes<HTMLTextAreaElement> {
-	label?: string;
-	before?: ReactNode;
-	after?: ReactNode;
-	required?: boolean;
+export interface TextAreaProps extends InputHTMLAttributes<HTMLTextAreaElement> {
+  after?: ReactNode;
+  before?: ReactNode;
+  label?: string;
+  required?: boolean;
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-	({ label, before, after, required, ...props }, ref) => {
-		const id = useId();
+  ({ label, before, after, required, ...props }, ref) => {
+    /** Уникальный ID для связи label и textarea. */
+    const id = useId();
 
-		return (
-			<div>
-				{label ? (
-					<label htmlFor={id}>
-						<span>{label}</span>
-						{required ? <span>*</span> : null}
-					</label>
-				) : null}
+    return (
+      <div>
+        {label ? (
+          <label htmlFor={id}>
+            <span>{label}</span>
+            {required ? <span>*</span> : null}
+          </label>
+        ) : null}
 
-				<div>
-					{before ? before : null}
+        <div>
+          {before || null}
 
-					<textarea
-						ref={ref}
-						id={id}
-						required={required}
-						{...props}
-					/>
+          <textarea id={id} ref={ref} required={required} {...props} />
 
-					{after ? after : null}
-				</div>
-			</div>
-		);
-	},
+          {after || null}
+        </div>
+      </div>
+    );
+  },
 );
 
 TextArea.displayName = "TextArea";

@@ -1,96 +1,96 @@
 .button {
-	// Задаём значения по умолчанию через кастомные свойства
-	--dui-button-alignItems: center;
-	--dui-button-justifyContent: center;
-	--dui-button-gap: 0.25rem;
-	--dui-button-transition:
-		color 0.3s linear, background 0.3s linear, border-color 0.3s linear;
-	--dui-button-cursor: pointer;
-	--dui-button-fontSize: 1rem;
-	--dui-button-fontWeight: 400;
-	--dui-button-lineHeight: 1.4;
-	--dui-button-paddingBlock: 0.5rem;
-	--dui-button-paddingInline: 1rem;
-	--dui-button-color: hsl(0, 0%, 0%);
-	--dui-button-background: hsl(0, 0%, 80%);
-	--dui-button-borderWidth: 1px;
-	--dui-button-borderStyle: solid;
-	--dui-button-borderColor: var(--dui-button-background);
-	--dui-button-radius: 3px;
-	--dui-button-minWidth: 8rem;
+  // Задаём значения по умолчанию через кастомные свойства
+  --dui-button-alignItems: center;
+  --dui-button-justifyContent: center;
+  --dui-button-gap: 0.25rem;
+  --dui-button-transition:
+    color 0.3s linear, background 0.3s linear, border-color 0.3s linear;
+  --dui-button-cursor: pointer;
+  --dui-button-fontSize: 1rem;
+  --dui-button-fontWeight: 400;
+  --dui-button-lineHeight: 1.4;
+  --dui-button-paddingBlock: 0.5rem;
+  --dui-button-paddingInline: 1rem;
+  --dui-button-color: hsl(0, 0%, 0%);
+  --dui-button-background: hsl(0, 0%, 80%);
+  --dui-button-borderWidth: 1px;
+  --dui-button-borderStyle: solid;
+  --dui-button-borderColor: var(--dui-button-background);
+  --dui-button-radius: 3px;
+  --dui-button-minWidth: 8rem;
 
-	// Hover-состояния по умолчанию
-	--dui-button-color-hover: hsl(0, 0%, 0%);
-	--dui-button-background-hover: hsl(0, 0%, 80%);
-	--dui-button-borderColor-hover: hsl(0, 0%, 80%);
+  // Hover-состояния по умолчанию
+  --dui-button-color-hover: hsl(0, 0%, 0%);
+  --dui-button-background-hover: hsl(0, 0%, 80%);
+  --dui-button-borderColor-hover: hsl(0, 0%, 80%);
 
-	// Focus
-	--dui-button-focus-outline: 2px solid currentColor;
-	--dui-button-focus-offset: 2px;
+  // Focus
+  --dui-button-focus-outline: 2px solid currentColor;
+  --dui-button-focus-offset: 2px;
 
-	// Disabled
-	--dui-button-cursor-disabled: not-allowed;
-	--dui-button-pointerEvents-disabled: none;
-	--dui-button-opacity-disabled: 0.4;
+  // Disabled
+  --dui-button-cursor-disabled: not-allowed;
+  --dui-button-pointerEvents-disabled: none;
+  --dui-button-opacity-disabled: 0.4;
 
-	box-sizing: border-box;
-	position: relative;
+  box-sizing: border-box;
+  position: relative;
 
-	display: inline-flex;
-	align-items: var(--dui-button-alignItems);
-	justify-content: var(--dui-button-justifyContent);
-	gap: var(--dui-button-gap);
+  display: inline-flex;
+  align-items: var(--dui-button-alignItems);
+  justify-content: var(--dui-button-justifyContent);
+  gap: var(--dui-button-gap);
 
-	transition: var(--dui-button-transition);
-	cursor: var(--dui-button-cursor);
+  transition: var(--dui-button-transition);
+  cursor: var(--dui-button-cursor);
 
-	font-size: var(--dui-button-fontSize);
-	font-weight: var(--dui-button-fontWeight);
-	line-height: var(--dui-button-lineHeight);
+  font-size: var(--dui-button-fontSize);
+  font-weight: var(--dui-button-fontWeight);
+  line-height: var(--dui-button-lineHeight);
 
-	padding-block: var(--dui-button-paddingBlock);
-	padding-inline: var(--dui-button-paddingInline);
+  padding-block: var(--dui-button-paddingBlock);
+  padding-inline: var(--dui-button-paddingInline);
 
-	color: var(--dui-button-color);
-	background: var(--dui-button-background);
+  color: var(--dui-button-color);
+  background: var(--dui-button-background);
 
-	border-width: var(--dui-button-borderWidth);
-	border-style: var(--dui-button-borderStyle);
-	border-color: var(--dui-button-borderColor);
-	border-radius: var(--dui-button-radius);
+  border-width: var(--dui-button-borderWidth);
+  border-style: var(--dui-button-borderStyle);
+  border-color: var(--dui-button-borderColor);
+  border-radius: var(--dui-button-radius);
 
-	min-width: var(--dui-button-minWidth);
+  min-width: var(--dui-button-minWidth);
 
-	&.fluid {
-		width: 100%;
-	}
+  &.fluid {
+    width: 100%;
+  }
 
-	&:hover:not(:disabled) {
-		color: var(--dui-button-color-hover);
-		background: var(--dui-button-background-hover);
-		border-color: var(--dui-button-borderColor-hover);
-	}
+  &:hover:not(:disabled) {
+    color: var(--dui-button-color-hover);
+    background: var(--dui-button-background-hover);
+    border-color: var(--dui-button-borderColor-hover);
+  }
 
-	&:active:not(:disabled) {
-		color: var(--dui-button-color-active, var(--dui-button-color));
-		background: var(
-			--dui-button-background-active,
-			var(--dui-button-background)
-		);
-		border-color: var(
-			--dui-button-borderColor-active,
-			var(--dui-button-borderColor)
-		);
-	}
+  &:active:not(:disabled) {
+    color: var(--dui-button-color-active, var(--dui-button-color));
+    background: var(
+      --dui-button-background-active,
+      var(--dui-button-background)
+    );
+    border-color: var(
+      --dui-button-borderColor-active,
+      var(--dui-button-borderColor)
+    );
+  }
 
-	&:focus-visible {
-		outline: var(--dui-button-focus-outline);
-		outline-offset: var(--dui-button-focus-offset);
-	}
+  &:focus-visible {
+    outline: var(--dui-button-focus-outline);
+    outline-offset: var(--dui-button-focus-offset);
+  }
 
-	&:disabled {
-		cursor: var(--dui-button-cursor-disabled);
-		pointer-events: var(--dui-button-pointerEvents-disabled);
-		opacity: var(--dui-button-opacity-disabled);
-	}
+  &:disabled {
+    cursor: var(--dui-button-cursor-disabled);
+    pointer-events: var(--dui-button-pointerEvents-disabled);
+    opacity: var(--dui-button-opacity-disabled);
+  }
 }

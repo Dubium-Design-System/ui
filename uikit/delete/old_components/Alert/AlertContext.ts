@@ -1,12 +1,14 @@
-import { createContext } from "react"
+import { createContext } from "react";
 
-export type AlertType = "success" | "error" | "info"
+export type AlertType = "success" | "error" | "info";
 
 export interface AlertOptions {
-	message: string
-	type?: AlertType
-	timeout?: number
+  message: string;
+  type?: AlertType;
+  timeout?: number;
 }
 
-type AlertContextType = (options: AlertOptions) => void
-export const AlertContext = createContext<AlertContextType | undefined>(undefined)
+type AlertContextType = (options: AlertOptions) => void;
+export const AlertContext = createContext<AlertContextType | undefined>(
+  undefined,
+);

@@ -1,0 +1,59 @@
+.text {
+  margin: 0;
+  padding: 0;
+
+  font-family: var(--font-family);
+  font-style: normal;
+  font-size: var(--text-font-size);
+  font-weight: var(--text-font-weight);
+  font-stretch: var(--text-font-stretch, 100%);
+  line-height: var(--text-line-height);
+
+  &__body {
+    --text-font-weight: 400;
+    --text-font-size: 1rem; // 16px
+    --text-line-height: 1.375rem; // 22px
+
+    --text-font-stretch: 100%;
+  }
+
+  &__bold {
+    --text-font-weight: 700;
+    --text-font-size: 1rem; // 16px
+    --text-line-height: 1.375rem; // 22px
+
+    --text-font-stretch: 90%;
+  }
+
+  &__large {
+    --text-font-weight: 400;
+    --text-font-size: 1.125rem; // 18px
+    --text-line-height: 1.5625rem; // 25px
+
+    --text-font-stretch: 100%;
+  }
+
+  &__small {
+    --text-font-weight: 400;
+    --text-font-size: 0.875rem; // 14px
+    --text-line-height: 1.1875rem; // 19px
+
+    --text-font-stretch: 100%;
+  }
+
+  &__label {
+    --text-font-weight: 500;
+    --text-font-size: 0.875rem; // 14px
+    --text-line-height: 1.1875rem; // 19px
+
+    --text-font-stretch: 95%;
+  }
+
+  &__helper {
+    --text-font-weight: 400;
+    --text-font-size: 0.75rem; // 12px
+    --text-line-height: 1rem; // 16px
+
+    --text-font-stretch: 95%;
+  }
+}

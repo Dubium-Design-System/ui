@@ -1,9 +1,9 @@
 import {
-	memo,
-	useCallback,
-	type ButtonHTMLAttributes,
-	type JSX,
-	type ReactNode,
+  memo,
+  useCallback,
+  type ButtonHTMLAttributes,
+  type JSX,
+  type ReactNode,
 } from "react";
 import style from "./Button.module.scss";
 import classNames from "classnames";
@@ -14,75 +14,75 @@ import classNames from "classnames";
  * @extends ButtonHTMLAttributes<HTMLButtonElement>
  */
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-	/**
-	 * Дополнительный CSS-класс для корневого элемента кнопки.
-	 *
-	 * @example
-	 * ```tsx
-	 * <Button className="my-custom-class">Click me</Button>
-	 * ```
-	 */
-	className?: string;
+  /**
+   * Дополнительный CSS-класс для корневого элемента кнопки.
+   *
+   * @example
+   * ```tsx
+   * <Button className="my-custom-class">Click me</Button>
+   * ```
+   */
+  className?: string;
 
-	/**
-	 * Контент, отображаемый внутри кнопки.
-	 *
-	 * @example
-	 * ```tsx
-	 * <Button>Click me</Button>
-	 * ```
-	 */
-	children: ReactNode;
+  /**
+   * Контент, отображаемый внутри кнопки.
+   *
+   * @example
+   * ```tsx
+   * <Button>Click me</Button>
+   * ```
+   */
+  children: ReactNode;
 
-	/**
-	 * Тип кнопки.
-	 *
-	 * @defaultValue "button"
-	 *
-	 * @example
-	 * ```tsx
-	 * <Button type="submit">Submit</Button>
-	 * ```
-	 */
-	type?: "button" | "submit" | "reset";
+  /**
+   * Тип кнопки.
+   *
+   * @defaultValue "button"
+   *
+   * @example
+   * ```tsx
+   * <Button type="submit">Submit</Button>
+   * ```
+   */
+  type?: "button" | "submit" | "reset";
 
-	/**
-	 * ARIA-роль кнопки.
-	 *
-	 * @defaultValue "button"
-	 *
-	 * @example
-	 * ```tsx
-	 * <Button role="menuitem">Menu Item</Button>
-	 * ```
-	 */
-	role?: string;
+  /**
+   * ARIA-роль кнопки.
+   *
+   * @defaultValue "button"
+   *
+   * @example
+   * ```tsx
+   * <Button role="menuitem">Menu Item</Button>
+   * ```
+   */
+  role?: string;
 
-	/**
-	 * Отключено ли состояние кнопки.
-	 *
-	 * @defaultValue false
-	 *
-	 * @example
-	 * ```tsx
-	 * <Button disabled>Disabled Button</Button>
-	 * ```
-	 */
-	disabled?: boolean;
+  /**
+   * Отключено ли состояние кнопки.
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```tsx
+   * <Button disabled>Disabled Button</Button>
+   * ```
+   */
+  disabled?: boolean;
 
-	/**
-	 * Останавливать ли всплытие события `click`.
-	 *
-	 * @defaultValue false
-	 *
-	 * @example
-	 * ```tsx
-	 * <Button stopPropagation onClick={() => console.log("Clicked")}>
-	 *   Click me (no propagation)
-	 * </Button>
-	 * ```
-	 */
-	stopPropagation?: boolean;
+  /**
+   * Останавливать ли всплытие события `click`.
+   *
+   * @defaultValue false
+   *
+   * @example
+   * ```tsx
+   * <Button stopPropagation onClick={() => console.log("Clicked")}>
+   *   Click me (no propagation)
+   * </Button>
+   * ```
+   */
+  stopPropagation?: boolean;
 }
 
 /**
@@ -115,37 +115,37 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * @returns {JSX.Element} Компонент кнопки.
  */
 export const Button = memo(
-	({
-		className,
-		children,
-		type = "button",
-		role = "button",
-		onClick,
-		stopPropagation = false,
-		...props
-	}: ButtonProps): JSX.Element => {
-		const handleClick = useCallback(
-			(event: React.MouseEvent<HTMLButtonElement>) => {
-				if (stopPropagation) {
-					event.stopPropagation();
-				}
-				onClick?.(event);
-			},
-			[onClick, stopPropagation]
-		);
+  ({
+    className,
+    children,
+    type = "button",
+    role = "button",
+    onClick,
+    stopPropagation = false,
+    ...props
+  }: ButtonProps): JSX.Element => {
+    const handleClick = useCallback(
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        if (stopPropagation) {
+          event.stopPropagation();
+        }
+        onClick?.(event);
+      },
+      [onClick, stopPropagation],
+    );
 
-		return (
-			<button
-				className={classNames(style.button, className)}
-				type={type}
-				onClick={handleClick}
-				role={role}
-				{...props}
-			>
-				{children}
-			</button>
-		);
-	}
+    return (
+      <button
+        className={classNames(style.button, className)}
+        type={type}
+        onClick={handleClick}
+        role={role}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+  },
 );
 
 Button.displayName = "Button";

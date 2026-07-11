@@ -1,5 +1,6 @@
-import { Icon, type IconProps } from "./Icon";
 import type { TEmptyIconRegistry, TIconRegistry } from "./Icon.types";
+
+import { Icon, type IconProps } from "./Icon";
 
 /**
  * Создаёт типизированную обёртку над компонентом `Icon`
@@ -36,13 +37,13 @@ import type { TEmptyIconRegistry, TIconRegistry } from "./Icon.types";
  * - Используется для улучшения DX (type safety + autocomplete)
  */
 export const createIcon = <
-	TCustomIcons extends TIconRegistry = TEmptyIconRegistry,
+  TCustomIcons extends TIconRegistry = TEmptyIconRegistry,
 >() => {
-	const TypedIcon = (props: IconProps<TCustomIcons>) => {
-		return <Icon<TCustomIcons> {...props} />;
-	};
+  const TypedIcon = (props: IconProps<TCustomIcons>) => {
+    return <Icon<TCustomIcons> {...props} />;
+  };
 
-	TypedIcon.displayName = "TypedIcon";
+  TypedIcon.displayName = "TypedIcon";
 
-	return TypedIcon;
+  return TypedIcon;
 };

@@ -43,19 +43,19 @@ const failedImageCache = new Map<string, true>();
  * @param value - Значение записи.
  */
 const touchCacheEntry = <T>(cache: Map<string, T>, key: string, value: T) => {
-	if (cache.has(key)) {
-		cache.delete(key);
-	}
+  if (cache.has(key)) {
+    cache.delete(key);
+  }
 
-	if (cache.size >= CACHE_LIMIT) {
-		const oldestKey = cache.keys().next().value;
+  if (cache.size >= CACHE_LIMIT) {
+    const oldestKey = cache.keys().next().value;
 
-		if (oldestKey) {
-			cache.delete(oldestKey);
-		}
-	}
+    if (oldestKey) {
+      cache.delete(oldestKey);
+    }
+  }
 
-	cache.set(key, value);
+  cache.set(key, value);
 };
 
 /**
@@ -87,31 +87,31 @@ const touchCacheEntry = <T>(cache: Map<string, T>, key: string, value: T) => {
  * ```
  */
 export const normalizeSrcSet = (srcSet?: TImageSrcSet): string | undefined => {
-	if (!srcSet) {
-		return undefined;
-	}
+  if (!srcSet) {
+    return undefined;
+  }
 
-	if (typeof srcSet === "string") {
-		return srcSet;
-	}
+  if (typeof srcSet === "string") {
+    return srcSet;
+  }
 
-	return srcSet
-		.map((candidate) => {
-			if (typeof candidate === "string") {
-				return candidate;
-			}
+  return srcSet
+    .map((candidate) => {
+      if (typeof candidate === "string") {
+        return candidate;
+      }
 
-			if (candidate.width) {
-				return `${candidate.src} ${candidate.width}w`;
-			}
+      if (candidate.width) {
+        return `${candidate.src} ${candidate.width}w`;
+      }
 
-			if (candidate.density) {
-				return `${candidate.src} ${candidate.density}x`;
-			}
+      if (candidate.density) {
+        return `${candidate.src} ${candidate.density}x`;
+      }
 
-			return candidate.src;
-		})
-		.join(", ");
+      return candidate.src;
+    })
+    .join(", ");
 };
 
 /**
@@ -138,22 +138,22 @@ export const normalizeSrcSet = (srcSet?: TImageSrcSet): string | undefined => {
  * ```
  */
 export const createImageCacheKey = ({
-	src,
-	srcSet,
-	sizes,
-	sources,
+  src,
+  srcSet,
+  sizes,
+  sources,
 }: ICreateImageCacheKeyParams): string => {
-	const normalizedSources = sources?.map((source) => ({
-		...source,
-		srcSet: normalizeSrcSet(source.srcSet),
-	}));
+  const normalizedSources = sources?.map((source) => ({
+    ...source,
+    srcSet: normalizeSrcSet(source.srcSet),
+  }));
 
-	return JSON.stringify({
-		src,
-		srcSet: normalizeSrcSet(srcSet),
-		sizes,
-		sources: normalizedSources,
-	});
+  return JSON.stringify({
+    src,
+    srcSet: normalizeSrcSet(srcSet),
+    sizes,
+    sources: normalizedSources,
+  });
 };
 
 /**
@@ -166,7 +166,7 @@ export const createImageCacheKey = ({
  * @returns `true`, если изображение было успешно загружено и сохранено в кэше.
  */
 export const isImageLoaded = (cacheKey: string): boolean => {
-	return loadedImageCache.has(cacheKey);
+  return loadedImageCache.has(cacheKey);
 };
 
 /**
@@ -179,7 +179,7 @@ export const isImageLoaded = (cacheKey: string): boolean => {
  * @returns `true`, если загрузка изображения ранее завершилась ошибкой.
  */
 export const isImageFailed = (cacheKey: string): boolean => {
-	return failedImageCache.has(cacheKey);
+  return failedImageCache.has(cacheKey);
 };
 
 /**
@@ -192,8 +192,8 @@ export const isImageFailed = (cacheKey: string): boolean => {
  * @param cacheKey - Ключ кэша изображения, созданный {@link createImageCacheKey}.
  */
 export const markImageAsLoaded = (cacheKey: string) => {
-	failedImageCache.delete(cacheKey);
-	touchCacheEntry(loadedImageCache, cacheKey, true);
+  failedImageCache.delete(cacheKey);
+  touchCacheEntry(loadedImageCache, cacheKey, true);
 };
 
 /**
@@ -206,8 +206,8 @@ export const markImageAsLoaded = (cacheKey: string) => {
  * @param cacheKey - Ключ кэша изображения, созданный {@link createImageCacheKey}.
  */
 export const markImageAsFailed = (cacheKey: string) => {
-	loadedImageCache.delete(cacheKey);
-	touchCacheEntry(failedImageCache, cacheKey, true);
+  loadedImageCache.delete(cacheKey);
+  touchCacheEntry(failedImageCache, cacheKey, true);
 };
 
 /**
@@ -219,6 +219,6 @@ export const markImageAsFailed = (cacheKey: string) => {
  * (например, при logout пользователя или смене контента).
  */
 export const clearImageCache = () => {
-	loadedImageCache.clear();
-	failedImageCache.clear();
+  loadedImageCache.clear();
+  failedImageCache.clear();
 };

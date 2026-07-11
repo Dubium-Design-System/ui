@@ -7,21 +7,21 @@ import { useRef, useEffect, type Ref } from "react";
  * @returns Единый ref, который обновляет все переданные ref
  */
 export const useCombinedRefs = <T>(
-	...refs: Array<Ref<T> | null | undefined>
+  ...refs: Array<Ref<T> | null | undefined>
 ) => {
-	const targetRef = useRef<T>(null);
+  const targetRef = useRef<T>(null);
 
-	useEffect(() => {
-		refs.forEach((ref) => {
-			if (!ref) return;
+  useEffect(() => {
+    refs.forEach((ref) => {
+      if (!ref) return;
 
-			if (typeof ref === "function") {
-				ref(targetRef.current);
-			} else if ("current" in ref) {
-				ref.current = targetRef.current;
-			}
-		});
-	}, [refs]);
+      if (typeof ref === "function") {
+        ref(targetRef.current);
+      } else if ("current" in ref) {
+        ref.current = targetRef.current;
+      }
+    });
+  }, [refs]);
 
-	return targetRef;
+  return targetRef;
 };

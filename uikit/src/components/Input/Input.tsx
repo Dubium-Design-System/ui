@@ -1,26 +1,26 @@
 import {
-	forwardRef,
-	memo,
-	useId,
-	type InputHTMLAttributes,
-	type ReactNode,
+  forwardRef,
+  type InputHTMLAttributes,
+  memo,
+  type ReactNode,
+  useId,
 } from "react";
 
 export interface IInputProps extends Omit<
-	InputHTMLAttributes<HTMLInputElement>,
-	"required"
+  InputHTMLAttributes<HTMLInputElement>,
+  "required"
 > {
-	label?: string;
-	before?: ReactNode;
-	after?: ReactNode;
-	hint?: ReactNode;
-	error?: ReactNode;
-	required?: boolean;
+  after?: ReactNode;
+  before?: ReactNode;
+  error?: ReactNode;
+  hint?: ReactNode;
+  inputClassName?: string;
+  label?: string;
 
-	rootClassName?: string;
-	labelClassName?: string;
-	wrapperClassName?: string;
-	inputClassName?: string;
+  labelClassName?: string;
+  required?: boolean;
+  rootClassName?: string;
+  wrapperClassName?: string;
 }
 
 /**
@@ -58,104 +58,93 @@ export interface IInputProps extends Omit<
  * @see {@link InputProps} для детального описания всех доступных свойств
  */
 const InputBase = forwardRef<HTMLInputElement, IInputProps>(
-	(
-		{
-			id,
-			label,
-			before,
-			after,
-			hint,
-			error,
-			required,
-			disabled,
-			type = "text",
-			autoComplete,
-			rootClassName,
-			labelClassName,
-			wrapperClassName,
-			inputClassName,
-			...props
-		},
-		ref,
-	) => {
-		const generatedId = useId();
-		const inputId = id ?? generatedId;
+  (
+    {
+      id,
+      label,
+      before,
+      after,
+      hint,
+      error,
+      required,
+      disabled,
+      type = "text",
+      autoComplete,
+      rootClassName,
+      labelClassName,
+      wrapperClassName,
+      inputClassName,
+      ...props
+    },
+    ref,
+  ) => {
+    /** Сгенерированный или переданный ID для связи label и input. */
+    const generatedId = useId();
+    const inputId = id ?? generatedId;
 
-		const hintId = hint ? `${inputId}-hint` : undefined;
-		const errorId = error ? `${inputId}-error` : undefined;
+    /** ID элемента с подсказкой (для aria-describedby). */
+    const hintId = hint ? `${inputId}-hint` : undefined;
+    /** ID элемента с ошибкой (для aria-describedby). */
+    const errorId = error ? `${inputId}-error` : undefined;
 
-		const describedBy =
-			[hintId, errorId].filter(Boolean).join(" ") || undefined;
-		const isInvalid = Boolean(error);
+    /**
+     * Значение атрибута `aria-describedby`, объединяющее ID подсказки и ошибки.
+     *
+     * @remarks
+     * Передаётся в `<input>` для связи с вспомогательными текстами.
+     */
+    const describedBy =
+      [hintId, errorId].filter(Boolean).join(" ") || undefined;
+    /** Флаг невалидного состояния поля (наличие ошибки). */
+    const isInvalid = Boolean(error);
 
-		return (
-			<div
-				className={rootClassName}
-				data-disabled={disabled || undefined}
-				data-invalid={isInvalid || undefined}
-				data-required={required || undefined}
-			>
-				{label ? (
-					<label htmlFor={inputId} className={labelClassName}>
-						<span>{label}</span>
-						{required && <span aria-hidden="true"> *</span>}
-					</label>
-				) : null}
+    return (
+      <div
+        className={rootClassName}
+        data-disabled={disabled || undefined}
+        data-invalid={isInvalid || undefined}
+        data-required={required || undefined}
+      >
+        {label ? (
+          <label className={labelClassName} htmlFor={inputId}>
+            <span>{label}</span>
+            {required && <span aria-hidden="true"> *</span>}
+          </label>
+        ) : null}
 
-				<div className={wrapperClassName}>
-					{before ? <span aria-hidden="true">{before}</span> : null}
+        <div className={wrapperClassName}>
+          {before ? <span aria-hidden="true">{before}</span> : null}
 
-					<input
-						{...props}
-						ref={ref}
-						id={inputId}
-						type={type}
-						required={required}
-						disabled={disabled}
-						autoComplete={autoComplete}
-						aria-required={required || undefined}
-						aria-invalid={isInvalid || undefined}
-						aria-describedby={describedBy}
-						className={inputClassName}
-					/>
+          <input
+            {...props}
+            aria-describedby={describedBy}
+            aria-invalid={isInvalid || undefined}
+            aria-required={required || undefined}
+            autoComplete={autoComplete}
+            className={inputClassName}
+            disabled={disabled}
+            id={inputId}
+            ref={ref}
+            required={required}
+            type={type}
+          />
 
-					{after ? <span aria-hidden="true">{after}</span> : null}
-				</div>
+          {after ? <span aria-hidden="true">{after}</span> : null}
+        </div>
 
-				{hint ? <div id={hintId}>{hint}</div> : null}
+        {hint ? <div id={hintId}>{hint}</div> : null}
 
-				{error ? (
-					<div id={errorId} role="alert">
-						{error}
-					</div>
-				) : null}
-			</div>
-		);
-	},
+        {error ? (
+          <div id={errorId} role="alert">
+            {error}
+          </div>
+        ) : null}
+      </div>
+    );
+  },
 );
 
 InputBase.displayName = "Input";
 
-/**
- * Кастомный shallow-compare:
- * игнорируем ref, минимально проверяем примитивы и ссылки
- */
-const areEqual = (prev: IInputProps, next: IInputProps) => {
-	return (
-		prev.value === next.value &&
-		prev.defaultValue === next.defaultValue &&
-		prev.disabled === next.disabled &&
-		prev.required === next.required &&
-		prev.error === next.error &&
-		prev.hint === next.hint &&
-		prev.before === next.before &&
-		prev.after === next.after &&
-		prev.className === next.className &&
-		prev.inputClassName === next.inputClassName &&
-		prev.wrapperClassName === next.wrapperClassName &&
-		prev.rootClassName === next.rootClassName
-	);
-};
-
-export const Input = memo(InputBase, areEqual);
+export const Input = memo(InputBase);
 Input.displayName = "Input";

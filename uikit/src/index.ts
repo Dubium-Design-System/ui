@@ -1,38 +1,40 @@
 // Components
 export { Button, type IButtonProps } from "./components/Button";
+export { Highlight } from "./components/Highlight";
 export {
-	Icon,
-	createIcon,
-	type IIconComponentProps,
-	type TIcon,
-	type TIconModule,
-	type TIconLoader,
-	type TIconRegistry,
-	type TIconName,
-	type TEmptyIconRegistry,
-	type IconProps,
+  createIcon,
+  Icon,
+  type IconProps,
+  type IIconComponentProps,
+  type TEmptyIconRegistry,
+  type TIcon,
+  type TIconLoader,
+  type TIconModule,
+  type TIconName,
+  type TIconRegistry,
 } from "./components/Icon";
-export {
-	Image,
-	type IImageProps,
-	type IImageSource,
-	type TImageSrcSet,
-	type TImageSrcSetCandidate,
-} from "./components/Image";
 
+export {
+  type IImageProps,
+  type IImageSource,
+  Image,
+  type TImageSrcSet,
+  type TImageSrcSetCandidate,
+} from "./components/Image";
 // TODO: Обновить
-export { Input, type IInputProps } from "./components/Input";
+export { type IInputProps, Input } from "./components/Input";
 // TODO: Сделать компонент
-export { Pagination, type IPaginationProps } from "./components/Pagination";
-export { Portal, type IPortalProps } from "./components/Portal";
-export { Switch, type ISwitchProps } from "./components/Switch";
+export { type IPaginationProps, Pagination } from "./components/Pagination";
+export { type IPortalProps, Portal } from "./components/Portal";
+export { type ISwitchProps, Switch } from "./components/Switch";
 export { Tabs, type TabsProps } from "./components/Tabs/Tabs";
 export { TextArea, type TextAreaProps } from "./components/Textarea/Textarea";
+export { Typography } from "./components/Typography";
 
 // Providers
 export {
-	DUIProvider,
-	useDUIContext,
-	type IDUIProviderProps,
-	type IDUIContextValue,
+  DUIProvider,
+  type IDUIContextValue,
+  type IDUIProviderProps,
+  useDUIContext,
 } from "./providers/DUIProvider";

@@ -10,14 +10,14 @@
 
 **Когда использовать:**
 
-* только встроенные иконки библиотеки
-* не нужен `DUIProvider`
-* простой случай
+- только встроенные иконки библиотеки
+- не нужен `DUIProvider`
+- простой случай
 
 **Ограничения:**
 
-* нет кастомных иконок
-* autocomplete только по `defaultIcons`
+- нет кастомных иконок
+- autocomplete только по `defaultIcons`
 
 ---
 
@@ -38,9 +38,9 @@ const AppIcon = createIcon<TAppIcons>();
 
 **Когда использовать:**
 
-* есть кастомные иконки
-* нужен autocomplete (`User`, `Settings`, `Close`)
-* production код приложения
+- есть кастомные иконки
+- нужен autocomplete (`User`, `Settings`, `Close`)
+- production код приложения
 
 **Требует:**
 
@@ -63,5 +63,5 @@ const AppIcon = createIcon<TAppIcons>();
 
 ## Рекомендация
 
-* UIKit → `Icon`
-* Приложение → `AppIcon`
+- UIKit → `Icon`
+- Приложение → `AppIcon`

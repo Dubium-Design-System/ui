@@ -9,14 +9,18 @@
 		"outDir": "./dist",
 		"stripInternal": true
 	},
-	"include": ["src"],
+	"include": [
+		"src/index.ts",
+		"src/components/**/*",
+		"src/providers/**/*",
+		"src/icons/**/*"
+	],
 	"exclude": [
 		"delete",
 		"src/dev/**/*",
 		"src/**/*.test.tsx",
 		"src/**/*.stories.tsx",
 		"src/main.tsx",
-		"src/vite-env.d.ts",
 		"dist",
 		"node_modules"
 	]

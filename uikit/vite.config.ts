@@ -1,8 +1,8 @@
-import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import fs from "node:fs";
 import path, { resolve } from "node:path";
 import { visualizer } from "rollup-plugin-visualizer";
-import fs from "node:fs";
+import { defineConfig } from "vite";
 import { libInjectCss } from "vite-plugin-lib-inject-css";
 
 function getComponentEntries() {
@@ -49,7 +49,7 @@ function fixBuiltCssModules() {
 
 					if (entry.isFile() && entry.name.endsWith(".module.css")) {
 						const newPath = fullPath.replace(
-							/\.module\.css$/,
+							/\.module\.css$/u,
 							".css",
 						);
 						fs.renameSync(fullPath, newPath);
@@ -75,11 +75,11 @@ function fixBuiltCssModules() {
 						const content = fs.readFileSync(fullPath, "utf-8");
 						const patched = content
 							.replace(
-								/from\s+['"](.+?)\.module\.css['"]/g,
+								/from\s+['"](.+?)\.module\.css['"]/gu,
 								(_, p1) => `from "${p1}.css"`,
 							)
 							.replace(
-								/import\s+['"](.+?)\.module\.css['"]/g,
+								/import\s+['"](.+?)\.module\.css['"]/gu,
 								(_, p1) => `import "${p1}.css"`,
 							);
 
@@ -105,7 +105,12 @@ export default defineConfig({
 
 		fixBuiltCssModules(),
 
-		visualizer(),
+		visualizer({
+			title: "@dubium/ui",
+			filename: "stats.html",
+			gzipSize: true,
+			brotliSize: true,
+		}),
 	],
 
 	publicDir: false,
@@ -132,6 +137,9 @@ export default defineConfig({
 				"react/jsx-runtime",
 				"clsx",
 				"uuid",
+				"@dubium/hooks",
+				"shiki",
+				"@shikijs/transformers",
 			],
 
 			treeshake: {
@@ -170,9 +178,5 @@ export default defineConfig({
 
 	optimizeDeps: {
 		include: ["react", "react-dom"],
-		esbuildOptions: {
-			target: "es2020",
-			treeShaking: true,
-		},
 	},
 });

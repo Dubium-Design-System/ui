@@ -1,4 +1,5 @@
 import type { ComponentType, SVGProps } from "react";
+
 import type { TDefaultIconName } from "./Icon.registry";
 
 /**
@@ -20,7 +21,7 @@ export type TEmptyIconRegistry = Record<string, never>;
  * @property color - Цвет заливки иконки (обычно прокидывается в `fill`)
  */
 export interface IIconComponentProps extends SVGProps<SVGSVGElement> {
-	color?: string;
+  color?: string;
 }
 
 /**
@@ -37,7 +38,7 @@ export type TIcon = ComponentType<IIconComponentProps>;
  * @property default - React-компонент иконки
  */
 export type TIconModule = {
-	default: TIcon;
+  default: TIcon;
 };
 
 /**
@@ -84,5 +85,4 @@ export type TIconRegistry = Readonly<Record<string, TIconLoader>>;
  * ```
  */
 export type TIconName<TCustomIcons extends TIconRegistry = TEmptyIconRegistry> =
-	| TDefaultIconName
-	| Extract<keyof TCustomIcons, string>;
+  Extract<keyof TCustomIcons, string> | TDefaultIconName;

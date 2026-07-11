@@ -2,16 +2,16 @@ import { type ReactNode, useMemo } from "react";
 import { createPortal } from "react-dom";
 
 interface PortalProps {
-	/**
-	 * Дочерние элементы, которые будут отрендерены в портале.
-	 */
-	children: ReactNode;
+  /**
+   * Дочерние элементы, которые будут отрендерены в портале.
+   */
+  children: ReactNode;
 
-	/**
-	 * Контейнер DOM-элемент, в который будет вставлен портал.
-	 * По умолчанию — `document.body`.
-	 */
-	container?: HTMLElement;
+  /**
+   * Контейнер DOM-элемент, в который будет вставлен портал.
+   * По умолчанию — `document.body`.
+   */
+  container?: HTMLElement;
 }
 
 /**
@@ -49,14 +49,14 @@ interface PortalProps {
  * ```
  */
 export const Portal = ({ children, container }: PortalProps) => {
-	const mountNode = useMemo(() => {
-		if (typeof document === "undefined") return null;
-		return container ?? document.body;
-	}, [container]);
+  const mountNode = useMemo(() => {
+    if (typeof document === "undefined") return null;
+    return container ?? document.body;
+  }, [container]);
 
-	if (!mountNode) return null;
+  if (!mountNode) return null;
 
-	return createPortal(children, mountNode);
+  return createPortal(children, mountNode);
 };
 
 Portal.displayName = "Portal";

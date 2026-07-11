@@ -21,7 +21,7 @@ import type { TIconRegistry } from "./Icon.types";
  * - Не требует `DUIProvider` для работы
  */
 export const defaultIcons = {
-	Close: () => import("../../icons/CloseIcon"),
+  Close: () => import("../../icons/CloseIcon"),
 } as const satisfies TIconRegistry;
 
 /**
