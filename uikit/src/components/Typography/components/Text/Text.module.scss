@@ -1,4 +1,7 @@
 .text {
+	margin: var(--dui-text-margin, 0);
+	padding: var(--dui-text-padding, 0);
+
 	font-family: var(--dui-font-family);
 	font-style: normal;
 	font-size: var(--dui-text-font-size);

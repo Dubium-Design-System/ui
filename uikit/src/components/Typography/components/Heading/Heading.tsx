@@ -12,6 +12,8 @@ import style from "./Heading.module.scss"
  */
 type HeadingLevel = 1 | 2 | 3 | 4
 
+type HeadingAs = "div" | "h1" | "h2" | "h3" | "h4"
+
 /**
  * Свойства компонента Heading.
  *
@@ -19,6 +21,20 @@ type HeadingLevel = 1 | 2 | 3 | 4
  * Наследует все свойства HTML-элемента заголовка.
  */
 export interface IHeadingProps extends ComponentPropsWithoutRef<"h1"> {
+	/**
+	 * HTML-тег, который будет отрендерен.
+	 *
+	 * Если не указан, используется тег, соответствующий `level`.
+	 *
+	 * @example
+	 * ```tsx
+	 * <Heading level={2} as="div">
+	 *  Заголовок
+	 * </Heading>
+	 * ```
+	 */
+	as?: HeadingAs
+
 	/**
 	 * Уровень заголовка.
 	 *
@@ -37,7 +53,7 @@ export interface IHeadingProps extends ComponentPropsWithoutRef<"h1"> {
  * Используется для динамического выбора тега заголовка (`h1`–`h4`)
  * на основе переданного уровня.
  */
-const headingTagByLevel: Record<HeadingLevel, "h1" | "h2" | "h3" | "h4"> = {
+const headingTagByLevel: Record<HeadingLevel, Exclude<HeadingAs, "div">> = {
 	1: "h1",
 	2: "h2",
 	3: "h3",
@@ -59,8 +75,8 @@ const headingTagByLevel: Record<HeadingLevel, "h1" | "h2" | "h3" | "h4"> = {
  * <Heading level={2}>Заголовок второго уровня</Heading>
  * ```
  */
-export const Heading = ({ level = 1, children, className, ...props }: IHeadingProps) => {
-	const Tag = headingTagByLevel[level]
+export const Heading = ({ level = 1, as, children, className, ...props }: IHeadingProps) => {
+	const Tag = as ?? headingTagByLevel[level]
 
 	return (
 		<Tag
