@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import { type ButtonHTMLAttributes, memo, type MouseEvent } from "react";
+import clsx from "clsx"
+import { type ButtonHTMLAttributes, forwardRef, memo, type MouseEvent } from "react"
 
-import style from "./Button.module.scss";
+import style from "./Button.module.scss"
 
 /**
  * Пропсы компонента `Button`.
@@ -9,45 +9,45 @@ import style from "./Button.module.scss";
  * @extends ButtonHTMLAttributes<HTMLButtonElement>
  */
 export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  /**
-   * Растягивать ли кнопку на всю доступную ширину контейнера.
-   *
-   * @defaultValue false
-   *
-   * @example
-   * ```tsx
-   * <Button fluid>Full-width button</Button>
-   * ```
-   */
-  fluid?: boolean;
+	/**
+	 * Растягивать ли кнопку на всю доступную ширину контейнера.
+	 *
+	 * @defaultValue false
+	 *
+	 * @example
+	 * ```tsx
+	 * <Button fluid>Full-width button</Button>
+	 * ```
+	 */
+	fluid?: boolean
 
-  /**
-   * Предотвращать ли действие по умолчанию для события `click`.
-   *
-   * @defaultValue false
-   *
-   * @example
-   * ```tsx
-   * <Button preventDefault onClick={() => console.log("Clicked")}>
-   *   Click me (prevented default)
-   * </Button>
-   * ```
-   */
-  preventDefault?: boolean;
+	/**
+	 * Предотвращать ли действие по умолчанию для события `click`.
+	 *
+	 * @defaultValue false
+	 *
+	 * @example
+	 * ```tsx
+	 * <Button preventDefault onClick={() => console.log("Clicked")}>
+	 *   Click me (prevented default)
+	 * </Button>
+	 * ```
+	 */
+	preventDefault?: boolean
 
-  /**
-   * Останавливать ли всплытие события `click`.
-   *
-   * @defaultValue false
-   *
-   * @example
-   * ```tsx
-   * <Button stopPropagation onClick={() => console.log("Clicked")}>
-   *   Click me (no propagation)
-   * </Button>
-   * ```
-   */
-  stopPropagation?: boolean;
+	/**
+	 * Останавливать ли всплытие события `click`.
+	 *
+	 * @defaultValue false
+	 *
+	 * @example
+	 * ```tsx
+	 * <Button stopPropagation onClick={() => console.log("Clicked")}>
+	 *   Click me (no propagation)
+	 * </Button>
+	 * ```
+	 */
+	stopPropagation?: boolean
 }
 
 /**
@@ -96,57 +96,64 @@ export interface IButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
  * @component
  */
 
-export const Button = memo(
-  ({
-    className,
-    children,
-    onClick,
-    stopPropagation = false,
-    preventDefault = false,
-    fluid = false,
-    type = "button",
-    ...props
-  }: IButtonProps) => {
-    /**
-     * Обработчик клика по кнопке.
-     *
-     * @remarks
-     * Управляет всплытием события и действием по умолчанию в зависимости от пропсов
-     * `stopPropagation` и `preventDefault`. После обработки флагов вызывает
-     * пользовательский обработчик `onClick`, если он передан.
-     *
-     * @param event - Событие клика мыши.
-     */
-    const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-      if (stopPropagation) {
-        event.stopPropagation();
-      }
+const ButtonComponent = forwardRef<HTMLButtonElement, IButtonProps>(
+	(
+		{
+			className,
+			children,
+			onClick,
+			stopPropagation = false,
+			preventDefault = false,
+			fluid = false,
+			type = "button",
+			...props
+		},
+		ref,
+	) => {
+		/**
+		 * Обработчик клика по кнопке.
+		 *
+		 * @remarks
+		 * Управляет всплытием события и действием по умолчанию в зависимости от пропсов
+		 * `stopPropagation` и `preventDefault`. После обработки флагов вызывает
+		 * пользовательский обработчик `onClick`, если он передан.
+		 *
+		 * @param event - Событие клика мыши.
+		 */
+		const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+			if (stopPropagation) {
+				event.stopPropagation()
+			}
 
-      if (preventDefault) {
-        event.preventDefault();
-      }
+			if (preventDefault) {
+				event.preventDefault()
+			}
 
-      if (onClick) {
-        onClick(event);
-      }
-    };
+			if (onClick) {
+				onClick(event)
+			}
+		}
 
-    return (
-      <button
-        className={clsx(
-          style.button,
-          {
-            [style.fluid]: fluid,
-          },
-          className,
-        )}
-        onClick={handleClick}
-        {...props}
-      >
-        {children}
-      </button>
-    );
-  },
-);
+		return (
+			<button
+				ref={ref}
+				className={clsx(
+					style.button,
+					{
+						[style.fluid]: fluid,
+					},
+					className,
+				)}
+				onClick={handleClick}
+				type={type}
+				{...props}
+			>
+				{children}
+			</button>
+		)
+	},
+)
 
-Button.displayName = "Button";
+export const Button = memo(ButtonComponent)
+
+ButtonComponent.displayName = "Button"

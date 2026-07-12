@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Keyboard.module.scss";
+import style from "./Keyboard.module.scss"
 
 /** Свойства компонента Keyboard. */
-type KeyboardProps = ComponentPropsWithoutRef<"kbd">;
+export type IKeyboardProps = ComponentPropsWithoutRef<"kbd">
 
 /**
  * Компонент для имитации клавиш клавиатуры (семантический `<kbd>`).
@@ -21,10 +21,10 @@ type KeyboardProps = ComponentPropsWithoutRef<"kbd">;
  * <Keyboard>Ctrl + C</Keyboard>
  * ```
  */
-export const Keyboard = ({ children, className, ...props }: KeyboardProps) => (
-  <kbd className={clsx(style.keyboard, className)} {...props}>
-    {children}
-  </kbd>
-);
+export const Keyboard = ({ children, className, ...props }: IKeyboardProps) => (
+	<kbd className={clsx(style.keyboard, className)} {...props}>
+		{children}
+	</kbd>
+)
 
-Keyboard.displayName = "Typography.Keyboard";
+Keyboard.displayName = "Typography.Keyboard"

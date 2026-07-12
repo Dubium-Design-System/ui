@@ -17,5 +17,5 @@ export interface IPaginationProps {}
  * @returns Пустой React-элемент.
  */
 export const Pagination = ({}: IPaginationProps) => {
-  return <></>;
-};
+	return <></>
+}

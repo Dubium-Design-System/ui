@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Deleted.module.scss";
+import style from "./Deleted.module.scss"
 
 /** Свойства компонента Deleted. */
-type DeletedProps = ComponentPropsWithoutRef<"del">;
+export type IDeletedProps = ComponentPropsWithoutRef<"del">
 
 /**
  * Компонент для отображения зачёркнутого текста (семантический `<del>`).
@@ -22,10 +22,10 @@ type DeletedProps = ComponentPropsWithoutRef<"del">;
  * <Deleted>Этот текст будет зачёркнут</Deleted>
  * ```
  */
-export const Deleted = ({ children, className, ...props }: DeletedProps) => (
-  <del className={clsx(style.deleted, className)} {...props}>
-    {children}
-  </del>
-);
+export const Deleted = ({ children, className, ...props }: IDeletedProps) => (
+	<del className={clsx(style.deleted, className)} {...props}>
+		{children}
+	</del>
+)
 
-Deleted.displayName = "Typography.Deleted";
+Deleted.displayName = "Typography.Deleted"

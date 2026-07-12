@@ -17,5 +17,5 @@ interface TableFootProps {}
  * @returns Пустой React-элемент.
  */
 export const TableFoot = ({}: TableFootProps) => {
-  return <></>;
-};
+	return <></>
+}

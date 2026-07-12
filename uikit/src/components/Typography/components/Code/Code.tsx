@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Code.module.scss";
+import style from "./Code.module.scss"
 
 /** Свойства компонента Code. */
-type CodeProps = ComponentPropsWithoutRef<"code">;
+export type ICodeProps = ComponentPropsWithoutRef<"code">
 
 /**
  * Компонент для отображения инлайн-кода или фрагментов кода (семантический `<code>`).
@@ -22,10 +22,10 @@ type CodeProps = ComponentPropsWithoutRef<"code">;
  * <Code>console.log('Hello, world!')</Code>
  * ```
  */
-export const Code = ({ children, className, ...props }: CodeProps) => (
-  <code className={clsx(style.code, className)} {...props}>
-    {children}
-  </code>
-);
+export const Code = ({ children, className, ...props }: ICodeProps) => (
+	<code className={clsx(style.code, className)} {...props}>
+		{children}
+	</code>
+)
 
-Code.displayName = "Typography.Code";
+Code.displayName = "Typography.Code"

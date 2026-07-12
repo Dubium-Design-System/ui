@@ -1,14 +1,9 @@
-import { transformerNotationDiff } from "@shikijs/transformers";
-import clsx from "clsx";
-import { type ReactNode, useEffect, useMemo, useState } from "react";
-import {
-  type BundledLanguage,
-  type BundledTheme,
-  createHighlighter,
-  type ShikiTransformer,
-} from "shiki";
+import { transformerNotationDiff } from "@shikijs/transformers"
+import clsx from "clsx"
+import { type ReactNode, useEffect, useMemo, useState } from "react"
+import { type BundledLanguage, type BundledTheme, createHighlighter, type ShikiTransformer } from "shiki"
 
-import style from "./Highlight.module.scss";
+import style from "./Highlight.module.scss"
 
 /**
  * Свойства внутреннего компонента для отображения HTML.
@@ -17,10 +12,10 @@ import style from "./Highlight.module.scss";
  * Используется для вставки сгенерированного Shiki HTML-кода с подсветкой синтаксиса.
  */
 interface HighlightHtmlProps {
-  /** Дополнительные CSS-классы для контейнера. */
-  className?: string;
-  /** HTML-строка, сгенерированная Shiki. */
-  html: string;
+	/** Дополнительные CSS-классы для контейнера. */
+	className?: string
+	/** HTML-строка, сгенерированная Shiki. */
+	html: string
 }
 
 /**
@@ -35,11 +30,8 @@ interface HighlightHtmlProps {
  * @returns React-элемент с подсвеченным кодом.
  */
 const HighlightHtml = ({ html, className }: HighlightHtmlProps) => (
-  <div
-    className={clsx(style.highlight, className)}
-    dangerouslySetInnerHTML={{ __html: html }}
-  />
-);
+	<div className={clsx(style.highlight, className)} dangerouslySetInnerHTML={{ __html: html }} />
+)
 
 /**
  * Тема подсветки синтаксиса по умолчанию.
@@ -47,7 +39,7 @@ const HighlightHtml = ({ html, className }: HighlightHtmlProps) => (
  * @remarks
  * Используется тема "github-dark", если не указана иная через проп `theme`.
  */
-const defaultTheme = "github-dark";
+const defaultTheme = "github-dark"
 
 /**
  * Трансформеры Shiki по умолчанию.
@@ -57,10 +49,10 @@ const defaultTheme = "github-dark";
  * в комментариях кода (например, `// [!code ++]` и `// [!code --]`).
  */
 const defaultTransformers: ShikiTransformer[] = [
-  transformerNotationDiff({
-    matchAlgorithm: "v3",
-  }),
-];
+	transformerNotationDiff({
+		matchAlgorithm: "v3",
+	}),
+]
 
 /**
  * Свойства компонента {@link Highlight} для подсветки синтаксиса кода.
@@ -70,20 +62,20 @@ const defaultTransformers: ShikiTransformer[] = [
  * Поддерживает различные языки программирования, темы и трансформеры.
  */
 interface HighlightProps {
-  /** Исходный код для подсветки в виде строки. */
-  children: string;
-  /** Дополнительные CSS-классы для контейнера. */
-  className?: string;
-  /** React-элемент, отображаемый до загрузки подсветки (пока highlighter не готов). */
-  fallback?: ReactNode;
-  /** Флаг обрезки пробелов в начале и конце кода. По умолчанию `true`. */
-  isTrim?: boolean;
-  /** Язык программирования для подсветки синтаксиса. */
-  language: BundledLanguage;
-  /** Тема подсветки. По умолчанию "github-dark". */
-  theme?: BundledTheme;
-  /** Массив трансформеров Shiki для дополнительной обработки кода (например, выделение diff). */
-  transformers?: ShikiTransformer[];
+	/** Исходный код для подсветки в виде строки. */
+	children: string
+	/** Дополнительные CSS-классы для контейнера. */
+	className?: string
+	/** React-элемент, отображаемый до загрузки подсветки (пока highlighter не готов). */
+	fallback?: ReactNode
+	/** Флаг обрезки пробелов в начале и конце кода. По умолчанию `true`. */
+	isTrim?: boolean
+	/** Язык программирования для подсветки синтаксиса. */
+	language: BundledLanguage
+	/** Тема подсветки. По умолчанию "github-dark". */
+	theme?: BundledTheme
+	/** Массив трансформеров Shiki для дополнительной обработки кода (например, выделение diff). */
+	transformers?: ShikiTransformer[]
 }
 
 /**
@@ -95,9 +87,9 @@ interface HighlightProps {
  * загружены динамически.
  */
 const highlighterPromise = createHighlighter({
-  themes: [defaultTheme],
-  langs: ["typescript", "javascript"],
-});
+	themes: [defaultTheme],
+	langs: ["typescript", "javascript"],
+})
 
 /**
  * React-компонент для подсветки синтаксиса кода с использованием Shiki.
@@ -118,63 +110,60 @@ const highlighterPromise = createHighlighter({
  * ```
  */
 export const Highlight = ({
-  children,
-  language,
-  theme = defaultTheme,
-  transformers = defaultTransformers,
-  isTrim = true,
-  className,
-  fallback,
+	children,
+	language,
+	theme = defaultTheme,
+	transformers = defaultTransformers,
+	isTrim = true,
+	className,
+	fallback,
 }: HighlightProps) => {
-  const [html, setHtml] = useState("");
+	const [html, setHtml] = useState("")
 
-  /**
-   * Исходный код с опциональной обрезкой пробелов.
-   *
-   * @remarks
-   * Если флаг `isTrim` установлен в `true`, удаляет начальные и конечные пробелы
-   * из переданного кода. Мемоизирован для предотвращения лишних пересчётов.
-   */
-  const code = useMemo(
-    () => (isTrim ? children.trim() : children),
-    [children, isTrim],
-  );
+	/**
+	 * Исходный код с опциональной обрезкой пробелов.
+	 *
+	 * @remarks
+	 * Если флаг `isTrim` установлен в `true`, удаляет начальные и конечные пробелы
+	 * из переданного кода. Мемоизирован для предотвращения лишних пересчётов.
+	 */
+	const code = useMemo(() => (isTrim ? children.trim() : children), [children, isTrim])
 
-  useEffect(() => {
-    let mounted = true;
+	useEffect(() => {
+		let mounted = true
 
-    /**
-     * Асинхронная функция подсветки синтаксиса.
-     *
-     * @remarks
-     * Ожидает инициализации highlighter Shiki, затем преобразует код в HTML
-     * с подсветкой синтаксиса для указанного языка, темы и трансформеров.
-     * Результат устанавливается в состояние только если компонент всё ещё смонтирован.
-     */
-    const highlight = async () => {
-      const highlighter = await highlighterPromise;
+		/**
+		 * Асинхронная функция подсветки синтаксиса.
+		 *
+		 * @remarks
+		 * Ожидает инициализации highlighter Shiki, затем преобразует код в HTML
+		 * с подсветкой синтаксиса для указанного языка, темы и трансформеров.
+		 * Результат устанавливается в состояние только если компонент всё ещё смонтирован.
+		 */
+		const highlight = async () => {
+			const highlighter = await highlighterPromise
 
-      const result = highlighter.codeToHtml(code, {
-        lang: language,
-        theme,
-        transformers,
-      });
+			const result = highlighter.codeToHtml(code, {
+				lang: language,
+				theme,
+				transformers,
+			})
 
-      if (mounted) {
-        setHtml(result);
-      }
-    };
+			if (mounted) {
+				setHtml(result)
+			}
+		}
 
-    void highlight();
+		void highlight()
 
-    return () => {
-      mounted = false;
-    };
-  }, [code, language, transformers, theme]);
+		return () => {
+			mounted = false
+		}
+	}, [code, language, transformers, theme])
 
-  if (!html && fallback) {
-    return <div>{fallback}</div>;
-  }
+	if (!html && fallback) {
+		return <div>{fallback}</div>
+	}
 
-  return <HighlightHtml className={className} html={html} />;
-};
+	return <HighlightHtml className={className} html={html} />
+}

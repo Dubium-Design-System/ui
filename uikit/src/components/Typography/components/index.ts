@@ -8,13 +8,13 @@
  * @packageDocumentation
  */
 
-export { Code } from "./Code/Code";
-export { Deleted } from "./Deleted/Deleted";
-export { Heading } from "./Heading/Heading";
-export { Italic } from "./Italic/Italic";
-export { Keyboard } from "./Keyboard/Keyboard";
-export { Mark } from "./Mark/Mark";
-export { Paragraph } from "./Paragraph/Paragraph";
-export { Strong } from "./Strong/Strong";
-export { Text } from "./Text/Text";
-export { Underline } from "./Underline/Underline";
+export { Code, type ICodeProps } from "./Code/Code"
+export { Deleted, type IDeletedProps } from "./Deleted/Deleted"
+export { Heading, type IHeadingProps } from "./Heading/Heading"
+export { Italic, type IItalicProps } from "./Italic/Italic"
+export { Keyboard, type IKeyboardProps } from "./Keyboard/Keyboard"
+export { Mark, type IMarkProps } from "./Mark/Mark"
+export { Paragraph, type IParagraphProps } from "./Paragraph/Paragraph"
+export { Strong, type IStrongProps } from "./Strong/Strong"
+export { Text, type ITextProps } from "./Text/Text"
+export { Underline, type IUnderlineProps } from "./Underline/Underline"

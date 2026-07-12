@@ -1,17 +1,17 @@
-import { type ReactNode, useMemo } from "react";
-import { createPortal } from "react-dom";
+import { type ReactNode, useMemo } from "react"
+import { createPortal } from "react-dom"
 
 export interface IPortalProps {
-  /**
-   * Дочерние элементы, которые будут отрендерены в портале.
-   */
-  children: ReactNode;
+	/**
+	 * Дочерние элементы, которые будут отрендерены в портале.
+	 */
+	children: ReactNode
 
-  /**
-   * Контейнер DOM-элемент, в который будет вставлен портал.
-   * По умолчанию — `document.body`.
-   */
-  container?: HTMLElement;
+	/**
+	 * Контейнер DOM-элемент, в который будет вставлен портал.
+	 * По умолчанию — `document.body`.
+	 */
+	container?: HTMLElement
 }
 
 /**
@@ -49,22 +49,22 @@ export interface IPortalProps {
  * ```
  */
 export const Portal = ({ children, container }: IPortalProps) => {
-  /**
-   * DOM-узел, в который будет вставлен портал.
-   *
-   * @remarks
-   * При SSR (серверный рендеринг) возвращает `null`, чтобы избежать ошибок
-   * из-за отсутствия объекта `document`. В браузере использует переданный
-   * контейнер или `document.body` по умолчанию.
-   */
-  const mountNode = useMemo(() => {
-    if (typeof document === "undefined") return null;
-    return container ?? document.body;
-  }, [container]);
+	/**
+	 * DOM-узел, в который будет вставлен портал.
+	 *
+	 * @remarks
+	 * При SSR (серверный рендеринг) возвращает `null`, чтобы избежать ошибок
+	 * из-за отсутствия объекта `document`. В браузере использует переданный
+	 * контейнер или `document.body` по умолчанию.
+	 */
+	const mountNode = useMemo(() => {
+		if (typeof document === "undefined") return null
+		return container ?? document.body
+	}, [container])
 
-  if (!mountNode) return null;
+	if (!mountNode) return null
 
-  return createPortal(children, mountNode);
-};
+	return createPortal(children, mountNode)
+}
 
-Portal.displayName = "Portal";
+Portal.displayName = "Portal"

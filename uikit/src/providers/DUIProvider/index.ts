@@ -1,4 +1,4 @@
-export { DUIProvider } from "./DUIProvider";
-export { useDUIContext } from "./DUIProvider.context";
+export { DUIProvider } from "./DUIProvider"
+export { useDUIContext } from "./DUIProvider.context"
 
-export type { IDUIContextValue, IDUIProviderProps } from "./DUIProvider.types";
+export type { IDUIContextValue, IDUIProviderProps } from "./DUIProvider.types"

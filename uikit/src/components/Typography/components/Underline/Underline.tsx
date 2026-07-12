@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Underline.module.scss";
+import style from "./Underline.module.scss"
 
 /** Свойства компонента Underline. */
-type UnderlineProps = ComponentPropsWithoutRef<"u">;
+export type IUnderlineProps = ComponentPropsWithoutRef<"u">
 
 /**
  * Компонент для отображения подчёркнутого текста (семантический `<u>`).
@@ -21,14 +21,10 @@ type UnderlineProps = ComponentPropsWithoutRef<"u">;
  * <Underline>Подчёркнутый текст</Underline>
  * ```
  */
-export const Underline = ({
-  children,
-  className,
-  ...props
-}: UnderlineProps) => (
-  <u className={clsx(style.underline, className)} {...props}>
-    {children}
-  </u>
-);
+export const Underline = ({ children, className, ...props }: IUnderlineProps) => (
+	<u className={clsx(style.underline, className)} {...props}>
+		{children}
+	</u>
+)
 
-Underline.displayName = "Typography.Underline";
+Underline.displayName = "Typography.Underline"

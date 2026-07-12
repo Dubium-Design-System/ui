@@ -8,4 +8,16 @@
  * @packageDocumentation
  */
 
-export { Typography } from "./Typography";
+export { Typography } from "./Typography"
+export type {
+	ICodeProps,
+	IDeletedProps,
+	IHeadingProps,
+	IItalicProps,
+	IKeyboardProps,
+	IMarkProps,
+	IParagraphProps,
+	IStrongProps,
+	ITextProps,
+	IUnderlineProps,
+} from "./components"

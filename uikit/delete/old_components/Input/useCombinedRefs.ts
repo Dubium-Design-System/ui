@@ -1,4 +1,4 @@
-import { useRef, useEffect, type Ref } from "react";
+import { useRef, useEffect, type Ref } from "react"
 
 /**
  * Комбинирует несколько ref в один
@@ -6,22 +6,20 @@ import { useRef, useEffect, type Ref } from "react";
  * @param refs - Массив ref (callback ref, object ref, mutable ref)
  * @returns Единый ref, который обновляет все переданные ref
  */
-export const useCombinedRefs = <T>(
-  ...refs: Array<Ref<T> | null | undefined>
-) => {
-  const targetRef = useRef<T>(null);
+export const useCombinedRefs = <T>(...refs: Array<Ref<T> | null | undefined>) => {
+	const targetRef = useRef<T>(null)
 
-  useEffect(() => {
-    refs.forEach((ref) => {
-      if (!ref) return;
+	useEffect(() => {
+		refs.forEach((ref) => {
+			if (!ref) return
 
-      if (typeof ref === "function") {
-        ref(targetRef.current);
-      } else if ("current" in ref) {
-        ref.current = targetRef.current;
-      }
-    });
-  }, [refs]);
+			if (typeof ref === "function") {
+				ref(targetRef.current)
+			} else if ("current" in ref) {
+				ref.current = targetRef.current
+			}
+		})
+	}, [refs])
 
-  return targetRef;
-};
+	return targetRef
+}

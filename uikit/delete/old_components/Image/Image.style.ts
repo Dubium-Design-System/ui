@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties } from "react"
 
 /**
  * Вычисляет и возвращает стиль контейнера изображения с учётом ширины, высоты, соотношения сторон и пользовательских стилей.
@@ -15,42 +15,37 @@ import { CSSProperties } from "react";
  * @returns {CSSProperties} Финальный стиль для контейнера.
  */
 export const getContainerStyle = (
-  width: string | number,
-  height: string | number,
-  aspectRatio: string,
-  customStyle?: CSSProperties,
+	width: string | number,
+	height: string | number,
+	aspectRatio: string,
+	customStyle?: CSSProperties,
 ): CSSProperties => {
-  let finalWidth = typeof width === "number" ? `${width}px` : width;
-  let finalHeight = typeof height === "number" ? `${height}px` : height;
+	let finalWidth = typeof width === "number" ? `${width}px` : width
+	let finalHeight = typeof height === "number" ? `${height}px` : height
 
-  if (aspectRatio !== "auto") {
-    const [widthRatio, heightRatio] = aspectRatio.split("/").map(Number);
+	if (aspectRatio !== "auto") {
+		const [widthRatio, heightRatio] = aspectRatio.split("/").map(Number)
 
-    if (
-      !isNaN(widthRatio) &&
-      !isNaN(heightRatio) &&
-      widthRatio > 0 &&
-      heightRatio > 0
-    ) {
-      if (finalWidth !== "auto" && finalHeight === "auto") {
-        // Если задана только ширина, рассчитываем высоту
-        finalHeight = `calc(${finalWidth} * ${heightRatio} / ${widthRatio})`;
-      } else if (finalHeight !== "auto" && finalWidth === "auto") {
-        // Если задана только высота, рассчитываем ширину
-        finalWidth = `calc(${finalHeight} * ${widthRatio} / ${heightRatio})`;
-      }
-    }
-  }
+		if (!isNaN(widthRatio) && !isNaN(heightRatio) && widthRatio > 0 && heightRatio > 0) {
+			if (finalWidth !== "auto" && finalHeight === "auto") {
+				// Если задана только ширина, рассчитываем высоту
+				finalHeight = `calc(${finalWidth} * ${heightRatio} / ${widthRatio})`
+			} else if (finalHeight !== "auto" && finalWidth === "auto") {
+				// Если задана только высота, рассчитываем ширину
+				finalWidth = `calc(${finalHeight} * ${widthRatio} / ${heightRatio})`
+			}
+		}
+	}
 
-  return {
-    ...customStyle,
-    width: finalWidth,
-    height: finalHeight,
-    aspectRatio: aspectRatio !== "auto" ? aspectRatio : undefined,
-    maxWidth: "100%",
-    maxHeight: "100%",
-  };
-};
+	return {
+		...customStyle,
+		width: finalWidth,
+		height: finalHeight,
+		aspectRatio: aspectRatio !== "auto" ? aspectRatio : undefined,
+		maxWidth: "100%",
+		maxHeight: "100%",
+	}
+}
 
 /**
  * Возвращает стили для изображения с учетом `aspectRatio`, `objectFit` и `objectPosition`.
@@ -63,15 +58,14 @@ export const getContainerStyle = (
  * @returns {CSSProperties} Стили для применения к элементу `<img>` или его обёртке.
  */
 export const getImageStyle = (
-  widthRatio: string | number,
-  heightRatio: string | number,
-  objectFit: CSSProperties["objectFit"],
-  objectPosition: CSSProperties["objectPosition"],
+	widthRatio: string | number,
+	heightRatio: string | number,
+	objectFit: CSSProperties["objectFit"],
+	objectPosition: CSSProperties["objectPosition"],
 ): CSSProperties => {
-  return {
-    aspectRatio:
-      widthRatio !== "auto" ? `${widthRatio} / ${heightRatio}` : undefined,
-    objectFit,
-    objectPosition,
-  };
-};
+	return {
+		aspectRatio: widthRatio !== "auto" ? `${widthRatio} / ${heightRatio}` : undefined,
+		objectFit,
+		objectPosition,
+	}
+}

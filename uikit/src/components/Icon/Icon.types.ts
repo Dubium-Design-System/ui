@@ -1,6 +1,6 @@
-import type { ComponentType, SVGProps } from "react";
+import type { ComponentType, SVGProps } from "react"
 
-import type { TDefaultIconName } from "./Icon.registry";
+import type { TDefaultIconName } from "./Icon.registry"
 
 /**
  * Тип "пустого" реестра иконок.
@@ -11,7 +11,7 @@ import type { TDefaultIconName } from "./Icon.registry";
  * @remarks
  * Обеспечивает корректную типизацию без ослабления type safety.
  */
-export type TEmptyIconRegistry = Record<string, never>;
+export type TEmptyIconRegistry = Record<string, never>
 
 /**
  * Базовые пропсы для SVG-иконки.
@@ -21,7 +21,7 @@ export type TEmptyIconRegistry = Record<string, never>;
  * @property color - Цвет заливки иконки (обычно прокидывается в `fill`)
  */
 export interface IIconComponentProps extends SVGProps<SVGSVGElement> {
-  color?: string;
+	color?: string
 }
 
 /**
@@ -30,7 +30,7 @@ export interface IIconComponentProps extends SVGProps<SVGSVGElement> {
  * Каждая иконка должна быть функциональным компонентом,
  * принимающим `IIconComponentProps`.
  */
-export type TIcon = ComponentType<IIconComponentProps>;
+export type TIcon = ComponentType<IIconComponentProps>
 
 /**
  * Тип модуля, возвращаемого через динамический `import()`.
@@ -38,8 +38,8 @@ export type TIcon = ComponentType<IIconComponentProps>;
  * @property default - React-компонент иконки
  */
 export type TIconModule = {
-  default: TIcon;
-};
+	default: TIcon
+}
 
 /**
  * Тип функции-лоадера иконки.
@@ -51,7 +51,7 @@ export type TIconModule = {
  * const loader: TIconLoader = () => import("./CloseIcon");
  * ```
  */
-export type TIconLoader = () => Promise<TIconModule>;
+export type TIconLoader = () => Promise<TIconModule>
 
 /**
  * Реестр иконок.
@@ -67,7 +67,7 @@ export type TIconLoader = () => Promise<TIconModule>;
  * };
  * ```
  */
-export type TIconRegistry = Readonly<Record<string, TIconLoader>>;
+export type TIconRegistry = Readonly<Record<string, TIconLoader>>
 
 /**
  * Тип допустимых имён иконок.
@@ -85,4 +85,4 @@ export type TIconRegistry = Readonly<Record<string, TIconLoader>>;
  * ```
  */
 export type TIconName<TCustomIcons extends TIconRegistry = TEmptyIconRegistry> =
-  Extract<keyof TCustomIcons, string> | TDefaultIconName;
+	Extract<keyof TCustomIcons, string> | TDefaultIconName

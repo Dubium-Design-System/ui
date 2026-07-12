@@ -1,7 +1,7 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext } from "react"
 
-import type { TEmptyIconRegistry, TIconRegistry } from "../../components/Icon";
-import type { IDUIContextValue } from "./DUIProvider.types";
+import type { TEmptyIconRegistry, TIconRegistry } from "../../components/Icon"
+import type { IDUIContextValue } from "./DUIProvider.types"
 
 /**
  * React-контекст для хранения реестра иконок.
@@ -14,8 +14,8 @@ import type { IDUIContextValue } from "./DUIProvider.types";
  * - Без `DUIProvider` будут доступны только встроенные (`defaultIcons`) иконки
  */
 export const DUIContext = createContext<IDUIContextValue<TIconRegistry>>({
-  icons: {},
-});
+	icons: {},
+})
 
 /**
  * Хук для доступа к `DUIContext` с поддержкой типизации кастомных иконок.
@@ -35,8 +35,6 @@ export const DUIContext = createContext<IDUIContextValue<TIconRegistry>>({
  * - Используется внутри `Icon` для объединения:
  *   `{ ...defaultIcons, ...icons }`
  */
-export const useDUIContext = <
-  TCustomIcons extends TIconRegistry = TEmptyIconRegistry,
->() => {
-  return useContext(DUIContext) as IDUIContextValue<TCustomIcons>;
-};
+export const useDUIContext = <TCustomIcons extends TIconRegistry = TEmptyIconRegistry>() => {
+	return useContext(DUIContext) as IDUIContextValue<TCustomIcons>
+}

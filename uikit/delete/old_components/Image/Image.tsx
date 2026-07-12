@@ -1,7 +1,7 @@
-import { type FC, memo, useEffect, useMemo, useRef, useState } from "react";
-import { getContainerStyle, getImageStyle } from "./Image.style";
-import type { ImageProps } from "./Image.types";
-import { loadImage } from "./Image.utils";
+import { type FC, memo, useEffect, useMemo, useRef, useState } from "react"
+import { getContainerStyle, getImageStyle } from "./Image.style"
+import type { ImageProps } from "./Image.types"
+import { loadImage } from "./Image.utils"
 
 /**
  * Компонент `Image` отображает изображение с поддержкой:
@@ -51,107 +51,105 @@ import { loadImage } from "./Image.utils";
  */
 
 export const Image: FC<ImageProps> = memo(
-  ({
-    objectFit = "fill",
-    objectPosition = "center center",
-    aspectRatio = "1/1",
-    width = "100%",
-    height = "100%",
-    src,
-    webpSrc,
-    alt = "image",
-    srcSet,
-    sizes,
-    className: classNames,
-    style: customStyle,
-    errorComponent,
-    placeholder = "empty",
-    blurDataURL,
-    loading = "lazy",
-    loader,
-  }) => {
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isError, setIsError] = useState<boolean>(false);
-    const [isWebpError, setIsWebpError] = useState<boolean>(false);
-    const imageRef = useRef<HTMLImageElement | null>(null);
+	({
+		objectFit = "fill",
+		objectPosition = "center center",
+		aspectRatio = "1/1",
+		width = "100%",
+		height = "100%",
+		src,
+		webpSrc,
+		alt = "image",
+		srcSet,
+		sizes,
+		className: classNames,
+		style: customStyle,
+		errorComponent,
+		placeholder = "empty",
+		blurDataURL,
+		loading = "lazy",
+		loader,
+	}) => {
+		const [isLoading, setIsLoading] = useState<boolean>(false)
+		const [isError, setIsError] = useState<boolean>(false)
+		const [isWebpError, setIsWebpError] = useState<boolean>(false)
+		const imageRef = useRef<HTMLImageElement | null>(null)
 
-    const [widthRatio, heightRatio] = useMemo(() => {
-      if (aspectRatio === "auto") return ["auto", "auto"];
-      const [width, height] = aspectRatio.split("/").map(Number);
-      return isNaN(width) || isNaN(height) ? [1, 1] : [width, height];
-    }, [aspectRatio]);
+		const [widthRatio, heightRatio] = useMemo(() => {
+			if (aspectRatio === "auto") return ["auto", "auto"]
+			const [width, height] = aspectRatio.split("/").map(Number)
+			return isNaN(width) || isNaN(height) ? [1, 1] : [width, height]
+		}, [aspectRatio])
 
-    useEffect(() => {
-      loadImage(src, webpSrc, setIsLoading, setIsError, setIsWebpError);
-    }, [src, webpSrc]);
+		useEffect(() => {
+			loadImage(src, webpSrc, setIsLoading, setIsError, setIsWebpError)
+		}, [src, webpSrc])
 
-    const containerStyle = useMemo(() => {
-      return getContainerStyle(width, height, aspectRatio, customStyle);
-    }, [width, height, aspectRatio, customStyle]);
+		const containerStyle = useMemo(() => {
+			return getContainerStyle(width, height, aspectRatio, customStyle)
+		}, [width, height, aspectRatio, customStyle])
 
-    const imgStyle = useMemo(() => {
-      return getImageStyle(widthRatio, heightRatio, objectFit, objectPosition);
-    }, [widthRatio, heightRatio, objectFit, objectPosition]);
+		const imgStyle = useMemo(() => {
+			return getImageStyle(widthRatio, heightRatio, objectFit, objectPosition)
+		}, [widthRatio, heightRatio, objectFit, objectPosition])
 
-    const renderPlaceholder = () => {
-      if (!isLoading) return null;
+		const renderPlaceholder = () => {
+			if (!isLoading) return null
 
-      if (placeholder === "blur" && blurDataURL) {
-        return (
-          <img
-            src={blurDataURL}
-            alt={alt}
-            style={{
-              ...imgStyle,
-              filter: "blur(10px)",
-              width: "100%",
-              height: "100%",
-            }}
-            aria-hidden="true"
-          />
-        );
-      }
+			if (placeholder === "blur" && blurDataURL) {
+				return (
+					<img
+						src={blurDataURL}
+						alt={alt}
+						style={{
+							...imgStyle,
+							filter: "blur(10px)",
+							width: "100%",
+							height: "100%",
+						}}
+						aria-hidden="true"
+					/>
+				)
+			}
 
-      return loader ?? null;
-    };
+			return loader ?? null
+		}
 
-    return (
-      <div className={classNames} style={containerStyle}>
-        {renderPlaceholder()}
+		return (
+			<div className={classNames} style={containerStyle}>
+				{renderPlaceholder()}
 
-        {isError && !isLoading && (errorComponent || <div>{alt}</div>)}
-        {!isLoading && !isError && (
-          <picture
-            style={{
-              // ...imgStyle,
-              display: "block",
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            {webpSrc && !isWebpError ? (
-              <source srcSet={webpSrc} type="image/webp" />
-            ) : null}
-            <img
-              ref={imageRef}
-              src={src}
-              alt={alt}
-              loading={loading}
-              style={{
-                ...imgStyle,
-                display: "block",
-                width: "100%",
-                height: "100%",
-              }}
-              srcSet={srcSet}
-              sizes={sizes}
-              decoding="async"
-            />
-          </picture>
-        )}
-      </div>
-    );
-  },
-);
+				{isError && !isLoading && (errorComponent || <div>{alt}</div>)}
+				{!isLoading && !isError && (
+					<picture
+						style={{
+							// ...imgStyle,
+							display: "block",
+							width: "100%",
+							height: "100%",
+						}}
+					>
+						{webpSrc && !isWebpError ? <source srcSet={webpSrc} type="image/webp" /> : null}
+						<img
+							ref={imageRef}
+							src={src}
+							alt={alt}
+							loading={loading}
+							style={{
+								...imgStyle,
+								display: "block",
+								width: "100%",
+								height: "100%",
+							}}
+							srcSet={srcSet}
+							sizes={sizes}
+							decoding="async"
+						/>
+					</picture>
+				)}
+			</div>
+		)
+	},
+)
 
-Image.displayName = "Image";
+Image.displayName = "Image"

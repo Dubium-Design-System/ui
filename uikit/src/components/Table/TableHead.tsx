@@ -17,5 +17,5 @@ interface TableHeadProps {}
  * @returns Пустой React-элемент.
  */
 export const TableHead = ({}: TableHeadProps) => {
-  return <></>;
-};
+	return <></>
+}

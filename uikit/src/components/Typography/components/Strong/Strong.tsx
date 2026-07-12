@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Strong.module.scss";
+import style from "./Strong.module.scss"
 
 /** Свойства компонента Strong. */
-type StrongProps = ComponentPropsWithoutRef<"strong">;
+export type IStrongProps = ComponentPropsWithoutRef<"strong">
 
 /**
  * Компонент для отображения жирного текста (семантический `<strong>`).
@@ -21,10 +21,10 @@ type StrongProps = ComponentPropsWithoutRef<"strong">;
  * <Strong>Важный жирный текст</Strong>
  * ```
  */
-export const Strong = ({ children, className, ...props }: StrongProps) => (
-  <strong className={clsx(style.strong, className)} {...props}>
-    {children}
-  </strong>
-);
+export const Strong = ({ children, className, ...props }: IStrongProps) => (
+	<strong className={clsx(style.strong, className)} {...props}>
+		{children}
+	</strong>
+)
 
-Strong.displayName = "Typography.Strong";
+Strong.displayName = "Typography.Strong"

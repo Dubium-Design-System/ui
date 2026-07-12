@@ -13,7 +13,9 @@
 		"src/index.ts",
 		"src/components/**/*",
 		"src/providers/**/*",
-		"src/icons/**/*"
+		"src/icons/**/*",
+		"src/types/**/*.d.ts",
+		"src/vite-env.d.ts"
 	],
 	"exclude": [
 		"delete",

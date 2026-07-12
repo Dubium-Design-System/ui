@@ -1,4 +1,4 @@
-import type { TIconRegistry } from "./Icon.types";
+import type { TIconRegistry } from "./Icon.types"
 
 /**
  * Реестр встроенных (UIKit) иконок.
@@ -21,8 +21,8 @@ import type { TIconRegistry } from "./Icon.types";
  * - Не требует `DUIProvider` для работы
  */
 export const defaultIcons = {
-  Close: () => import("../../icons/CloseIcon"),
-} as const satisfies TIconRegistry;
+	Close: () => import("../../icons/CloseIcon"),
+} as const satisfies TIconRegistry
 
 /**
  * Объединение имён всех встроенных (UIKit) иконок.
@@ -36,4 +36,4 @@ export const defaultIcons = {
  * type TDefaultIconName = "Close";
  * ```
  */
-export type TDefaultIconName = keyof typeof defaultIcons;
+export type TDefaultIconName = keyof typeof defaultIcons

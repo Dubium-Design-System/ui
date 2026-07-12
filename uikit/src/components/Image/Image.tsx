@@ -1,24 +1,18 @@
-import { clsx } from "clsx";
-import {
-  memo,
-  type ReactEventHandler,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { clsx } from "clsx"
+import { memo, type ReactEventHandler, useEffect, useMemo, useState } from "react"
 
-import type { IImageProps } from "./Image.types";
+import type { IImageProps } from "./Image.types"
 
-import styles from "./Image.module.scss";
-import { getContainerStyle, getImageStyle } from "./Image.style";
+import styles from "./Image.module.scss"
+import { getContainerStyle, getImageStyle } from "./Image.style"
 import {
-  createImageCacheKey,
-  isImageFailed,
-  isImageLoaded,
-  markImageAsFailed,
-  markImageAsLoaded,
-  normalizeSrcSet,
-} from "./Image.utils";
+	createImageCacheKey,
+	isImageFailed,
+	isImageLoaded,
+	markImageAsFailed,
+	markImageAsLoaded,
+	normalizeSrcSet,
+} from "./Image.utils"
 
 /**
  * Статус загрузки изображения.
@@ -30,7 +24,7 @@ import {
  * - `"loaded"` - изображение успешно загружено
  * - `"error"` - произошла ошибка загрузки изображения
  */
-type TImageStatus = "error" | "loaded" | "loading";
+type TImageStatus = "error" | "loaded" | "loading"
 
 /**
  * Компонент для отображения изображений с поддержкой адаптивной загрузки, кэширования и fallback-ов.
@@ -82,344 +76,317 @@ type TImageStatus = "error" | "loaded" | "loading";
  * ```
  */
 export const Image = memo(
-  ({
-    src,
-    alt,
-    srcSet,
-    sizes,
-    sources,
+	({
+		src,
+		alt,
+		srcSet,
+		sizes,
+		sources,
 
-    aspectRatio = "1/1",
-    objectFit = "cover",
-    objectPosition = "center center",
+		aspectRatio = "1/1",
+		objectFit = "cover",
+		objectPosition = "center center",
 
-    width = "100%",
-    height = "100%",
+		width = "100%",
+		height = "100%",
 
-    className,
-    style: containerStyleProp,
+		className,
+		style: containerStyleProp,
 
-    imgClassName,
-    imgStyle,
+		imgClassName,
+		imgStyle,
 
-    errorComponent,
-    loader,
+		errorComponent,
+		loader,
 
-    placeholder = "empty",
-    blurDataURL,
+		placeholder = "empty",
+		blurDataURL,
 
-    onLoad,
-    onError,
+		onLoad,
+		onError,
 
-    ...imgProps
-  }: IImageProps) => {
-    /**
-     * Ключ кэша для текущего изображения, основанный на его источниках.
-     *
-     * @remarks
-     * Используется для проверки, было ли изображение уже загружено или завершилось ошибкой
-     * в предыдущих рендерах. Это позволяет избежать повторной загрузки уже загруженных изображений.
-     */
-    const cacheKey = useMemo(() => {
-      return createImageCacheKey({
-        src,
-        srcSet,
-        sizes,
-        sources,
-      });
-    }, [src, srcSet, sizes, sources]);
+		...imgProps
+	}: IImageProps) => {
+		/**
+		 * Ключ кэша для текущего изображения, основанный на его источниках.
+		 *
+		 * @remarks
+		 * Используется для проверки, было ли изображение уже загружено или завершилось ошибкой
+		 * в предыдущих рендерах. Это позволяет избежать повторной загрузки уже загруженных изображений.
+		 */
+		const cacheKey = useMemo(() => {
+			return createImageCacheKey({
+				src,
+				srcSet,
+				sizes,
+				sources,
+			})
+		}, [src, srcSet, sizes, sources])
 
-    /**
-     * Текущий статус загрузки изображения.
-     *
-     * @remarks
-     * Инициализируется на основе данных из кэша. Если изображение уже было загружено
-     * ранее (в другом компоненте или на предыдущем рендере), статус сразу устанавливается
-     * в `"loaded"`. Аналогично для ошибок.
-     */
-    const [status, setStatus] = useState<TImageStatus>(() => {
-      if (isImageLoaded(cacheKey)) {
-        return "loaded";
-      }
+		/**
+		 * Текущий статус загрузки изображения.
+		 *
+		 * @remarks
+		 * Инициализируется на основе данных из кэша. Если изображение уже было загружено
+		 * ранее (в другом компоненте или на предыдущем рендере), статус сразу устанавливается
+		 * в `"loaded"`. Аналогично для ошибок.
+		 */
+		const [status, setStatus] = useState<TImageStatus>(() => {
+			if (isImageLoaded(cacheKey)) {
+				return "loaded"
+			}
 
-      if (isImageFailed(cacheKey)) {
-        return "error";
-      }
+			if (isImageFailed(cacheKey)) {
+				return "error"
+			}
 
-      return "loading";
-    });
+			return "loading"
+		})
 
-    /**
-     * Флаг, указывающий, что источники (`<source>`) внутри `<picture>` должны быть отключены.
-     *
-     * @remarks
-     * Используется для реализации fallback-логики: если загрузка из источников завершилась ошибкой,
-     * отключаем все `<source>` и пытаемся загрузить основное изображение (`src`).
-     */
-    const [skippedSourcesCount, setSkippedSourcesCount] = useState(0);
+		/**
+		 * Флаг, указывающий, что источники (`<source>`) внутри `<picture>` должны быть отключены.
+		 *
+		 * @remarks
+		 * Используется для реализации fallback-логики: если загрузка из источников завершилась ошибкой,
+		 * отключаем все `<source>` и пытаемся загрузить основное изображение (`src`).
+		 */
+		const [skippedSourcesCount, setSkippedSourcesCount] = useState(0)
 
-    /**
-     * Эффект для синхронизации статуса загрузки при изменении ключа кэша.
-     *
-     * @remarks
-     * При изменении `cacheKey` (например, при смене `src`) сбрасывает флаг отключения источников
-     * и обновляет статус на основе актуальных данных кэша.
-     */
-    useEffect(() => {
-      setSkippedSourcesCount(0);
+		/**
+		 * Эффект для синхронизации статуса загрузки при изменении ключа кэша.
+		 *
+		 * @remarks
+		 * При изменении `cacheKey` (например, при смене `src`) сбрасывает флаг отключения источников
+		 * и обновляет статус на основе актуальных данных кэша.
+		 */
+		useEffect(() => {
+			setSkippedSourcesCount(0)
 
-      if (isImageLoaded(cacheKey)) {
-        setStatus("loaded");
+			if (isImageLoaded(cacheKey)) {
+				setStatus("loaded")
 
-        return;
-      }
+				return
+			}
 
-      if (isImageFailed(cacheKey)) {
-        setStatus("error");
+			if (isImageFailed(cacheKey)) {
+				setStatus("error")
 
-        return;
-      }
+				return
+			}
 
-      setStatus("loading");
-    }, [cacheKey]);
+			setStatus("loading")
+		}, [cacheKey])
 
-    /**
-     * Нормализованный `srcSet` для основного изображения.
-     *
-     * @remarks
-     * Преобразует массив кандидатов `ImageSrcSetCandidate[]` в строку формата `"url width, url 2x"`,
-     * либо возвращает исходную строку `srcSet` без изменений.
-     */
-    const normalizedImgSrcSet = useMemo(() => {
-      return normalizeSrcSet(srcSet);
-    }, [srcSet]);
+		/**
+		 * Нормализованный `srcSet` для основного изображения.
+		 *
+		 * @remarks
+		 * Преобразует массив кандидатов `ImageSrcSetCandidate[]` в строку формата `"url width, url 2x"`,
+		 * либо возвращает исходную строку `srcSet` без изменений.
+		 */
+		const normalizedImgSrcSet = useMemo(() => {
+			return normalizeSrcSet(srcSet)
+		}, [srcSet])
 
-    /**
-     * Нормализованные источники для элемента `<picture>`.
-     *
-     * @remarks
-     * Преобразует массив `sources`, нормализуя `srcSet` каждого источника и фильтруя пустые.
-     * Если источники отключены (`areSourcesDisabled`), возвращает пустой массив.
-     */
-    const normalizedSources = useMemo(() => {
-      if (!sources?.length) {
-        return [];
-      }
+		/**
+		 * Нормализованные источники для элемента `<picture>`.
+		 *
+		 * @remarks
+		 * Преобразует массив `sources`, нормализуя `srcSet` каждого источника и фильтруя пустые.
+		 * Если источники отключены (`areSourcesDisabled`), возвращает пустой массив.
+		 */
+		const normalizedSources = useMemo(() => {
+			if (!sources?.length) {
+				return []
+			}
 
-      return sources
-        .map((source) => ({
-          ...source,
-          srcSet: normalizeSrcSet(source.srcSet),
-        }))
-        .filter((source) => Boolean(source.srcSet));
-    }, [sources]);
+			return sources
+				.map((source) => ({
+					...source,
+					srcSet: normalizeSrcSet(source.srcSet),
+				}))
+				.filter((source) => Boolean(source.srcSet))
+		}, [sources])
 
-    /**
-     * Активные источники для элемента `<picture>`.
-     *
-     * @remarks
-     * Содержит подмассив `normalizedSources`, начиная с индекса `skippedSourcesCount`.
-     * Используется для реализации последовательного fallback: при ошибке загрузки
-     * очередного источника он исключается из активных, и следующий источник становится текущим.
-     */
-    const activeSources = useMemo(() => {
-      return normalizedSources.slice(skippedSourcesCount);
-    }, [normalizedSources, skippedSourcesCount]);
+		/**
+		 * Активные источники для элемента `<picture>`.
+		 *
+		 * @remarks
+		 * Содержит подмассив `normalizedSources`, начиная с индекса `skippedSourcesCount`.
+		 * Используется для реализации последовательного fallback: при ошибке загрузки
+		 * очередного источника он исключается из активных, и следующий источник становится текущим.
+		 */
+		const activeSources = useMemo(() => {
+			return normalizedSources.slice(skippedSourcesCount)
+		}, [normalizedSources, skippedSourcesCount])
 
-    /**
-     * CSS-класс контейнера изображения.
-     *
-     * @remarks
-     * Формируется с помощью `clsx` из базового класса `styles.container`,
-     * модификатора `container_withAspectRatio` (если задано явное соотношение сторон),
-     * и пользовательского класса `className`.
-     */
-    const containerClassName = useMemo(() => {
-      return clsx(
-        styles.container,
-        aspectRatio !== "auto" && styles.container_withAspectRatio,
-        className,
-      );
-    }, [aspectRatio, className]);
+		/**
+		 * CSS-класс контейнера изображения.
+		 *
+		 * @remarks
+		 * Формируется с помощью `clsx` из базового класса `styles.container`,
+		 * модификатора `container_withAspectRatio` (если задано явное соотношение сторон),
+		 * и пользовательского класса `className`.
+		 */
+		const containerClassName = useMemo(() => {
+			return clsx(styles.container, aspectRatio !== "auto" && styles.container_withAspectRatio, className)
+		}, [aspectRatio, className])
 
-    /**
-     * Стили контейнера изображения.
-     *
-     * @remarks
-     * Генерируются с помощью {@link getContainerStyle} на основе параметров `width`, `height`,
-     * `aspectRatio` и пользовательских стилей `style`.
-     */
-    const containerStyle = useMemo(() => {
-      return getContainerStyle({
-        width,
-        height,
-        aspectRatio,
-        objectFit,
-        objectPosition,
-        customStyle: containerStyleProp,
-      });
-    }, [
-      width,
-      height,
-      aspectRatio,
-      objectFit,
-      objectPosition,
-      containerStyleProp,
-    ]);
+		/**
+		 * Стили контейнера изображения.
+		 *
+		 * @remarks
+		 * Генерируются с помощью {@link getContainerStyle} на основе параметров `width`, `height`,
+		 * `aspectRatio` и пользовательских стилей `style`.
+		 */
+		const containerStyle = useMemo(() => {
+			return getContainerStyle({
+				width,
+				height,
+				aspectRatio,
+				objectFit,
+				objectPosition,
+				customStyle: containerStyleProp,
+			})
+		}, [width, height, aspectRatio, objectFit, objectPosition, containerStyleProp])
 
-    /**
-     * CSS-класс элемента `<img>`.
-     *
-     * @remarks
-     * Формируется с помощью `clsx` из базового класса `styles.image`
-     * и пользовательского класса `imgClassName`.
-     */
-    const imageClassName = useMemo(() => {
-      return clsx(styles.image, imgClassName);
-    }, [imgClassName]);
+		/**
+		 * CSS-класс элемента `<img>`.
+		 *
+		 * @remarks
+		 * Формируется с помощью `clsx` из базового класса `styles.image`
+		 * и пользовательского класса `imgClassName`.
+		 */
+		const imageClassName = useMemo(() => {
+			return clsx(styles.image, imgClassName)
+		}, [imgClassName])
 
-    /**
-     * Стили самого изображения (`<img>`).
-     *
-     * @remarks
-     * Генерируются с помощью {@link getImageStyle} на основе параметров `aspectRatio`,
-     * `objectFit`, `objectPosition` и пользовательских стилей `imgStyle`.
-     * Прозрачность (`opacity`) управляется в зависимости от статуса загрузки:
-     * изображение становится полностью видимым только после успешной загрузки.
-     */
-    const imageStyle = useMemo(() => {
-      return getImageStyle({
-        opacity: status === "loaded" ? (imgStyle?.opacity ?? 1) : 0,
-        customStyle: imgStyle,
-      });
-    }, [imgStyle, status]);
+		/**
+		 * Стили самого изображения (`<img>`).
+		 *
+		 * @remarks
+		 * Генерируются с помощью {@link getImageStyle} на основе параметров `aspectRatio`,
+		 * `objectFit`, `objectPosition` и пользовательских стилей `imgStyle`.
+		 * Прозрачность (`opacity`) управляется в зависимости от статуса загрузки:
+		 * изображение становится полностью видимым только после успешной загрузки.
+		 */
+		const imageStyle = useMemo(() => {
+			return getImageStyle({
+				opacity: status === "loaded" ? (imgStyle?.opacity ?? 1) : 0,
+				customStyle: imgStyle,
+			})
+		}, [imgStyle, status])
 
-    /**
-     * Обработчик успешной загрузки изображения.
-     *
-     * @remarks
-     * Вызывается когда изображение (`<img>`) успешно загружено. Помечает изображение как загруженное
-     * в кэше, обновляет статус и вызывает пользовательский обработчик `onLoad`, если он предоставлен.
-     *
-     * @param event - Событие загрузки изображения.
-     */
-    const handleLoad: ReactEventHandler<HTMLImageElement> = (event) => {
-      markImageAsLoaded(cacheKey);
+		/**
+		 * Обработчик успешной загрузки изображения.
+		 *
+		 * @remarks
+		 * Вызывается когда изображение (`<img>`) успешно загружено. Помечает изображение как загруженное
+		 * в кэше, обновляет статус и вызывает пользовательский обработчик `onLoad`, если он предоставлен.
+		 *
+		 * @param event - Событие загрузки изображения.
+		 */
+		const handleLoad: ReactEventHandler<HTMLImageElement> = (event) => {
+			markImageAsLoaded(cacheKey)
 
-      setStatus("loaded");
+			setStatus("loaded")
 
-      if (onLoad) {
-        onLoad(event);
-      }
-    };
+			if (onLoad) {
+				onLoad(event)
+			}
+		}
 
-    /**
-     * Обработчик ошибки загрузки изображения.
-     *
-     * @remarks
-     * Вызывается когда изображение (`<img>`) не смогло загрузиться. Если есть альтернативные источники
-     * (`normalizedSources`) и они ещё не отключены, отключает источники и пытается загрузить основное
-     * изображение повторно. В противном случае помечает изображение как ошибочное в кэше, обновляет
-     * статус и вызывает пользовательский обработчик `onError`.
-     *
-     * @param event - Событие ошибки изображения.
-     */
-    const handleError: ReactEventHandler<HTMLImageElement> = (event) => {
-      if (skippedSourcesCount < normalizedSources.length) {
-        setSkippedSourcesCount((prev) => prev + 1);
+		/**
+		 * Обработчик ошибки загрузки изображения.
+		 *
+		 * @remarks
+		 * Вызывается когда изображение (`<img>`) не смогло загрузиться. Если есть альтернативные источники
+		 * (`normalizedSources`) и они ещё не отключены, отключает источники и пытается загрузить основное
+		 * изображение повторно. В противном случае помечает изображение как ошибочное в кэше, обновляет
+		 * статус и вызывает пользовательский обработчик `onError`.
+		 *
+		 * @param event - Событие ошибки изображения.
+		 */
+		const handleError: ReactEventHandler<HTMLImageElement> = (event) => {
+			if (skippedSourcesCount < normalizedSources.length) {
+				setSkippedSourcesCount((prev) => prev + 1)
 
-        setStatus("loading");
+				setStatus("loading")
 
-        return;
-      }
+				return
+			}
 
-      markImageAsFailed(cacheKey);
+			markImageAsFailed(cacheKey)
 
-      setStatus("error");
+			setStatus("error")
 
-      if (onError) {
-        onError(event);
-      }
-    };
+			if (onError) {
+				onError(event)
+			}
+		}
 
-    /**
-     * Флаг, указывающий нужно ли показывать плейсхолдер.
-     *
-     * @remarks
-     * Возвращает `true`, когда статус загрузки равен `"loading"`.
-     * В этом случае отображается компонент-плейсхолдер (blur-изображение или кастомный loader).
-     */
-    const shouldShowPlaceholder = status === "loading";
+		/**
+		 * Флаг, указывающий нужно ли показывать плейсхолдер.
+		 *
+		 * @remarks
+		 * Возвращает `true`, когда статус загрузки равен `"loading"`.
+		 * В этом случае отображается компонент-плейсхолдер (blur-изображение или кастомный loader).
+		 */
+		const shouldShowPlaceholder = status === "loading"
 
-    /**
-     * Флаг, указывающий нужно ли показывать компонент ошибки.
-     *
-     * @remarks
-     * Возвращает `true`, когда статус загрузки равен `"error"`.
-     * В этом случае отображается компонент ошибки (`errorComponent`) или fallback с текстом `alt`.
-     */
-    const shouldShowError = status === "error";
+		/**
+		 * Флаг, указывающий нужно ли показывать компонент ошибки.
+		 *
+		 * @remarks
+		 * Возвращает `true`, когда статус загрузки равен `"error"`.
+		 * В этом случае отображается компонент ошибки (`errorComponent`) или fallback с текстом `alt`.
+		 */
+		const shouldShowError = status === "error"
 
-    return (
-      <div
-        aria-busy={status === "loading" || undefined}
-        className={containerClassName}
-        style={containerStyle}
-      >
-        {shouldShowPlaceholder ? (
-          <div aria-hidden="true" className={styles.placeholder}>
-            {placeholder === "blur" && blurDataURL ? (
-              <img
-                alt=""
-                className={styles.placeholder_blur}
-                src={blurDataURL}
-              />
-            ) : (
-              loader
-            )}
-          </div>
-        ) : null}
+		return (
+			<div aria-busy={status === "loading" || undefined} className={containerClassName} style={containerStyle}>
+				{shouldShowPlaceholder ? (
+					<div aria-hidden="true" className={styles.placeholder}>
+						{placeholder === "blur" && blurDataURL ? (
+							<img alt="" className={styles.placeholder_blur} src={blurDataURL} />
+						) : (
+							loader
+						)}
+					</div>
+				) : null}
 
-        {shouldShowError ? (
-          (errorComponent ?? <div>{alt}</div>)
-        ) : (
-          <picture
-            className={styles.picture}
-            key={`sources-offset-${skippedSourcesCount}`}
-          >
-            {activeSources.map((source, index) => (
-              <source
-                height={source.height}
-                key={[
-                  source.type,
-                  source.media,
-                  source.srcSet,
-                  skippedSourcesCount + index,
-                ].join("-")}
-                media={source.media}
-                sizes={source.sizes ?? sizes}
-                srcSet={source.srcSet}
-                type={source.type}
-                width={source.width}
-              />
-            ))}
+				{shouldShowError ? (
+					(errorComponent ?? <div>{alt}</div>)
+				) : (
+					<picture className={styles.picture} key={`sources-offset-${skippedSourcesCount}`}>
+						{activeSources.map((source, index) => (
+							<source
+								height={source.height}
+								key={[source.type, source.media, source.srcSet, skippedSourcesCount + index].join("-")}
+								media={source.media}
+								sizes={source.sizes ?? sizes}
+								srcSet={source.srcSet}
+								type={source.type}
+								width={source.width}
+							/>
+						))}
 
-            <img
-              {...imgProps}
-              alt={alt}
-              className={imageClassName}
-              onError={handleError}
-              onLoad={handleLoad}
-              sizes={sizes}
-              src={src}
-              srcSet={normalizedImgSrcSet}
-              style={imageStyle}
-            />
-          </picture>
-        )}
-      </div>
-    );
-  },
-);
+						<img
+							{...imgProps}
+							alt={alt}
+							className={imageClassName}
+							onError={handleError}
+							onLoad={handleLoad}
+							sizes={sizes}
+							src={src}
+							srcSet={normalizedImgSrcSet}
+							style={imageStyle}
+						/>
+					</picture>
+				)}
+			</div>
+		)
+	},
+)
 
-Image.displayName = "Image";
+Image.displayName = "Image"

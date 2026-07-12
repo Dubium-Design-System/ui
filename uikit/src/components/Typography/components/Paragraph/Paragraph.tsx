@@ -1,8 +1,8 @@
-import type { ComponentPropsWithoutRef, CSSProperties } from "react";
+import type { ComponentPropsWithoutRef, CSSProperties } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Paragraph.module.scss";
+import style from "./Paragraph.module.scss"
 
 /**
  * Стили для компонента Paragraph, расширяющие стандартные CSSProperties.
@@ -11,8 +11,8 @@ import style from "./Paragraph.module.scss";
  * Добавляет пользовательское CSS-свойство `--row-gap` для управления межстрочным интервалом.
  */
 type TParagraphStyle = {
-  "--row-gap"?: string;
-} & CSSProperties;
+	"--row-gap"?: string
+} & CSSProperties
 
 /**
  * Свойства компонента Paragraph.
@@ -20,14 +20,14 @@ type TParagraphStyle = {
  * @remarks
  * Наследует все свойства HTML-элемента `div`.
  */
-interface ParagraphProps extends ComponentPropsWithoutRef<"div"> {
-  /**
-   * Межстрочный интервал в пикселях.
-   *
-   * @remarks
-   * Устанавливает CSS-переменную `--row-gap` для кастомизации вертикальных отступов.
-   */
-  rowGap?: number;
+export interface IParagraphProps extends ComponentPropsWithoutRef<"div"> {
+	/**
+	 * Межстрочный интервал в пикселях.
+	 *
+	 * @remarks
+	 * Устанавливает CSS-переменную `--row-gap` для кастомизации вертикальных отступов.
+	 */
+	rowGap?: number
 }
 
 /**
@@ -43,12 +43,12 @@ interface ParagraphProps extends ComponentPropsWithoutRef<"div"> {
  * @returns Строку вида `"{rowGap}px"` или `undefined`, если `rowGap` не является числом.
  */
 const getRowGapValue = (rowGap: TParagraphStyle["rowGap"]) => {
-  if (typeof rowGap !== "number") {
-    return undefined;
-  }
+	if (typeof rowGap !== "number") {
+		return undefined
+	}
 
-  return `${rowGap}px`;
-};
+	return `${rowGap}px`
+}
 
 /**
  * Компонент параграфа (абзаца) с поддержкой кастомизации межстрочного интервала.
@@ -68,27 +68,17 @@ const getRowGapValue = (rowGap: TParagraphStyle["rowGap"]) => {
  * </Paragraph>
  * ```
  */
-export const Paragraph = ({
-  rowGap,
-  children,
-  className,
-  style: styleProps,
-  ...props
-}: ParagraphProps) => {
-  const paragraphStyle: TParagraphStyle = {
-    ...styleProps,
-    "--row-gap": getRowGapValue(rowGap),
-  };
+export const Paragraph = ({ rowGap, children, className, style: styleProps, ...props }: IParagraphProps) => {
+	const paragraphStyle: TParagraphStyle = {
+		...styleProps,
+		"--row-gap": getRowGapValue(rowGap),
+	}
 
-  return (
-    <div
-      className={clsx(style.paragraph, className)}
-      style={paragraphStyle}
-      {...props}
-    >
-      {children}
-    </div>
-  );
-};
+	return (
+		<div className={clsx(style.paragraph, className)} style={paragraphStyle} {...props}>
+			{children}
+		</div>
+	)
+}
 
-Paragraph.displayName = "Typography.Paragraph";
+Paragraph.displayName = "Typography.Paragraph"

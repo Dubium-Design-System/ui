@@ -1,4 +1,4 @@
-import type { CSSProperties, ImgHTMLAttributes, ReactNode } from "react";
+import type { CSSProperties, ImgHTMLAttributes, ReactNode } from "react"
 
 /**
  * Кандидат для адаптивного набора изображений (`srcSet`).
@@ -19,15 +19,15 @@ import type { CSSProperties, ImgHTMLAttributes, ReactNode } from "react";
  * ```
  */
 export type TImageSrcSetCandidate =
-  | {
-      /** Плотность пикселей (для дескриптора `x`) */
-      density?: number;
-      /** URL изображения */
-      src: string;
-      /** Ширина изображения в пикселях (для дескриптора `w`) */
-      width?: number;
-    }
-  | string;
+	| {
+			/** Плотность пикселей (для дескриптора `x`) */
+			density?: number
+			/** URL изображения */
+			src: string
+			/** Ширина изображения в пикселях (для дескриптора `w`) */
+			width?: number
+	  }
+	| string
 
 /**
  * Адаптивный набор изображений (`srcSet`).
@@ -41,7 +41,7 @@ export type TImageSrcSetCandidate =
  *
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/srcset | MDN: srcset}
  */
-export type TImageSrcSet = string | TImageSrcSetCandidate[];
+export type TImageSrcSet = string | TImageSrcSetCandidate[]
 
 /**
  * Источник для элемента `<source>` внутри `<picture>`.
@@ -61,12 +61,12 @@ export type TImageSrcSet = string | TImageSrcSetCandidate[];
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTML/Element/picture | MDN: <picture>}
  */
 export interface IImageSource {
-  height?: number;
-  media?: string;
-  sizes?: string;
-  srcSet: TImageSrcSet;
-  type?: `image/${string}`;
-  width?: number;
+	height?: number
+	media?: string
+	sizes?: string
+	srcSet: TImageSrcSet
+	type?: `image/${string}`
+	width?: number
 }
 
 /**
@@ -90,59 +90,52 @@ export interface IImageSource {
  * ```
  */
 export interface IImageProps extends Omit<
-  ImgHTMLAttributes<HTMLImageElement>,
-  | "alt"
-  | "className"
-  | "height"
-  | "sizes"
-  | "src"
-  | "srcSet"
-  | "style"
-  | "width"
+	ImgHTMLAttributes<HTMLImageElement>,
+	"alt" | "className" | "height" | "sizes" | "src" | "srcSet" | "style" | "width"
 > {
-  /** Альтернативный текст (обязательный, для доступности) */
-  alt: string;
-  /** Соотношение сторон контейнера (например, `"16/9"`, `"4/3"`, `"auto"`) */
-  aspectRatio?: "auto" | `${number}/${number}`;
+	/** Альтернативный текст (обязательный, для доступности) */
+	alt: string
+	/** Соотношение сторон контейнера (например, `"16/9"`, `"4/3"`, `"auto"`) */
+	aspectRatio?: "auto" | `${number}/${number}`
 
-  /** URL изображения для blur-плейсхолдера (используется при `placeholder="blur"`) */
-  blurDataURL?: string;
-  /** CSS-класс для контейнера изображения */
-  className?: string;
-  /** Компонент для отображения при ошибке загрузки изображения */
-  errorComponent?: ReactNode;
+	/** URL изображения для blur-плейсхолдера (используется при `placeholder="blur"`) */
+	blurDataURL?: string
+	/** CSS-класс для контейнера изображения */
+	className?: string
+	/** Компонент для отображения при ошибке загрузки изображения */
+	errorComponent?: ReactNode
 
-  /** Высота контейнера (число, строка или CSS-значение) */
-  height?: CSSProperties["height"];
-  /** CSS-класс для элемента `<img>` */
-  imgClassName?: string;
-  /** Дополнительные стили для элемента `<img>` */
-  imgStyle?: CSSProperties;
+	/** Высота контейнера (число, строка или CSS-значение) */
+	height?: CSSProperties["height"]
+	/** CSS-класс для элемента `<img>` */
+	imgClassName?: string
+	/** Дополнительные стили для элемента `<img>` */
+	imgStyle?: CSSProperties
 
-  /** Компонент-плейсхолдер, отображаемый во время загрузки */
-  loader?: ReactNode;
-  /** Определяет как изображение вписывается в контейнер (аналогично CSS `object-fit`) */
-  objectFit?: CSSProperties["objectFit"];
+	/** Компонент-плейсхолдер, отображаемый во время загрузки */
+	loader?: ReactNode
+	/** Определяет как изображение вписывается в контейнер (аналогично CSS `object-fit`) */
+	objectFit?: CSSProperties["objectFit"]
 
-  /** Позиционирование изображения внутри контейнера (аналогично CSS `object-position`) */
-  objectPosition?: CSSProperties["objectPosition"];
-  /** Тип плейсхолдера: `"blur"` - размытое изображение, `"empty"` - пустое место */
-  placeholder?: "blur" | "empty";
+	/** Позиционирование изображения внутри контейнера (аналогично CSS `object-position`) */
+	objectPosition?: CSSProperties["objectPosition"]
+	/** Тип плейсхолдера: `"blur"` - размытое изображение, `"empty"` - пустое место */
+	placeholder?: "blur" | "empty"
 
-  /** Размеры изображения для разных условий (`sizes`) */
-  sizes?: string;
-  /** Альтернативные источники для элемента `<picture>` */
-  sources?: IImageSource[];
+	/** Размеры изображения для разных условий (`sizes`) */
+	sizes?: string
+	/** Альтернативные источники для элемента `<picture>` */
+	sources?: IImageSource[]
 
-  /** URL основного изображения (обязательный) */
-  src: string;
-  /** Адаптивный набор изображений (`srcSet`) */
-  srcSet?: TImageSrcSet;
+	/** URL основного изображения (обязательный) */
+	src: string
+	/** Адаптивный набор изображений (`srcSet`) */
+	srcSet?: TImageSrcSet
 
-  /** Дополнительные стили для контейнера изображения */
-  style?: CSSProperties;
-  /** Ширина контейнера (число, строка или CSS-значение) */
-  width?: CSSProperties["width"];
+	/** Дополнительные стили для контейнера изображения */
+	style?: CSSProperties
+	/** Ширина контейнера (число, строка или CSS-значение) */
+	width?: CSSProperties["width"]
 }
 
 /**
@@ -160,8 +153,8 @@ export interface IImageProps extends Omit<
  * @property sources - Альтернативные источники для элемента `<picture>`.
  */
 export interface ICreateImageCacheKeyParams {
-  sizes?: string;
-  sources?: IImageSource[];
-  src: string;
-  srcSet?: TImageSrcSet;
+	sizes?: string
+	sources?: IImageSource[]
+	src: string
+	srcSet?: TImageSrcSet
 }

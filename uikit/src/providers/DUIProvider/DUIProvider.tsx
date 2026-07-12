@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useMemo } from "react"
 
-import type { TEmptyIconRegistry, TIconRegistry } from "../../components/Icon";
-import type { IDUIProviderProps } from "./DUIProvider.types";
+import type { TEmptyIconRegistry, TIconRegistry } from "../../components/Icon"
+import type { IDUIProviderProps } from "./DUIProvider.types"
 
-import { DUIContext } from "./DUIProvider.context";
+import { DUIContext } from "./DUIProvider.context"
 
 /**
  * Провайдер контекста UI-библиотеки (`DUIProvider`).
@@ -36,18 +36,16 @@ import { DUIContext } from "./DUIProvider.context";
  * - Использует `useMemo` для предотвращения лишних перерисовок
  * - Если `icons` не передан, используется пустой реестр
  */
-export const DUIProvider = <
-  TCustomIcons extends TIconRegistry = TEmptyIconRegistry,
->({
-  children,
-  icons,
+export const DUIProvider = <TCustomIcons extends TIconRegistry = TEmptyIconRegistry>({
+	children,
+	icons,
 }: IDUIProviderProps<TCustomIcons>) => {
-  const value = useMemo(
-    () => ({
-      icons: icons ?? ({} as TCustomIcons),
-    }),
-    [icons],
-  );
+	const value = useMemo(
+		() => ({
+			icons: icons ?? ({} as TCustomIcons),
+		}),
+		[icons],
+	)
 
-  return <DUIContext.Provider value={value}>{children}</DUIContext.Provider>;
-};
+	return <DUIContext.Provider value={value}>{children}</DUIContext.Provider>
+}

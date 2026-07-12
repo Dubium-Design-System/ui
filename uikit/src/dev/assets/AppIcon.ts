@@ -1,4 +1,4 @@
-import { createIcon } from "../../components/Icon";
-import type { TAppIcons } from "./icons";
+import { createIcon } from "../../components/Icon"
+import type { TAppIcons } from "./icons"
 
-export const AppIcon = createIcon<TAppIcons>();
+export const AppIcon = createIcon<TAppIcons>()

@@ -1,32 +1,28 @@
-import react from "@vitejs/plugin-react";
-import fs from "node:fs";
-import path, { resolve } from "node:path";
-import { visualizer } from "rollup-plugin-visualizer";
-import { defineConfig } from "vite";
-import { libInjectCss } from "vite-plugin-lib-inject-css";
+import react from "@vitejs/plugin-react"
+import fs from "node:fs"
+import path, { resolve } from "node:path"
+import { visualizer } from "rollup-plugin-visualizer"
+import { defineConfig } from "vite"
+import { libInjectCss } from "vite-plugin-lib-inject-css"
 
 function getComponentEntries() {
-	const componentsDir = resolve(__dirname, "src/components");
-	const entries: Record<string, string> = {};
+	const componentsDir = resolve(__dirname, "src/components")
+	const entries: Record<string, string> = {}
 
 	const componentDirs = fs
 		.readdirSync(componentsDir, { withFileTypes: true })
 		.filter((dirent) => dirent.isDirectory())
-		.map((dirent) => dirent.name);
+		.map((dirent) => dirent.name)
 
 	componentDirs.forEach((componentName) => {
-		const componentPath = resolve(
-			__dirname,
-			`src/components/${componentName}/${componentName}.tsx`,
-		);
+		const componentPath = resolve(__dirname, `src/components/${componentName}/${componentName}.tsx`)
 
 		if (fs.existsSync(componentPath)) {
-			entries[`components/${componentName}/${componentName}`] =
-				componentPath;
+			entries[`components/${componentName}/${componentName}`] = componentPath
 		}
-	});
+	})
 
-	return entries;
+	return entries
 }
 
 function fixBuiltCssModules() {
@@ -34,65 +30,56 @@ function fixBuiltCssModules() {
 		name: "fix-built-css-modules",
 		apply: "build",
 		closeBundle() {
-			const distDir = path.resolve(__dirname, "dist");
+			const distDir = path.resolve(__dirname, "dist")
 
 			function walk(dir: string) {
-				const entries = fs.readdirSync(dir, { withFileTypes: true });
+				const entries = fs.readdirSync(dir, { withFileTypes: true })
 
 				for (const entry of entries) {
-					const fullPath = path.join(dir, entry.name);
+					const fullPath = path.join(dir, entry.name)
 
 					if (entry.isDirectory()) {
-						walk(fullPath);
-						continue;
+						walk(fullPath)
+						continue
 					}
 
 					if (entry.isFile() && entry.name.endsWith(".module.css")) {
-						const newPath = fullPath.replace(
-							/\.module\.css$/u,
-							".css",
-						);
-						fs.renameSync(fullPath, newPath);
-						continue;
+						const newPath = fullPath.replace(/\.module\.css$/u, ".css")
+						fs.renameSync(fullPath, newPath)
+						continue
 					}
 				}
 			}
 
-			walk(distDir);
+			walk(distDir)
 
 			function patchJsImports(dir: string) {
-				const entries = fs.readdirSync(dir, { withFileTypes: true });
+				const entries = fs.readdirSync(dir, { withFileTypes: true })
 
 				for (const entry of entries) {
-					const fullPath = path.join(dir, entry.name);
+					const fullPath = path.join(dir, entry.name)
 
 					if (entry.isDirectory()) {
-						patchJsImports(fullPath);
-						continue;
+						patchJsImports(fullPath)
+						continue
 					}
 
 					if (entry.isFile() && entry.name.endsWith(".js")) {
-						const content = fs.readFileSync(fullPath, "utf-8");
+						const content = fs.readFileSync(fullPath, "utf-8")
 						const patched = content
-							.replace(
-								/from\s+['"](.+?)\.module\.css['"]/gu,
-								(_, p1) => `from "${p1}.css"`,
-							)
-							.replace(
-								/import\s+['"](.+?)\.module\.css['"]/gu,
-								(_, p1) => `import "${p1}.css"`,
-							);
+							.replace(/from\s+['"](.+?)\.module\.css['"]/gu, (_, p1) => `from "${p1}.css"`)
+							.replace(/import\s+['"](.+?)\.module\.css['"]/gu, (_, p1) => `import "${p1}.css"`)
 
 						if (patched !== content) {
-							fs.writeFileSync(fullPath, patched, "utf-8");
+							fs.writeFileSync(fullPath, patched, "utf-8")
 						}
 					}
 				}
 			}
 
-			patchJsImports(distDir);
+			patchJsImports(distDir)
 		},
-	};
+	}
 }
 
 export default defineConfig({
@@ -144,9 +131,9 @@ export default defineConfig({
 
 			treeshake: {
 				moduleSideEffects: (id) => {
-					if (id.endsWith(".css")) return true;
+					if (id.endsWith(".css")) return true
 
-					return false;
+					return false
 				},
 				propertyReadSideEffects: false,
 				unknownGlobalSideEffects: false,
@@ -179,4 +166,4 @@ export default defineConfig({
 	optimizeDeps: {
 		include: ["react", "react-dom"],
 	},
-});
+})

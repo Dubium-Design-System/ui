@@ -17,5 +17,5 @@ interface TableBodyProps {}
  * @returns Пустой React-элемент.
  */
 export const TableBody = ({}: TableBodyProps) => {
-  return <></>;
-};
+	return <></>
+}

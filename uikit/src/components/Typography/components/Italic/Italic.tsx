@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Italic.module.scss";
+import style from "./Italic.module.scss"
 
 /** Свойства компонента Italic. */
-type ItalicProps = ComponentPropsWithoutRef<"em">;
+export type IItalicProps = ComponentPropsWithoutRef<"em">
 
 /**
  * Компонент для отображения текста курсивом (семантический `<em>`).
@@ -21,10 +21,10 @@ type ItalicProps = ComponentPropsWithoutRef<"em">;
  * <Italic>Курсивный текст</Italic>
  * ```
  */
-export const Italic = ({ children, className, ...props }: ItalicProps) => (
-  <em className={clsx(style.italic, className)} {...props}>
-    {children}
-  </em>
-);
+export const Italic = ({ children, className, ...props }: IItalicProps) => (
+	<em className={clsx(style.italic, className)} {...props}>
+		{children}
+	</em>
+)
 
-Italic.displayName = "Typography.Italic";
+Italic.displayName = "Typography.Italic"

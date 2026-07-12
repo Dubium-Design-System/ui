@@ -1,11 +1,11 @@
-import type { ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef } from "react"
 
-import clsx from "clsx";
+import clsx from "clsx"
 
-import style from "./Mark.module.scss";
+import style from "./Mark.module.scss"
 
 /** Свойства компонента Mark. */
-type MarkProps = ComponentPropsWithoutRef<"mark">;
+export type IMarkProps = ComponentPropsWithoutRef<"mark">
 
 /**
  * Компонент для выделения (пометки) текста (семантический `<mark>`).
@@ -21,10 +21,10 @@ type MarkProps = ComponentPropsWithoutRef<"mark">;
  * <Mark>Выделенный текст</Mark>
  * ```
  */
-export const Mark = ({ children, className, ...props }: MarkProps) => (
-  <mark className={clsx(style.mark, className)} {...props}>
-    {children}
-  </mark>
-);
+export const Mark = ({ children, className, ...props }: IMarkProps) => (
+	<mark className={clsx(style.mark, className)} {...props}>
+		{children}
+	</mark>
+)
 
-Mark.displayName = "Typography.Mark";
+Mark.displayName = "Typography.Mark"

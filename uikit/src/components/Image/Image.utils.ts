@@ -1,4 +1,4 @@
-import type { ICreateImageCacheKeyParams, TImageSrcSet } from "./Image.types";
+import type { ICreateImageCacheKeyParams, TImageSrcSet } from "./Image.types"
 
 /**
  * Максимальное количество записей в кэше загруженных и ошибочных изображений.
@@ -7,7 +7,7 @@ import type { ICreateImageCacheKeyParams, TImageSrcSet } from "./Image.types";
  * Используется для ограничения памяти, потребляемой кэшем. Когда количество записей
  * превышает этот лимит, самые старые записи автоматически удаляются.
  */
-const CACHE_LIMIT = 250;
+const CACHE_LIMIT = 250
 
 /**
  * Кэш успешно загруженных изображений.
@@ -17,7 +17,7 @@ const CACHE_LIMIT = 250;
  * Используется для избежания повторной загрузки уже загруженных изображений
  * в пределах сессии приложения.
  */
-const loadedImageCache = new Map<string, true>();
+const loadedImageCache = new Map<string, true>()
 
 /**
  * Кэш изображений, загрузка которых завершилась ошибкой.
@@ -27,7 +27,7 @@ const loadedImageCache = new Map<string, true>();
  * Используется для избежания повторных попыток загрузки изображений,
  * которые уже завершились ошибкой.
  */
-const failedImageCache = new Map<string, true>();
+const failedImageCache = new Map<string, true>()
 
 /**
  * Обновляет запись в кэше, поддерживая LRU-логику (Least Recently Used).
@@ -43,20 +43,20 @@ const failedImageCache = new Map<string, true>();
  * @param value - Значение записи.
  */
 const touchCacheEntry = <T>(cache: Map<string, T>, key: string, value: T) => {
-  if (cache.has(key)) {
-    cache.delete(key);
-  }
+	if (cache.has(key)) {
+		cache.delete(key)
+	}
 
-  if (cache.size >= CACHE_LIMIT) {
-    const oldestKey = cache.keys().next().value;
+	if (cache.size >= CACHE_LIMIT) {
+		const oldestKey = cache.keys().next().value
 
-    if (oldestKey) {
-      cache.delete(oldestKey);
-    }
-  }
+		if (oldestKey) {
+			cache.delete(oldestKey)
+		}
+	}
 
-  cache.set(key, value);
-};
+	cache.set(key, value)
+}
 
 /**
  * Нормализует адаптивный набор изображений (`srcSet`) в строку формата HTML.
@@ -87,32 +87,32 @@ const touchCacheEntry = <T>(cache: Map<string, T>, key: string, value: T) => {
  * ```
  */
 export const normalizeSrcSet = (srcSet?: TImageSrcSet): string | undefined => {
-  if (!srcSet) {
-    return undefined;
-  }
+	if (!srcSet) {
+		return undefined
+	}
 
-  if (typeof srcSet === "string") {
-    return srcSet;
-  }
+	if (typeof srcSet === "string") {
+		return srcSet
+	}
 
-  return srcSet
-    .map((candidate) => {
-      if (typeof candidate === "string") {
-        return candidate;
-      }
+	return srcSet
+		.map((candidate) => {
+			if (typeof candidate === "string") {
+				return candidate
+			}
 
-      if (candidate.width) {
-        return `${candidate.src} ${candidate.width}w`;
-      }
+			if (candidate.width) {
+				return `${candidate.src} ${candidate.width}w`
+			}
 
-      if (candidate.density) {
-        return `${candidate.src} ${candidate.density}x`;
-      }
+			if (candidate.density) {
+				return `${candidate.src} ${candidate.density}x`
+			}
 
-      return candidate.src;
-    })
-    .join(", ");
-};
+			return candidate.src
+		})
+		.join(", ")
+}
 
 /**
  * Создает уникальный ключ кэша для изображения на основе его параметров загрузки.
@@ -137,24 +137,19 @@ export const normalizeSrcSet = (srcSet?: TImageSrcSet): string | undefined => {
  * // => '{"src":"/image.jpg","srcSet":"/image-2x.jpg 2x","sizes":"...","sources":[...]}'
  * ```
  */
-export const createImageCacheKey = ({
-  src,
-  srcSet,
-  sizes,
-  sources,
-}: ICreateImageCacheKeyParams): string => {
-  const normalizedSources = sources?.map((source) => ({
-    ...source,
-    srcSet: normalizeSrcSet(source.srcSet),
-  }));
+export const createImageCacheKey = ({ src, srcSet, sizes, sources }: ICreateImageCacheKeyParams): string => {
+	const normalizedSources = sources?.map((source) => ({
+		...source,
+		srcSet: normalizeSrcSet(source.srcSet),
+	}))
 
-  return JSON.stringify({
-    src,
-    srcSet: normalizeSrcSet(srcSet),
-    sizes,
-    sources: normalizedSources,
-  });
-};
+	return JSON.stringify({
+		src,
+		srcSet: normalizeSrcSet(srcSet),
+		sizes,
+		sources: normalizedSources,
+	})
+}
 
 /**
  * Проверяет, было ли изображение с данным ключом кэша успешно загружено ранее.
@@ -166,8 +161,8 @@ export const createImageCacheKey = ({
  * @returns `true`, если изображение было успешно загружено и сохранено в кэше.
  */
 export const isImageLoaded = (cacheKey: string): boolean => {
-  return loadedImageCache.has(cacheKey);
-};
+	return loadedImageCache.has(cacheKey)
+}
 
 /**
  * Проверяет, завершилась ли загрузка изображения с данным ключом кэша ошибкой ранее.
@@ -179,8 +174,8 @@ export const isImageLoaded = (cacheKey: string): boolean => {
  * @returns `true`, если загрузка изображения ранее завершилась ошибкой.
  */
 export const isImageFailed = (cacheKey: string): boolean => {
-  return failedImageCache.has(cacheKey);
-};
+	return failedImageCache.has(cacheKey)
+}
 
 /**
  * Помечает изображение как успешно загруженное в кэше.
@@ -192,9 +187,9 @@ export const isImageFailed = (cacheKey: string): boolean => {
  * @param cacheKey - Ключ кэша изображения, созданный {@link createImageCacheKey}.
  */
 export const markImageAsLoaded = (cacheKey: string) => {
-  failedImageCache.delete(cacheKey);
-  touchCacheEntry(loadedImageCache, cacheKey, true);
-};
+	failedImageCache.delete(cacheKey)
+	touchCacheEntry(loadedImageCache, cacheKey, true)
+}
 
 /**
  * Помечает изображение как завершившееся ошибкой в кэше.
@@ -206,9 +201,9 @@ export const markImageAsLoaded = (cacheKey: string) => {
  * @param cacheKey - Ключ кэша изображения, созданный {@link createImageCacheKey}.
  */
 export const markImageAsFailed = (cacheKey: string) => {
-  loadedImageCache.delete(cacheKey);
-  touchCacheEntry(failedImageCache, cacheKey, true);
-};
+	loadedImageCache.delete(cacheKey)
+	touchCacheEntry(failedImageCache, cacheKey, true)
+}
 
 /**
  * Полностью очищает кэши загруженных и ошибочных изображений.
@@ -219,6 +214,6 @@ export const markImageAsFailed = (cacheKey: string) => {
  * (например, при logout пользователя или смене контента).
  */
 export const clearImageCache = () => {
-  loadedImageCache.clear();
-  failedImageCache.clear();
-};
+	loadedImageCache.clear()
+	failedImageCache.clear()
+}

@@ -26,7 +26,7 @@
 Создаётся через:
 
 ```ts
-const AppIcon = createIcon<TAppIcons>();
+const AppIcon = createIcon<TAppIcons>()
 ```
 
 Используется для **кастомных + встроенных иконок**.
@@ -46,7 +46,7 @@ const AppIcon = createIcon<TAppIcons>();
 
 ```tsx
 <DUIProvider icons={appIcons}>
-  <AppIcon name="User" />
+	<AppIcon name="User" />
 </DUIProvider>
 ```
 
